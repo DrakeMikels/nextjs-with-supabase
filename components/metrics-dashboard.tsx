@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -52,11 +52,7 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
 
-  useEffect(() => {
-    fetchMetrics();
-  }, [periods]);
-
-  const fetchMetrics = async () => {
+  const fetchMetrics = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("safety_metrics")
@@ -74,7 +70,11 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [supabase]);
+
+  useEffect(() => {
+    fetchMetrics();
+  }, [periods, fetchMetrics]);
 
   const calculateTotalsByCoach = () => {
     const totals = coaches.map(coach => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -75,17 +75,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
   const [existingMetrics, setExistingMetrics] = useState<SafetyMetric[]>([]);
   const supabase = createClient();
 
-  useEffect(() => {
-    fetchExistingMetrics();
-  }, [period.id]);
-
-  useEffect(() => {
-    if (selectedCoach) {
-      loadCoachMetrics(selectedCoach.id);
-    }
-  }, [selectedCoach, period.id]);
-
-  const fetchExistingMetrics = async () => {
+  const fetchExistingMetrics = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("safety_metrics")
@@ -97,7 +87,17 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
     } catch (error) {
       console.error("Error fetching metrics:", error);
     }
-  };
+  }, [supabase, period.id]);
+
+  useEffect(() => {
+    fetchExistingMetrics();
+  }, [fetchExistingMetrics]);
+
+  useEffect(() => {
+    if (selectedCoach) {
+      loadCoachMetrics(selectedCoach.id);
+    }
+  }, [selectedCoach, period.id]);
 
   const loadCoachMetrics = async (coachId: string) => {
     try {
