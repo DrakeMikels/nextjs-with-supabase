@@ -7,51 +7,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Edit3, Eye, EyeOff } from "lucide-react";
+import { Edit3, Eye, EyeOff, Sparkles } from "lucide-react";
+import type { Coach, SafetyMetric, DashboardProps } from "@/lib/types";
 
-interface BiWeeklyPeriod {
-  id: string;
-  start_date: string;
-  end_date: string;
-  period_name: string;
-  created_at: string;
-}
-
-interface Coach {
-  id: string;
-  name: string;
-  date_of_hire: string | null;
-  vacation_days_remaining: number;
-  vacation_days_total: number;
-}
-
-interface SafetyMetric {
-  id?: string;
-  period_id: string;
-  coach_id: string;
-  travel_plans: string;
-  training_branch_location: string;
-  site_safety_evaluations: number;
-  forensic_survey_audits: number;
-  warehouse_safety_audits: number;
-  open_investigations_injuries: number;
-  open_investigations_auto: number;
-  open_investigations_property_damage: number;
-  open_investigations_near_miss: number;
-  do_hr_partnership_meeting: string;
-  bm_pm_whs_partnership_meeting: string;
-  lms_reports_date: string;
-  tbt_attendance_reports_date: string;
-  notes: string;
-}
-
-interface MasterDashboardProps {
-  periods: BiWeeklyPeriod[];
-  coaches: Coach[];
-  onDataChange: () => void;
-}
-
-export function MasterDashboard({ periods, coaches, onDataChange }: MasterDashboardProps) {
+export function MasterDashboard({ periods, coaches, onDataChange }: DashboardProps) {
   const [metrics, setMetrics] = useState<SafetyMetric[]>([]);
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -370,15 +329,18 @@ export function MasterDashboard({ periods, coaches, onDataChange }: MasterDashbo
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">📊 Master Dashboard</h2>
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <Sparkles className="h-6 w-6 text-brand-sorbet" />
+            <span className="text-brand-sorbet">Master Dashboard</span>
+          </h2>
           <p className="text-muted-foreground">
-            View and edit all coach data across all periods - Excel-style interface
+            Excel-style interface - Click any cell to edit data directly
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="gap-1">
+          <Badge variant="outline" className="gap-1 border-brand-sorbet/30 text-brand-sorbet">
             <Edit3 className="h-3 w-3" />
-            Click any cell to edit
+            Click to edit
           </Badge>
         </div>
       </div>
@@ -391,10 +353,14 @@ export function MasterDashboard({ periods, coaches, onDataChange }: MasterDashbo
           setSelectedCoach(coach || null);
         }
       }}>
-        <TabsList className="grid w-full grid-cols-8">
-          <TabsTrigger value="all">All Coaches</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-8 bg-brand-off-white border border-brand-teal/20">
+          <TabsTrigger value="all" className="data-[state=active]:bg-brand-teal data-[state=active]:text-white">All Coaches</TabsTrigger>
           {coaches.map((coach) => (
-            <TabsTrigger key={coach.id} value={coach.id} className="text-xs">
+            <TabsTrigger 
+              key={coach.id} 
+              value={coach.id} 
+              className="text-xs data-[state=active]:bg-brand-lime data-[state=active]:text-brand-off-black"
+            >
               {coach.name}
             </TabsTrigger>
           ))}

@@ -11,29 +11,14 @@ import { SafetyMetricsForm } from "./safety-metrics-form";
 import { CoachManagement } from "./coach-management";
 import { MetricsDashboard } from "./metrics-dashboard";
 import { MasterDashboard } from "./master-dashboard";
-
-interface BiWeeklyPeriod {
-  id: string;
-  start_date: string;
-  end_date: string;
-  period_name: string;
-  created_at: string;
-}
-
-interface Coach {
-  id: string;
-  name: string;
-  date_of_hire: string | null;
-  vacation_days_remaining: number;
-  vacation_days_total: number;
-}
+import type { BiWeeklyPeriod, Coach } from "@/lib/types";
 
 export function BiWeeklyDashboard() {
   const [periods, setPeriods] = useState<BiWeeklyPeriod[]>([]);
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<BiWeeklyPeriod | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("periods");
+  const [activeTab, setActiveTab] = useState("master"); // Default to Master View
   const supabase = createClient();
 
   const fetchData = useCallback(async () => {
@@ -117,50 +102,50 @@ export function BiWeeklyDashboard() {
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Regional Safety Coaches</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-brand-sorbet">Regional Safety Coaches</h1>
           <p className="text-muted-foreground">Bi-Weekly Touch Base Tracker</p>
         </div>
-        <Button onClick={createNewPeriod} className="gap-2">
+        <Button onClick={createNewPeriod} className="gap-2 bg-brand-sorbet hover:bg-brand-sorbet/90">
           <PlusCircle className="h-4 w-4" />
           New Period
         </Button>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="border-brand-sorbet/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Periods</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <Calendar className="h-4 w-4 text-brand-sorbet" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{periods.length}</div>
+            <div className="text-2xl font-bold text-brand-sorbet">{periods.length}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-brand-teal/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Coaches</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <Users className="h-4 w-4 text-brand-teal" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{coaches.length}</div>
+            <div className="text-2xl font-bold text-brand-teal">{coaches.length}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-brand-lime/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Current Period</CardTitle>
-            <BarChart3 className="h-4 w-4 text-muted-foreground" />
+            <BarChart3 className="h-4 w-4 text-brand-lime" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{selectedPeriod?.period_name || "None"}</div>
+            <div className="text-2xl font-bold text-brand-lime">{selectedPeriod?.period_name || "None"}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-brand-olive/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Date Range</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <Calendar className="h-4 w-4 text-brand-olive" />
           </CardHeader>
           <CardContent>
-            <div className="text-sm">
+            <div className="text-sm text-brand-olive font-medium">
               {selectedPeriod ? 
                 `${new Date(selectedPeriod.start_date).toLocaleDateString()} - ${new Date(selectedPeriod.end_date).toLocaleDateString()}` 
                 : "No period selected"
@@ -171,21 +156,19 @@ export function BiWeeklyDashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="periods">Bi-Weekly Periods</TabsTrigger>
-          <TabsTrigger value="metrics">Safety Metrics</TabsTrigger>
-          <TabsTrigger value="coaches">Coach Management</TabsTrigger>
-          <TabsTrigger value="dashboard">Analytics</TabsTrigger>
-          <TabsTrigger value="master">Master View</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-5 bg-brand-off-white border border-brand-sorbet/20">
+          <TabsTrigger value="master" className="data-[state=active]:bg-brand-sorbet data-[state=active]:text-white">📊 Master View</TabsTrigger>
+          <TabsTrigger value="metrics" className="data-[state=active]:bg-brand-teal data-[state=active]:text-white">✏️ Quick Entry</TabsTrigger>
+          <TabsTrigger value="periods" className="data-[state=active]:bg-brand-lime data-[state=active]:text-brand-off-black">📅 Periods</TabsTrigger>
+          <TabsTrigger value="coaches" className="data-[state=active]:bg-brand-olive data-[state=active]:text-white">👥 Coaches</TabsTrigger>
+          <TabsTrigger value="dashboard" className="data-[state=active]:bg-brand-street data-[state=active]:text-white">📈 Analytics</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="periods" className="space-y-4">
-          <BiWeeklyPeriodList 
-            periods={periods} 
-            selectedPeriod={selectedPeriod}
-            onSelectPeriod={setSelectedPeriod}
-            onPeriodsChange={setPeriods}
-            onOpenPeriod={handleOpenPeriod}
+        <TabsContent value="master" className="space-y-4">
+          <MasterDashboard 
+            periods={periods}
+            coaches={coaches}
+            onDataChange={fetchData}
           />
         </TabsContent>
 
@@ -208,6 +191,16 @@ export function BiWeeklyDashboard() {
           )}
         </TabsContent>
 
+        <TabsContent value="periods" className="space-y-4">
+          <BiWeeklyPeriodList 
+            periods={periods} 
+            selectedPeriod={selectedPeriod}
+            onSelectPeriod={setSelectedPeriod}
+            onPeriodsChange={setPeriods}
+            onOpenPeriod={handleOpenPeriod}
+          />
+        </TabsContent>
+
         <TabsContent value="coaches" className="space-y-4">
           <CoachManagement 
             coaches={coaches}
@@ -219,14 +212,6 @@ export function BiWeeklyDashboard() {
           <MetricsDashboard 
             periods={periods}
             coaches={coaches}
-          />
-        </TabsContent>
-
-        <TabsContent value="master" className="space-y-4">
-          <MasterDashboard 
-            periods={periods}
-            coaches={coaches}
-            onDataChange={fetchData}
           />
         </TabsContent>
       </Tabs>

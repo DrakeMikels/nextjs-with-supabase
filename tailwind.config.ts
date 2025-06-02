@@ -1,16 +1,25 @@
 import type { Config } from "tailwindcss";
 
-export default {
+const config: Config = {
   darkMode: ["class"],
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       colors: {
+        // Freedom Forever Brand Colors
+        brand: {
+          'off-white': '#F8F8F8',
+          'off-black': '#2C2C2C',
+          'sorbet': '#FF6B35',
+          'street': '#8B8B8B',
+          'lime': '#A4D65E',
+          'deep-teal': '#2E8B8B',
+          'olive': '#8FBC8F',
+        },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -22,20 +31,20 @@ export default {
           foreground: "hsl(var(--popover-foreground))",
         },
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "#FF6B35", // Sorbet
+          foreground: "#F8F8F8", // Off-white
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "#2E8B8B", // Deep Teal
+          foreground: "#F8F8F8", // Off-white
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "#8B8B8B", // Street
+          foreground: "#F8F8F8", // Off-white
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "#A4D65E", // Lime
+          foreground: "#2C2C2C", // Off-black
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -43,13 +52,13 @@ export default {
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
+        ring: "#FF6B35", // Sorbet
         chart: {
-          "1": "hsl(var(--chart-1))",
-          "2": "hsl(var(--chart-2))",
-          "3": "hsl(var(--chart-3))",
-          "4": "hsl(var(--chart-4))",
-          "5": "hsl(var(--chart-5))",
+          "1": "#FF6B35", // Sorbet
+          "2": "#2E8B8B", // Deep Teal
+          "3": "#A4D65E", // Lime
+          "4": "#8FBC8F", // Olive
+          "5": "#8B8B8B", // Street
         },
       },
       borderRadius: {
@@ -61,3 +70,5 @@ export default {
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
+
+export default config;
