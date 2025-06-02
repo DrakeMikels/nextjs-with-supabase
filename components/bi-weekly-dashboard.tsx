@@ -103,7 +103,7 @@ export function BiWeeklyDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-brand-olive">Regional Safety Coaches</h1>
-          <p className="text-muted-foreground">Bi-Weekly Touch Base Tracker</p>
+          <p className="text-medium-contrast">Bi-Weekly Touch Base Tracker</p>
         </div>
         <Button onClick={createNewPeriod} className="gap-2 bg-brand-olive hover:bg-brand-olive/90 text-white">
           <PlusCircle className="h-4 w-4" />
@@ -112,40 +112,40 @@ export function BiWeeklyDashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-brand-olive/20">
+        <Card className="border-brand-olive/20 hover:border-brand-olive/40 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Periods</CardTitle>
+            <CardTitle className="text-sm font-medium text-high-contrast">Total Periods</CardTitle>
             <Calendar className="h-4 w-4 text-brand-olive" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-brand-olive">{periods.length}</div>
           </CardContent>
         </Card>
-        <Card className="border-brand-sorbet/20">
+        <Card className="border-brand-olive-light/20 hover:border-brand-olive-light/40 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Coaches</CardTitle>
-            <Users className="h-4 w-4 text-brand-sorbet" />
+            <CardTitle className="text-sm font-medium text-high-contrast">Active Coaches</CardTitle>
+            <Users className="h-4 w-4 text-brand-olive-light" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-brand-sorbet">{coaches.length}</div>
+            <div className="text-2xl font-bold text-brand-olive-light">{coaches.length}</div>
           </CardContent>
         </Card>
-        <Card className="border-brand-lime/20">
+        <Card className="border-brand-olive-medium/20 hover:border-brand-olive-medium/40 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Current Period</CardTitle>
-            <BarChart3 className="h-4 w-4 text-brand-lime" />
+            <CardTitle className="text-sm font-medium text-high-contrast">Current Period</CardTitle>
+            <BarChart3 className="h-4 w-4 text-brand-olive-medium" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-brand-lime">{selectedPeriod?.period_name || "None"}</div>
+            <div className="text-2xl font-bold text-brand-olive-medium">{selectedPeriod?.period_name || "None"}</div>
           </CardContent>
         </Card>
-        <Card className="border-brand-deep-teal/20">
+        <Card className="border-brand-olive-soft/20 hover:border-brand-olive-soft/40 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Date Range</CardTitle>
-            <Calendar className="h-4 w-4 text-brand-deep-teal" />
+            <CardTitle className="text-sm font-medium text-high-contrast">Date Range</CardTitle>
+            <Calendar className="h-4 w-4 text-brand-olive-soft" />
           </CardHeader>
           <CardContent>
-            <div className="text-sm text-brand-deep-teal font-medium">
+            <div className="text-sm text-brand-olive-soft font-medium">
               {selectedPeriod ? 
                 `${new Date(selectedPeriod.start_date).toLocaleDateString()} - ${new Date(selectedPeriod.end_date).toLocaleDateString()}` 
                 : "No period selected"
@@ -157,11 +157,11 @@ export function BiWeeklyDashboard() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-5 bg-brand-off-white border border-brand-olive/20">
-          <TabsTrigger value="master" className="data-[state=active]:bg-brand-olive data-[state=active]:text-white">📊 Master View</TabsTrigger>
-          <TabsTrigger value="metrics" className="data-[state=active]:bg-brand-sorbet data-[state=active]:text-white">✏️ Quick Entry</TabsTrigger>
-          <TabsTrigger value="periods" className="data-[state=active]:bg-brand-lime data-[state=active]:text-brand-off-black">📅 Periods</TabsTrigger>
-          <TabsTrigger value="coaches" className="data-[state=active]:bg-brand-deep-teal data-[state=active]:text-white">👥 Coaches</TabsTrigger>
-          <TabsTrigger value="dashboard" className="data-[state=active]:bg-brand-street data-[state=active]:text-white">📈 Analytics</TabsTrigger>
+          <TabsTrigger value="master" className="data-[state=active]:bg-brand-olive data-[state=active]:text-white text-medium-contrast">📊 Master View</TabsTrigger>
+          <TabsTrigger value="metrics" className="data-[state=active]:bg-brand-olive-light data-[state=active]:text-white text-medium-contrast">✏️ Quick Entry</TabsTrigger>
+          <TabsTrigger value="periods" className="data-[state=active]:bg-brand-olive-medium data-[state=active]:text-white text-medium-contrast">📅 Periods</TabsTrigger>
+          <TabsTrigger value="coaches" className="data-[state=active]:bg-brand-olive-soft data-[state=active]:text-white text-medium-contrast">👥 Coaches</TabsTrigger>
+          <TabsTrigger value="dashboard" className="data-[state=active]:bg-brand-olive-pale data-[state=active]:text-white text-medium-contrast">📈 Analytics</TabsTrigger>
         </TabsList>
 
         <TabsContent value="master" className="space-y-4">

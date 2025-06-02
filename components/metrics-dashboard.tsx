@@ -55,13 +55,14 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
     fetchMetrics();
   }, [periods, fetchMetrics]);
 
-  // Brand colors for charts
+  // Brand colors for charts - Consistent Olive Variations
   const brandColors = {
-    olive: "#2C5134",
-    sorbet: "#FF6B35", 
-    lime: "#A4D65E",
-    deepTeal: "#2E8B8B",
-    street: "#8B8B8B"
+    olive: "#2C5134",        // Primary olive
+    oliveLight: "#3D6B47",   // Lighter olive
+    oliveMedium: "#4E855A",  // Medium olive
+    oliveSoft: "#5F9F6D",    // Soft olive
+    olivePale: "#70B980",    // Pale olive
+    sorbet: "#FF6B35"        // Keep sorbet for accent only
   };
 
   const calculateOverallStats = () => {
@@ -137,13 +138,13 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
         name: "Forensic Audits", 
         value: monthlyPeriods > 0 ? Math.min((stats.totalAudits / (monthlyAuditGoal * monthlyPeriods)) * 100, 100) : 0,
         goal: 100,
-        fill: brandColors.sorbet
+        fill: brandColors.oliveLight
       },
       {
         name: "Warehouse Audits",
         value: monthlyPeriods > 0 ? Math.min((stats.totalWarehouseAudits / (monthlyWarehouseGoal * monthlyPeriods)) * 100, 100) : 0,
         goal: 100,
-        fill: brandColors.lime
+        fill: brandColors.oliveMedium
       }
     ];
   };
@@ -172,10 +173,10 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
     const nearMiss = metrics.reduce((sum, m) => sum + (m.open_investigations_near_miss || 0), 0);
 
     return [
-      { name: "Injuries", value: injuries, fill: brandColors.sorbet },
-      { name: "Auto", value: auto, fill: brandColors.olive },
-      { name: "Property Damage", value: property, fill: brandColors.lime },
-      { name: "Near Miss", value: nearMiss, fill: brandColors.deepTeal }
+      { name: "Injuries", value: injuries, fill: brandColors.olive },
+      { name: "Auto", value: auto, fill: brandColors.oliveLight },
+      { name: "Property Damage", value: property, fill: brandColors.oliveMedium },
+      { name: "Near Miss", value: nearMiss, fill: brandColors.oliveSoft }
     ];
   };
 
@@ -198,56 +199,56 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-brand-olive">📈 Analytics Dashboard</h2>
-          <p className="text-muted-foreground">Comprehensive safety metrics visualization and performance tracking</p>
+          <p className="text-medium-contrast">Comprehensive safety metrics visualization and performance tracking</p>
         </div>
       </div>
 
       {/* Overall Statistics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-brand-olive/20">
+        <Card className="border-brand-olive/20 hover:border-brand-olive/40 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Evaluations</CardTitle>
+            <CardTitle className="text-sm font-medium text-high-contrast">Total Evaluations</CardTitle>
             <Target className="h-4 w-4 text-brand-olive" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-brand-olive">{overallStats.totalEvaluations}</div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-medium-contrast">
               Avg: {overallStats.avgEvaluationsPerPeriod} per period
             </p>
           </CardContent>
         </Card>
-        <Card className="border-brand-sorbet/20">
+        <Card className="border-brand-olive-light/20 hover:border-brand-olive-light/40 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Audits</CardTitle>
-            <BarChart3 className="h-4 w-4 text-brand-sorbet" />
+            <CardTitle className="text-sm font-medium text-high-contrast">Total Audits</CardTitle>
+            <BarChart3 className="h-4 w-4 text-brand-olive-light" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-brand-sorbet">{overallStats.totalAudits}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-brand-olive-light">{overallStats.totalAudits}</div>
+            <p className="text-xs text-medium-contrast">
               Avg: {overallStats.avgAuditsPerPeriod} per period
             </p>
           </CardContent>
         </Card>
-        <Card className="border-brand-lime/20">
+        <Card className="border-brand-olive-medium/20 hover:border-brand-olive-medium/40 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Warehouse Audits</CardTitle>
-            <Target className="h-4 w-4 text-brand-lime" />
+            <CardTitle className="text-sm font-medium text-high-contrast">Warehouse Audits</CardTitle>
+            <Target className="h-4 w-4 text-brand-olive-medium" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-brand-lime">{overallStats.totalWarehouseAudits}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-brand-olive-medium">{overallStats.totalWarehouseAudits}</div>
+            <p className="text-xs text-medium-contrast">
               Goal: 2 per month
             </p>
           </CardContent>
         </Card>
-        <Card className="border-brand-deep-teal/20">
+        <Card className="border-brand-olive-soft/20 hover:border-brand-olive-soft/40 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Open Investigations</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-brand-deep-teal" />
+            <CardTitle className="text-sm font-medium text-high-contrast">Open Investigations</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-brand-olive-soft" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-brand-deep-teal">{overallStats.totalInvestigations}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-brand-olive-soft">{overallStats.totalInvestigations}</div>
+            <p className="text-xs text-medium-contrast">
               All types combined
             </p>
           </CardContent>
@@ -260,7 +261,7 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
         <Card>
           <CardHeader>
             <CardTitle className="text-brand-olive">🎯 Goal Progress</CardTitle>
-            <CardDescription>Monthly safety goals achievement</CardDescription>
+            <CardDescription className="text-medium-contrast">Monthly safety goals achievement</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -288,8 +289,8 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
         {/* Investigation Breakdown */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-brand-deep-teal">🔍 Investigation Types</CardTitle>
-            <CardDescription>Breakdown of open investigations</CardDescription>
+            <CardTitle className="text-brand-olive">🔍 Investigation Types</CardTitle>
+            <CardDescription className="text-medium-contrast">Breakdown of open investigations</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -325,7 +326,7 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-brand-olive">📊 Performance Trends</CardTitle>
-          <CardDescription>Safety metrics over the last 6 bi-weekly periods</CardDescription>
+          <CardDescription className="text-medium-contrast">Safety metrics over the last 6 bi-weekly periods</CardDescription>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={400}>
@@ -363,26 +364,26 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
               <Line 
                 type="monotone" 
                 dataKey="audits" 
-                stroke={brandColors.sorbet} 
+                stroke={brandColors.oliveLight} 
                 strokeWidth={3}
                 name="Forensic Audits"
-                dot={{ fill: brandColors.sorbet, strokeWidth: 2, r: 4 }}
+                dot={{ fill: brandColors.oliveLight, strokeWidth: 2, r: 4 }}
               />
               <Line 
                 type="monotone" 
                 dataKey="warehouse" 
-                stroke={brandColors.lime} 
+                stroke={brandColors.oliveMedium} 
                 strokeWidth={3}
                 name="Warehouse Audits"
-                dot={{ fill: brandColors.lime, strokeWidth: 2, r: 4 }}
+                dot={{ fill: brandColors.oliveMedium, strokeWidth: 2, r: 4 }}
               />
               <Line 
                 type="monotone" 
                 dataKey="investigations" 
-                stroke={brandColors.deepTeal} 
+                stroke={brandColors.oliveSoft} 
                 strokeWidth={3}
                 name="Investigations"
-                dot={{ fill: brandColors.deepTeal, strokeWidth: 2, r: 4 }}
+                dot={{ fill: brandColors.oliveSoft, strokeWidth: 2, r: 4 }}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -393,7 +394,7 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-brand-olive">👥 Coach Performance Comparison</CardTitle>
-          <CardDescription>Total metrics across all periods by coach</CardDescription>
+          <CardDescription className="text-medium-contrast">Total metrics across all periods by coach</CardDescription>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={400}>
@@ -424,9 +425,9 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
                 wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
               />
               <Bar dataKey="evaluations" fill={brandColors.olive} name="Site Evaluations" />
-              <Bar dataKey="audits" fill={brandColors.sorbet} name="Forensic Audits" />
-              <Bar dataKey="warehouse" fill={brandColors.lime} name="Warehouse Audits" />
-              <Bar dataKey="investigations" fill={brandColors.deepTeal} name="Investigations" />
+              <Bar dataKey="audits" fill={brandColors.oliveLight} name="Forensic Audits" />
+              <Bar dataKey="warehouse" fill={brandColors.oliveMedium} name="Warehouse Audits" />
+              <Bar dataKey="investigations" fill={brandColors.oliveSoft} name="Investigations" />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
@@ -436,7 +437,7 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-brand-olive">🔍 Individual Coach Analysis</CardTitle>
-          <CardDescription>Select a coach to view their detailed performance trends</CardDescription>
+          <CardDescription className="text-medium-contrast">Select a coach to view their detailed performance trends</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs value={selectedCoach?.id || "overview"} onValueChange={(value) => {
@@ -512,26 +513,26 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
                       <Line 
                         type="monotone" 
                         dataKey="audits" 
-                        stroke={brandColors.sorbet} 
+                        stroke={brandColors.oliveLight} 
                         strokeWidth={3}
                         name="Forensic Audits"
-                        dot={{ fill: brandColors.sorbet, strokeWidth: 2, r: 5 }}
+                        dot={{ fill: brandColors.oliveLight, strokeWidth: 2, r: 5 }}
                       />
                       <Line 
                         type="monotone" 
                         dataKey="warehouse" 
-                        stroke={brandColors.lime} 
+                        stroke={brandColors.oliveMedium} 
                         strokeWidth={3}
                         name="Warehouse Audits"
-                        dot={{ fill: brandColors.lime, strokeWidth: 2, r: 5 }}
+                        dot={{ fill: brandColors.oliveMedium, strokeWidth: 2, r: 5 }}
                       />
                       <Line 
                         type="monotone" 
                         dataKey="investigations" 
-                        stroke={brandColors.deepTeal} 
+                        stroke={brandColors.oliveSoft} 
                         strokeWidth={3}
                         name="Investigations"
-                        dot={{ fill: brandColors.deepTeal, strokeWidth: 2, r: 5 }}
+                        dot={{ fill: brandColors.oliveSoft, strokeWidth: 2, r: 5 }}
                       />
                     </LineChart>
                   </ResponsiveContainer>

@@ -4,31 +4,31 @@
 
 @layer base {
   :root {
-    /* Freedom Forever Brand Colors - Olive Primary Hierarchy */
-    --background: 0 0% 96%; /* Off-white */
-    --foreground: 0 0% 12%; /* Off-black */
+    /* Freedom Forever Brand Colors - Improved Contrast & Consistency */
+    --background: 0 0% 98%; /* Slightly whiter background */
+    --foreground: 0 0% 8%; /* Much darker text for better contrast */
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 12%;
+    --card-foreground: 0 0% 8%; /* Darker card text */
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 12%;
+    --popover-foreground: 0 0% 8%;
     --primary: 120 30% 25%; /* Olive - Primary brand color */
-    --primary-foreground: 0 0% 96%;
-    --secondary: 14 100% 60%; /* Sorbet - Secondary accent */
-    --secondary-foreground: 0 0% 96%;
-    --muted: 0 0% 55%; /* Street */
-    --muted-foreground: 0 0% 96%;
-    --accent: 73 55% 61%; /* Lime */
-    --accent-foreground: 0 0% 12%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 120 25% 35%; /* Lighter olive variation */
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 45%; /* Darker muted for better contrast */
+    --muted-foreground: 0 0% 15%; /* Much darker muted text */
+    --accent: 120 20% 45%; /* Olive-tinted accent */
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
     --ring: 120 30% 25%; /* Olive */
-    --chart-1: 120 30% 25%; /* Olive - Primary */
-    --chart-2: 14 100% 60%; /* Sorbet - Secondary */
-    --chart-3: 73 55% 61%; /* Lime */
-    --chart-4: 180 51% 36%; /* Deep Teal */
-    --chart-5: 0 0% 55%; /* Street */
+    --chart-1: 120 30% 25%; /* Primary Olive */
+    --chart-2: 120 25% 35%; /* Lighter Olive */
+    --chart-3: 120 20% 45%; /* Medium Olive */
+    --chart-4: 120 15% 55%; /* Light Olive */
+    --chart-5: 120 10% 65%; /* Very Light Olive */
     --radius: 0.5rem;
   }
   .dark {
@@ -40,22 +40,22 @@
     --popover-foreground: 0 0% 96%;
     --primary: 120 30% 25%; /* Olive - Primary brand color */
     --primary-foreground: 0 0% 96%;
-    --secondary: 14 100% 60%; /* Sorbet - Secondary accent */
+    --secondary: 120 25% 35%; /* Lighter olive variation */
     --secondary-foreground: 0 0% 96%;
     --muted: 0 0% 25%;
     --muted-foreground: 0 0% 65%;
-    --accent: 73 55% 61%; /* Lime */
+    --accent: 120 20% 45%; /* Olive-tinted accent */
     --accent-foreground: 0 0% 12%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 25%;
     --input: 0 0% 25%;
     --ring: 120 30% 25%; /* Olive */
-    --chart-1: 120 30% 25%; /* Olive - Primary */
-    --chart-2: 14 100% 60%; /* Sorbet - Secondary */
-    --chart-3: 73 55% 61%; /* Lime */
-    --chart-4: 180 51% 36%; /* Deep Teal */
-    --chart-5: 0 0% 55%; /* Street */
+    --chart-1: 120 30% 25%; /* Primary Olive */
+    --chart-2: 120 25% 35%; /* Lighter Olive */
+    --chart-3: 120 20% 45%; /* Medium Olive */
+    --chart-4: 120 15% 55%; /* Light Olive */
+    --chart-5: 120 10% 65%; /* Very Light Olive */
   }
 }
 
@@ -68,7 +68,7 @@
   }
 }
 
-/* Freedom Forever Brand Utilities */
+/* Freedom Forever Brand Utilities - Consistent Olive Variations */
 @layer utilities {
   .text-brand-olive {
     color: #2C5134;
@@ -76,28 +76,44 @@
   .bg-brand-olive {
     background-color: #2C5134;
   }
+  .text-brand-olive-light {
+    color: #3D6B47;
+  }
+  .bg-brand-olive-light {
+    background-color: #3D6B47;
+  }
+  .text-brand-olive-medium {
+    color: #4E855A;
+  }
+  .bg-brand-olive-medium {
+    background-color: #4E855A;
+  }
+  .text-brand-olive-soft {
+    color: #5F9F6D;
+  }
+  .bg-brand-olive-soft {
+    background-color: #5F9F6D;
+  }
+  .text-brand-olive-pale {
+    color: #70B980;
+  }
+  .bg-brand-olive-pale {
+    background-color: #70B980;
+  }
+  
+  /* Keep original sorbet for accent use only */
   .text-brand-sorbet {
     color: #FF6B35;
   }
   .bg-brand-sorbet {
     background-color: #FF6B35;
   }
-  .text-brand-lime {
-    color: #A4D65E;
+  
+  /* Improved contrast utilities */
+  .text-high-contrast {
+    color: #1a1a1a;
   }
-  .bg-brand-lime {
-    background-color: #A4D65E;
-  }
-  .text-brand-deep-teal {
-    color: #2E8B8B;
-  }
-  .bg-brand-deep-teal {
-    background-color: #2E8B8B;
-  }
-  .text-brand-street {
-    color: #8B8B8B;
-  }
-  .bg-brand-street {
-    background-color: #8B8B8B;
+  .text-medium-contrast {
+    color: #404040;
   }
 }
