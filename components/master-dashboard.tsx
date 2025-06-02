@@ -330,15 +330,15 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="h-6 w-6 text-brand-sorbet" />
-            <span className="text-brand-sorbet">Master Dashboard</span>
+            <Sparkles className="h-6 w-6 text-brand-olive" />
+            <span className="text-brand-olive">Master Dashboard</span>
           </h2>
           <p className="text-muted-foreground">
             Excel-style interface - Click any cell to edit data directly
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="gap-1 border-brand-sorbet/30 text-brand-sorbet">
+          <Badge variant="outline" className="gap-1 border-brand-olive/30 text-brand-olive">
             <Edit3 className="h-3 w-3" />
             Click to edit
           </Badge>
@@ -353,13 +353,13 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
           setSelectedCoach(coach || null);
         }
       }}>
-        <TabsList className="grid w-full grid-cols-8 bg-brand-off-white border border-brand-teal/20">
-          <TabsTrigger value="all" className="data-[state=active]:bg-brand-teal data-[state=active]:text-white">All Coaches</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-8 bg-brand-off-white border border-brand-olive/20">
+          <TabsTrigger value="all" className="data-[state=active]:bg-brand-olive data-[state=active]:text-white">All Coaches</TabsTrigger>
           {coaches.map((coach) => (
             <TabsTrigger 
               key={coach.id} 
               value={coach.id} 
-              className="text-xs data-[state=active]:bg-brand-lime data-[state=active]:text-brand-off-black"
+              className="text-xs data-[state=active]:bg-brand-sorbet data-[state=active]:text-white"
             >
               {coach.name}
             </TabsTrigger>

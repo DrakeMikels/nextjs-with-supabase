@@ -4,57 +4,57 @@
 
 @layer base {
   :root {
-    /* Freedom Forever Brand Colors */
-    --background: 0 0% 97%; /* Off-white */
-    --foreground: 0 0% 17%; /* Off-black */
+    /* Freedom Forever Brand Colors - Olive Primary Hierarchy */
+    --background: 0 0% 96%; /* Off-white */
+    --foreground: 0 0% 12%; /* Off-black */
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 17%;
+    --card-foreground: 0 0% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 17%;
-    --primary: 14 100% 60%; /* Sorbet */
-    --primary-foreground: 0 0% 97%;
-    --secondary: 180 51% 36%; /* Deep Teal */
-    --secondary-foreground: 0 0% 97%;
+    --popover-foreground: 0 0% 12%;
+    --primary: 120 30% 25%; /* Olive - Primary brand color */
+    --primary-foreground: 0 0% 96%;
+    --secondary: 14 100% 60%; /* Sorbet - Secondary accent */
+    --secondary-foreground: 0 0% 96%;
     --muted: 0 0% 55%; /* Street */
-    --muted-foreground: 0 0% 97%;
+    --muted-foreground: 0 0% 96%;
     --accent: 73 55% 61%; /* Lime */
-    --accent-foreground: 0 0% 17%;
+    --accent-foreground: 0 0% 12%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
-    --ring: 14 100% 60%; /* Sorbet */
-    --chart-1: 14 100% 60%; /* Sorbet */
-    --chart-2: 180 51% 36%; /* Deep Teal */
+    --ring: 120 30% 25%; /* Olive */
+    --chart-1: 120 30% 25%; /* Olive - Primary */
+    --chart-2: 14 100% 60%; /* Sorbet - Secondary */
     --chart-3: 73 55% 61%; /* Lime */
-    --chart-4: 120 25% 56%; /* Olive */
+    --chart-4: 180 51% 36%; /* Deep Teal */
     --chart-5: 0 0% 55%; /* Street */
     --radius: 0.5rem;
   }
   .dark {
-    --background: 0 0% 17%; /* Off-black */
-    --foreground: 0 0% 97%; /* Off-white */
-    --card: 0 0% 20%;
-    --card-foreground: 0 0% 97%;
-    --popover: 0 0% 20%;
-    --popover-foreground: 0 0% 97%;
-    --primary: 14 100% 60%; /* Sorbet */
-    --primary-foreground: 0 0% 97%;
-    --secondary: 180 51% 36%; /* Deep Teal */
-    --secondary-foreground: 0 0% 97%;
+    --background: 0 0% 12%; /* Off-black */
+    --foreground: 0 0% 96%; /* Off-white */
+    --card: 0 0% 15%;
+    --card-foreground: 0 0% 96%;
+    --popover: 0 0% 15%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 120 30% 25%; /* Olive - Primary brand color */
+    --primary-foreground: 0 0% 96%;
+    --secondary: 14 100% 60%; /* Sorbet - Secondary accent */
+    --secondary-foreground: 0 0% 96%;
     --muted: 0 0% 25%;
     --muted-foreground: 0 0% 65%;
     --accent: 73 55% 61%; /* Lime */
-    --accent-foreground: 0 0% 17%;
+    --accent-foreground: 0 0% 12%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 25%;
     --input: 0 0% 25%;
-    --ring: 14 100% 60%; /* Sorbet */
-    --chart-1: 14 100% 60%; /* Sorbet */
-    --chart-2: 180 51% 36%; /* Deep Teal */
+    --ring: 120 30% 25%; /* Olive */
+    --chart-1: 120 30% 25%; /* Olive - Primary */
+    --chart-2: 14 100% 60%; /* Sorbet - Secondary */
     --chart-3: 73 55% 61%; /* Lime */
-    --chart-4: 120 25% 56%; /* Olive */
+    --chart-4: 180 51% 36%; /* Deep Teal */
     --chart-5: 0 0% 55%; /* Street */
   }
 }
@@ -70,6 +70,12 @@
 
 /* Freedom Forever Brand Utilities */
 @layer utilities {
+  .text-brand-olive {
+    color: #2C5134;
+  }
+  .bg-brand-olive {
+    background-color: #2C5134;
+  }
   .text-brand-sorbet {
     color: #FF6B35;
   }
@@ -82,10 +88,16 @@
   .bg-brand-lime {
     background-color: #A4D65E;
   }
-  .text-brand-teal {
+  .text-brand-deep-teal {
     color: #2E8B8B;
   }
-  .bg-brand-teal {
+  .bg-brand-deep-teal {
     background-color: #2E8B8B;
+  }
+  .text-brand-street {
+    color: #8B8B8B;
+  }
+  .bg-brand-street {
+    background-color: #8B8B8B;
   }
 }
