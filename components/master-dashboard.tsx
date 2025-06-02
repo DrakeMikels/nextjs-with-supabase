@@ -1,0 +1,434 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Edit3, Eye, EyeOff } from "lucide-react";
+
+interface BiWeeklyPeriod {
+  id: string;
+  start_date: string;
+  end_date: string;
+  period_name: string;
+  created_at: string;
+}
+
+interface Coach {
+  id: string;
+  name: string;
+  date_of_hire: string | null;
+  vacation_days_remaining: number;
+  vacation_days_total: number;
+}
+
+interface SafetyMetric {
+  id?: string;
+  period_id: string;
+  coach_id: string;
+  travel_plans: string;
+  training_branch_location: string;
+  site_safety_evaluations: number;
+  forensic_survey_audits: number;
+  warehouse_safety_audits: number;
+  open_investigations_injuries: number;
+  open_investigations_auto: number;
+  open_investigations_property_damage: number;
+  open_investigations_near_miss: number;
+  do_hr_partnership_meeting: string;
+  bm_pm_whs_partnership_meeting: string;
+  lms_reports_date: string;
+  tbt_attendance_reports_date: string;
+  notes: string;
+}
+
+interface MasterDashboardProps {
+  periods: BiWeeklyPeriod[];
+  coaches: Coach[];
+  onDataChange: () => void;
+}
+
+export function MasterDashboard({ periods, coaches, onDataChange }: MasterDashboardProps) {
+  const [metrics, setMetrics] = useState<SafetyMetric[]>([]);
+  const [editingCell, setEditingCell] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
+  const [showAllColumns, setShowAllColumns] = useState(false);
+  const supabase = createClient();
+
+  const fetchMetrics = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from("safety_metrics")
+        .select("*");
+
+      if (error) throw error;
+      setMetrics(data || []);
+    } catch (error) {
+      console.error("Error fetching metrics:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [supabase]);
+
+  useEffect(() => {
+    fetchMetrics();
+  }, [fetchMetrics]);
+
+  const getMetricForCoachAndPeriod = (coachId: string, periodId: string): SafetyMetric | null => {
+    return metrics.find(m => m.coach_id === coachId && m.period_id === periodId) || null;
+  };
+
+  const updateMetric = async (coachId: string, periodId: string, field: keyof SafetyMetric, value: string | number) => {
+    try {
+      const existingMetric = getMetricForCoachAndPeriod(coachId, periodId);
+      
+      const metricData = {
+        period_id: periodId,
+        coach_id: coachId,
+        travel_plans: existingMetric?.travel_plans || "",
+        training_branch_location: existingMetric?.training_branch_location || "",
+        site_safety_evaluations: existingMetric?.site_safety_evaluations || 0,
+        forensic_survey_audits: existingMetric?.forensic_survey_audits || 0,
+        warehouse_safety_audits: existingMetric?.warehouse_safety_audits || 0,
+        open_investigations_injuries: existingMetric?.open_investigations_injuries || 0,
+        open_investigations_auto: existingMetric?.open_investigations_auto || 0,
+        open_investigations_property_damage: existingMetric?.open_investigations_property_damage || 0,
+        open_investigations_near_miss: existingMetric?.open_investigations_near_miss || 0,
+        do_hr_partnership_meeting: existingMetric?.do_hr_partnership_meeting || "",
+        bm_pm_whs_partnership_meeting: existingMetric?.bm_pm_whs_partnership_meeting || "",
+        lms_reports_date: existingMetric?.lms_reports_date || "",
+        tbt_attendance_reports_date: existingMetric?.tbt_attendance_reports_date || "",
+        notes: existingMetric?.notes || "",
+        [field]: value
+      };
+
+      const { error } = await supabase
+        .from("safety_metrics")
+        .upsert(metricData, {
+          onConflict: "period_id,coach_id"
+        });
+
+      if (error) throw error;
+
+      await fetchMetrics();
+      onDataChange();
+    } catch (error) {
+      console.error("Error updating metric:", error);
+    }
+  };
+
+  const EditableCell = ({ 
+    value, 
+    coachId, 
+    periodId, 
+    field, 
+    type = "text" 
+  }: { 
+    value: string | number; 
+    coachId: string; 
+    periodId: string; 
+    field: keyof SafetyMetric; 
+    type?: string;
+  }) => {
+    const cellId = `${coachId}-${periodId}-${field}`;
+    const isEditing = editingCell === cellId;
+
+    if (isEditing) {
+      return (
+        <Input
+          type={type}
+          value={value}
+          onChange={(e) => {
+            const newValue = type === "number" ? parseInt(e.target.value) || 0 : e.target.value;
+            updateMetric(coachId, periodId, field, newValue);
+          }}
+          onBlur={() => setEditingCell(null)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") setEditingCell(null);
+          }}
+          className="h-8 text-xs"
+          autoFocus
+        />
+      );
+    }
+
+    return (
+      <div
+        className="min-h-[32px] p-1 cursor-pointer hover:bg-muted/50 rounded text-xs flex items-center"
+        onClick={() => setEditingCell(cellId)}
+      >
+        {value || "-"}
+      </div>
+    );
+  };
+
+  const CoachView = ({ coach }: { coach: Coach }) => (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-semibold">{coach.name}</h3>
+          <p className="text-sm text-muted-foreground">
+            Vacation: {coach.vacation_days_remaining}/{coach.vacation_days_total} days
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowAllColumns(!showAllColumns)}
+          className="gap-2"
+        >
+          {showAllColumns ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          {showAllColumns ? "Hide Details" : "Show All"}
+        </Button>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse border border-border">
+          <thead>
+            <tr className="bg-muted/50">
+              <th className="border border-border p-2 text-left text-xs font-medium">Period</th>
+              <th className="border border-border p-2 text-left text-xs font-medium">Travel Plans</th>
+              <th className="border border-border p-2 text-left text-xs font-medium">Training Branch</th>
+              <th className="border border-border p-2 text-left text-xs font-medium">Site Evals</th>
+              <th className="border border-border p-2 text-left text-xs font-medium">Audits</th>
+              <th className="border border-border p-2 text-left text-xs font-medium">Warehouse</th>
+              {showAllColumns && (
+                <>
+                  <th className="border border-border p-2 text-left text-xs font-medium">Injuries</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium">Auto</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium">Property</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium">Near Miss</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium">DO/HR Meeting</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium">BM/PM Meeting</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium">LMS Reports</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium">TBT Reports</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium">Notes</th>
+                </>
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {periods.map((period) => {
+              const metric = getMetricForCoachAndPeriod(coach.id, period.id);
+              return (
+                <tr key={period.id} className="hover:bg-muted/25">
+                  <td className="border border-border p-2">
+                    <div className="text-xs font-medium">{period.period_name}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {new Date(period.start_date).toLocaleDateString()}
+                    </div>
+                  </td>
+                  <td className="border border-border p-1">
+                    <EditableCell
+                      value={metric?.travel_plans || ""}
+                      coachId={coach.id}
+                      periodId={period.id}
+                      field="travel_plans"
+                    />
+                  </td>
+                  <td className="border border-border p-1">
+                    <EditableCell
+                      value={metric?.training_branch_location || ""}
+                      coachId={coach.id}
+                      periodId={period.id}
+                      field="training_branch_location"
+                    />
+                  </td>
+                  <td className="border border-border p-1">
+                    <EditableCell
+                      value={metric?.site_safety_evaluations || 0}
+                      coachId={coach.id}
+                      periodId={period.id}
+                      field="site_safety_evaluations"
+                      type="number"
+                    />
+                  </td>
+                  <td className="border border-border p-1">
+                    <EditableCell
+                      value={metric?.forensic_survey_audits || 0}
+                      coachId={coach.id}
+                      periodId={period.id}
+                      field="forensic_survey_audits"
+                      type="number"
+                    />
+                  </td>
+                  <td className="border border-border p-1">
+                    <EditableCell
+                      value={metric?.warehouse_safety_audits || 0}
+                      coachId={coach.id}
+                      periodId={period.id}
+                      field="warehouse_safety_audits"
+                      type="number"
+                    />
+                  </td>
+                  {showAllColumns && (
+                    <>
+                      <td className="border border-border p-1">
+                        <EditableCell
+                          value={metric?.open_investigations_injuries || 0}
+                          coachId={coach.id}
+                          periodId={period.id}
+                          field="open_investigations_injuries"
+                          type="number"
+                        />
+                      </td>
+                      <td className="border border-border p-1">
+                        <EditableCell
+                          value={metric?.open_investigations_auto || 0}
+                          coachId={coach.id}
+                          periodId={period.id}
+                          field="open_investigations_auto"
+                          type="number"
+                        />
+                      </td>
+                      <td className="border border-border p-1">
+                        <EditableCell
+                          value={metric?.open_investigations_property_damage || 0}
+                          coachId={coach.id}
+                          periodId={period.id}
+                          field="open_investigations_property_damage"
+                          type="number"
+                        />
+                      </td>
+                      <td className="border border-border p-1">
+                        <EditableCell
+                          value={metric?.open_investigations_near_miss || 0}
+                          coachId={coach.id}
+                          periodId={period.id}
+                          field="open_investigations_near_miss"
+                          type="number"
+                        />
+                      </td>
+                      <td className="border border-border p-1">
+                        <EditableCell
+                          value={metric?.do_hr_partnership_meeting || ""}
+                          coachId={coach.id}
+                          periodId={period.id}
+                          field="do_hr_partnership_meeting"
+                          type="date"
+                        />
+                      </td>
+                      <td className="border border-border p-1">
+                        <EditableCell
+                          value={metric?.bm_pm_whs_partnership_meeting || ""}
+                          coachId={coach.id}
+                          periodId={period.id}
+                          field="bm_pm_whs_partnership_meeting"
+                          type="date"
+                        />
+                      </td>
+                      <td className="border border-border p-1">
+                        <EditableCell
+                          value={metric?.lms_reports_date || ""}
+                          coachId={coach.id}
+                          periodId={period.id}
+                          field="lms_reports_date"
+                          type="date"
+                        />
+                      </td>
+                      <td className="border border-border p-1">
+                        <EditableCell
+                          value={metric?.tbt_attendance_reports_date || ""}
+                          coachId={coach.id}
+                          periodId={period.id}
+                          field="tbt_attendance_reports_date"
+                          type="date"
+                        />
+                      </td>
+                      <td className="border border-border p-1 max-w-[200px]">
+                        <EditableCell
+                          value={metric?.notes || ""}
+                          coachId={coach.id}
+                          periodId={period.id}
+                          field="notes"
+                        />
+                      </td>
+                    </>
+                  )}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="text-lg">Loading master dashboard...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold">📊 Master Dashboard</h2>
+          <p className="text-muted-foreground">
+            View and edit all coach data across all periods - Excel-style interface
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="gap-1">
+            <Edit3 className="h-3 w-3" />
+            Click any cell to edit
+          </Badge>
+        </div>
+      </div>
+
+      <Tabs value={selectedCoach?.id || "all"} onValueChange={(value) => {
+        if (value === "all") {
+          setSelectedCoach(null);
+        } else {
+          const coach = coaches.find(c => c.id === value);
+          setSelectedCoach(coach || null);
+        }
+      }}>
+        <TabsList className="grid w-full grid-cols-8">
+          <TabsTrigger value="all">All Coaches</TabsTrigger>
+          {coaches.map((coach) => (
+            <TabsTrigger key={coach.id} value={coach.id} className="text-xs">
+              {coach.name}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        <TabsContent value="all" className="space-y-6">
+          {coaches.map((coach) => (
+            <Card key={coach.id}>
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg">{coach.name}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CoachView coach={coach} />
+              </CardContent>
+            </Card>
+          ))}
+        </TabsContent>
+
+        {coaches.map((coach) => (
+          <TabsContent key={coach.id} value={coach.id}>
+            <Card>
+              <CardHeader>
+                <CardTitle>{coach.name} - Detailed View</CardTitle>
+                <CardDescription>
+                  Complete data view for {coach.name} across all periods
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <CoachView coach={coach} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        ))}
+      </Tabs>
+    </div>
+  );
+} 

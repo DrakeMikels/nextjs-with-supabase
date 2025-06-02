@@ -195,10 +195,10 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
       </div>
 
       {/* Coach Selection */}
-      <Card>
+      <Card className="border-2 border-primary/20">
         <CardHeader>
-          <CardTitle>Select Coach</CardTitle>
-          <CardDescription>Choose a coach to enter or edit their safety metrics</CardDescription>
+          <CardTitle className="text-xl">👤 Step 1: Select Your Coach Profile</CardTitle>
+          <CardDescription>Choose your name to enter or edit your safety metrics for this period</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
@@ -212,27 +212,33 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
                 <User className="h-4 w-4" />
                 <div className="text-left">
                   <div className="font-medium">{coach.name}</div>
-                  <div className="text-xs opacity-70">
+                  <div className="text-xs opacity-70 flex items-center gap-2">
                     {coach.vacation_days_remaining}/{coach.vacation_days_total} vacation days
-                    {hasMetrics(coach.id) && <Badge variant="secondary" className="ml-2">Has Data</Badge>}
+                    {hasMetrics(coach.id) && <Badge variant="secondary" className="text-xs">✓ Has Data</Badge>}
                   </div>
                 </div>
               </Button>
             ))}
           </div>
+          {!selectedCoach && (
+            <div className="mt-4 p-4 bg-muted/50 rounded-lg text-center">
+              <p className="text-sm text-muted-foreground">
+                👆 Please select your name above to begin entering safety metrics
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
       {/* Metrics Form */}
-      {selectedCoach && (
+      {selectedCoach ? (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5" />
-              {selectedCoach.name} - Safety Metrics
+              📊 Step 2: Enter Safety Metrics for {selectedCoach.name}
             </CardTitle>
             <CardDescription>
-              Enter safety metrics for the selected period
+              Fill in your safety metrics for the period: {period.period_name}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -393,6 +399,15 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
               {loading ? "Saving..." : "Save Metrics"}
             </Button>
           </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle>Ready to Enter Metrics</CardTitle>
+            <CardDescription>
+              Select a coach above to begin entering safety metrics for {period.period_name}
+            </CardDescription>
+          </CardHeader>
         </Card>
       )}
     </div>

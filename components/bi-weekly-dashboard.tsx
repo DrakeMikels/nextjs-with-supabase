@@ -10,6 +10,7 @@ import { BiWeeklyPeriodList } from "./bi-weekly-period-list";
 import { SafetyMetricsForm } from "./safety-metrics-form";
 import { CoachManagement } from "./coach-management";
 import { MetricsDashboard } from "./metrics-dashboard";
+import { MasterDashboard } from "./master-dashboard";
 
 interface BiWeeklyPeriod {
   id: string;
@@ -175,6 +176,7 @@ export function BiWeeklyDashboard() {
           <TabsTrigger value="metrics">Safety Metrics</TabsTrigger>
           <TabsTrigger value="coaches">Coach Management</TabsTrigger>
           <TabsTrigger value="dashboard">Analytics</TabsTrigger>
+          <TabsTrigger value="master">Master View</TabsTrigger>
         </TabsList>
 
         <TabsContent value="periods" className="space-y-4">
@@ -217,6 +219,14 @@ export function BiWeeklyDashboard() {
           <MetricsDashboard 
             periods={periods}
             coaches={coaches}
+          />
+        </TabsContent>
+
+        <TabsContent value="master" className="space-y-4">
+          <MasterDashboard 
+            periods={periods}
+            coaches={coaches}
+            onDataChange={fetchData}
           />
         </TabsContent>
       </Tabs>
