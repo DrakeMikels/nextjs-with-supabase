@@ -35,6 +35,7 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
   const supabase = createClient();
 
   const saveCoach = async (coach: Coach) => {
+    console.log("Saving coach:", coach);
     setLoading(true);
     try {
       const { error } = await supabase
@@ -47,15 +48,23 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
         })
         .eq("id", coach.id);
 
-      if (error) throw error;
+      console.log("Save coach response:", { error });
+
+      if (error) {
+        console.error("Supabase error saving coach:", error);
+        alert(`Error saving coach: ${error.message}`);
+        throw error;
+      }
 
       const updatedCoaches = coaches.map(c => 
         c.id === coach.id ? coach : c
       );
       onCoachesChange(updatedCoaches);
       setEditingCoach(null);
+      console.log("Coach saved successfully");
     } catch (error) {
       console.error("Error saving coach:", error);
+      alert(`Failed to save coach: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
@@ -64,6 +73,7 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
   const addCoach = async () => {
     if (!newCoach.name.trim()) return;
 
+    console.log("Adding new coach:", newCoach);
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -77,7 +87,13 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
         .select()
         .single();
 
-      if (error) throw error;
+      console.log("Add coach response:", { data, error });
+
+      if (error) {
+        console.error("Supabase error adding coach:", error);
+        alert(`Error adding coach: ${error.message}`);
+        throw error;
+      }
 
       if (data) {
         onCoachesChange([...coaches, data]);
@@ -88,9 +104,11 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
           vacation_days_total: 2
         });
         setShowAddForm(false);
+        console.log("Coach added successfully:", data);
       }
     } catch (error) {
       console.error("Error adding coach:", error);
+      alert(`Failed to add coach: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
