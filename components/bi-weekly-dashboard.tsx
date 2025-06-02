@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlusCircle, Calendar, Users, BarChart3 } from "lucide-react";
 import { BiWeeklyPeriodList } from "./bi-weekly-period-list";
-import { CoachManagement } from "./coach-management";
 import { SafetyMetricsForm } from "./safety-metrics-form";
+import { CoachManagement } from "./coach-management";
 import { MetricsDashboard } from "./metrics-dashboard";
 
 interface BiWeeklyPeriod {
@@ -34,11 +34,7 @@ export function BiWeeklyDashboard() {
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [periodsResult, coachesResult] = await Promise.all([
         supabase
@@ -66,7 +62,11 @@ export function BiWeeklyDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [supabase, selectedPeriod]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const createNewPeriod = async () => {
     const today = new Date();

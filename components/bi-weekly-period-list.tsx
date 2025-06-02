@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Trash2, Edit } from "lucide-react";
+import { Calendar, Trash2 } from "lucide-react";
 
 interface BiWeeklyPeriod {
   id: string;

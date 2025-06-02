@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, TrendingUp, Users, Calendar, Target, AlertTriangle } from "lucide-react";
+import { BarChart3, Users, Calendar, Target, AlertTriangle } from "lucide-react";
 
 interface BiWeeklyPeriod {
   id: string;
