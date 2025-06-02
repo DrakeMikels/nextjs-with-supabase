@@ -1,105 +1,177 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# Regional Safety Coaches - Bi-Weekly Tracker
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
-
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+A comprehensive web application for tracking and managing Regional Safety Coaches' bi-weekly touch base metrics and performance data.
 
 ## Features
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Middleware
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Password-based authentication block installed via the [Supabase UI Library](https://supabase.com/ui/docs/nextjs/password-based-auth)
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+### 🏠 Dashboard Overview
+- Real-time statistics and KPI tracking
+- Quick access to current period information
+- Overview of active coaches and total periods
 
-## Demo
+### 📊 Bi-Weekly Period Management
+- Create and manage bi-weekly tracking periods
+- Visual period selection with current period highlighting
+- Automatic date range calculation (14-day periods)
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+### 📈 Safety Metrics Tracking
+- **Site Safety Evaluations** (Goal: 12-15 per month)
+- **Forensic/Survey Audits** (Goal: 12-15 per month)
+- **Warehouse Safety Audits** (Goal: 2 per month)
+- **Open Investigations** tracking (Injuries, Auto, Property Damage, Near Miss)
+- **Meeting Dates** (DO/HR Partnership, BM/PM/WHS Partnership)
+- **Report Dates** (LMS Reports, TBT Attendance Reports)
+- Travel plans and training branch locations
+- Notes and additional comments
 
-## Deploy to Vercel
+### 👥 Coach Management
+- Add, edit, and manage safety coach profiles
+- Track hire dates and tenure
+- Vacation day management and visualization
+- Individual coach performance tracking
 
-Vercel deployment will guide you through creating a Supabase account and project.
+### 📊 Analytics Dashboard
+- Goal progress tracking with visual progress bars
+- Individual coach performance summaries
+- Recent trends analysis (last 3 periods)
+- Overall statistics and averages
+- Performance metrics across all periods
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+## Technology Stack
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+- **Frontend**: Next.js 15 with React 19
+- **Backend**: Supabase (PostgreSQL database)
+- **UI Components**: shadcn/ui with Tailwind CSS
+- **Authentication**: Supabase Auth
+- **Icons**: Lucide React
+- **Deployment**: Vercel
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+## Database Schema
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+### Tables
 
-## Clone and run locally
+1. **coaches**
+   - Coach information (name, hire date, vacation days)
+   - Tracks individual coach details and tenure
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+2. **bi_weekly_periods**
+   - Period definitions with start/end dates
+   - Unique period names for easy identification
 
-2. Create a Next.js app using the Supabase Starter template npx command
+3. **safety_metrics**
+   - Core metrics data linked to periods and coaches
+   - All safety KPIs and tracking data
+   - Meeting dates and report submissions
 
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- Supabase account and project
+- Environment variables configured
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
    ```bash
-   npx create-next-app --example with-supabase with-supabase-app
+   npm install
    ```
 
+3. Set up environment variables:
    ```bash
-   yarn create next-app --example with-supabase with-supabase-app
+   # Copy the example env file
+   cp .env.example .env.local
+   
+   # Add your Supabase credentials
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
    ```
 
+4. Run database migrations:
    ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
+   # If using Supabase CLI
+   supabase db push
    ```
 
-3. Use `cd` to change into the app's directory
-
-   ```bash
-   cd with-supabase-app
-   ```
-
-4. Rename `.env.example` to `.env.local` and update the following:
-
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=[INSERT SUPABASE PROJECT API ANON KEY]
-   ```
-
-   Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` can be found in [your Supabase project's API settings](https://supabase.com/dashboard/project/_?showConnect=true)
-
-5. You can now run the Next.js local development server:
-
+5. Start the development server:
    ```bash
    npm run dev
    ```
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+6. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
+## Usage
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+### Creating a New Bi-Weekly Period
 
-## Feedback and issues
+1. Navigate to the dashboard
+2. Click "New Period" button
+3. The system automatically creates a 14-day period starting from today
+4. Period name is auto-generated (e.g., "1-15-25" for January 15, 2025)
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+### Entering Safety Metrics
 
-## More Supabase examples
+1. Go to the "Safety Metrics" tab
+2. Select a bi-weekly period
+3. Choose a coach from the coach selection grid
+4. Fill in the safety metrics form:
+   - Travel plans and training locations
+   - Safety evaluation counts
+   - Audit numbers
+   - Investigation counts by type
+   - Meeting and report dates
+   - Additional notes
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+5. Click "Save Metrics" to store the data
+
+### Managing Coaches
+
+1. Navigate to the "Coach Management" tab
+2. Add new coaches with the "Add Coach" button
+3. Edit existing coach information by clicking the edit icon
+4. Track vacation days and tenure information
+5. Delete coaches if needed (with confirmation)
+
+### Viewing Analytics
+
+1. Go to the "Analytics" tab to see:
+   - Overall performance statistics
+   - Goal progress tracking
+   - Individual coach performance summaries
+   - Recent trends across periods
+
+## Data Migration from Excel
+
+The application was designed to replace the existing Excel-based tracking system. Key features from the original Excel workbook have been preserved:
+
+- All coach information (James, Sam, Mike, Hugh, Joe, Zack, Will)
+- Safety metrics categories and goals
+- Bi-weekly period structure
+- Vacation day tracking
+- Investigation categorization
+
+## Deployment
+
+The application is designed for deployment on Vercel with Supabase as the backend:
+
+1. Connect your GitHub repository to Vercel
+2. Configure environment variables in Vercel dashboard
+3. Deploy automatically on push to main branch
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## Support
+
+For issues or questions about the Regional Safety Coaches Bi-Weekly Tracker, please create an issue in the repository or contact the development team.
+
+## License
+
+This project is proprietary software for internal use by the Regional Safety Coaches team.
