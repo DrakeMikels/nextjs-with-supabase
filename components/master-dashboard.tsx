@@ -71,12 +71,11 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
         [field]: field.includes('date') || field.includes('meeting') ? formatDateValue(value as string) : value
       };
 
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("safety_metrics")
         .upsert(metricData, {
           onConflict: "period_id,coach_id"
-        })
-        .select();
+        });
 
       if (error) {
         console.error('Supabase error:', error);
