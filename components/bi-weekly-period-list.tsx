@@ -20,13 +20,15 @@ interface BiWeeklyPeriodListProps {
   selectedPeriod: BiWeeklyPeriod | null;
   onSelectPeriod: (period: BiWeeklyPeriod) => void;
   onPeriodsChange: (periods: BiWeeklyPeriod[]) => void;
+  onOpenPeriod?: (period: BiWeeklyPeriod) => void;
 }
 
 export function BiWeeklyPeriodList({ 
   periods, 
   selectedPeriod, 
   onSelectPeriod, 
-  onPeriodsChange 
+  onPeriodsChange,
+  onOpenPeriod
 }: BiWeeklyPeriodListProps) {
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
@@ -118,8 +120,23 @@ export function BiWeeklyPeriodList({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-sm text-muted-foreground">
-                Created: {new Date(period.created_at).toLocaleDateString()}
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-muted-foreground">
+                  Created: {new Date(period.created_at).toLocaleDateString()}
+                </div>
+                {onOpenPeriod && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenPeriod(period);
+                    }}
+                    className="text-xs"
+                  >
+                    Open Period
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>
