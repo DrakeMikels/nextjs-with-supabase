@@ -95,20 +95,39 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
   }) => {
     const cellId = `${coachId}-${periodId}-${field}`;
     const isEditing = editingCell === cellId;
+    const [localValue, setLocalValue] = useState(value);
+
+    // Update local value when the prop value changes (from database)
+    useEffect(() => {
+      setLocalValue(value);
+    }, [value]);
+
+    const handleSave = async () => {
+      if (localValue !== value) {
+        const newValue = type === "number" ? parseInt(localValue.toString()) || 0 : localValue;
+        await updateMetric(coachId, periodId, field, newValue);
+      }
+      setEditingCell(null);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleSave();
+      } else if (e.key === "Escape") {
+        setLocalValue(value); // Reset to original value
+        setEditingCell(null);
+      }
+    };
 
     if (isEditing) {
       return (
         <Input
           type={type}
-          value={value}
-          onChange={(e) => {
-            const newValue = type === "number" ? parseInt(e.target.value) || 0 : e.target.value;
-            updateMetric(coachId, periodId, field, newValue);
-          }}
-          onBlur={() => setEditingCell(null)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") setEditingCell(null);
-          }}
+          value={localValue}
+          onChange={(e) => setLocalValue(e.target.value)}
+          onBlur={handleSave}
+          onKeyDown={handleKeyDown}
           className="h-8 text-xs"
           autoFocus
         />
