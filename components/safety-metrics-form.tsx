@@ -93,15 +93,9 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
     fetchExistingMetrics();
   }, [fetchExistingMetrics]);
 
-  useEffect(() => {
-    if (selectedCoach) {
-      loadCoachMetrics(selectedCoach.id);
-    }
-  }, [selectedCoach, period.id]);
-
-  const loadCoachMetrics = async (coachId: string) => {
+  const loadCoachMetrics = useCallback(async (coachId: string) => {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("safety_metrics")
         .select("*")
         .eq("period_id", period.id)
@@ -140,7 +134,13 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
     } catch (error) {
       console.error("Error loading coach metrics:", error);
     }
-  };
+  }, [supabase, period.id]);
+
+  useEffect(() => {
+    if (selectedCoach) {
+      loadCoachMetrics(selectedCoach.id);
+    }
+  }, [selectedCoach, loadCoachMetrics]);
 
   const saveMetrics = async () => {
     if (!selectedCoach) return;
