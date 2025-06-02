@@ -3,44 +3,26 @@
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { BarChart3, Users, Calendar, Target, AlertTriangle } from "lucide-react";
-
-interface BiWeeklyPeriod {
-  id: string;
-  start_date: string;
-  end_date: string;
-  period_name: string;
-  created_at: string;
-}
-
-interface Coach {
-  id: string;
-  name: string;
-  date_of_hire: string | null;
-  vacation_days_remaining: number;
-  vacation_days_total: number;
-}
-
-interface SafetyMetric {
-  id: string;
-  period_id: string;
-  coach_id: string;
-  site_safety_evaluations: number;
-  forensic_survey_audits: number;
-  warehouse_safety_audits: number;
-  open_investigations_injuries: number;
-  open_investigations_auto: number;
-  open_investigations_property_damage: number;
-  open_investigations_near_miss: number;
-  coaches: {
-    name: string;
-  };
-  bi_weekly_periods: {
-    period_name: string;
-    start_date: string;
-  };
-}
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BarChart3, Users, Target, AlertTriangle, TrendingUp } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  RadialBarChart,
+  RadialBar,
+  Legend
+} from "recharts";
+import type { BiWeeklyPeriod, Coach, SafetyMetric } from "@/lib/types";
 
 interface MetricsDashboardProps {
   periods: BiWeeklyPeriod[];
@@ -50,17 +32,14 @@ interface MetricsDashboardProps {
 export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
   const [metrics, setMetrics] = useState<SafetyMetric[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
   const supabase = createClient();
 
   const fetchMetrics = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("safety_metrics")
-        .select(`
-          *,
-          coaches(name),
-          bi_weekly_periods(period_name, start_date)
-        `)
+        .select("*")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -76,30 +55,22 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
     fetchMetrics();
   }, [periods, fetchMetrics]);
 
-  const calculateTotalsByCoach = () => {
-    const totals = coaches.map(coach => {
-      const coachMetrics = metrics.filter(m => m.coach_id === coach.id);
-      return {
-        coach,
-        totalEvaluations: coachMetrics.reduce((sum, m) => sum + m.site_safety_evaluations, 0),
-        totalAudits: coachMetrics.reduce((sum, m) => sum + m.forensic_survey_audits, 0),
-        totalWarehouseAudits: coachMetrics.reduce((sum, m) => sum + m.warehouse_safety_audits, 0),
-        totalInvestigations: coachMetrics.reduce((sum, m) => 
-          sum + m.open_investigations_injuries + m.open_investigations_auto + 
-          m.open_investigations_property_damage + m.open_investigations_near_miss, 0),
-        periodsReported: coachMetrics.length
-      };
-    });
-    return totals;
+  // Brand colors for charts
+  const brandColors = {
+    olive: "#2C5134",
+    sorbet: "#FF6B35", 
+    lime: "#A4D65E",
+    deepTeal: "#2E8B8B",
+    street: "#8B8B8B"
   };
 
   const calculateOverallStats = () => {
-    const totalEvaluations = metrics.reduce((sum, m) => sum + m.site_safety_evaluations, 0);
-    const totalAudits = metrics.reduce((sum, m) => sum + m.forensic_survey_audits, 0);
-    const totalWarehouseAudits = metrics.reduce((sum, m) => sum + m.warehouse_safety_audits, 0);
+    const totalEvaluations = metrics.reduce((sum, m) => sum + (m.site_safety_evaluations || 0), 0);
+    const totalAudits = metrics.reduce((sum, m) => sum + (m.forensic_survey_audits || 0), 0);
+    const totalWarehouseAudits = metrics.reduce((sum, m) => sum + (m.warehouse_safety_audits || 0), 0);
     const totalInvestigations = metrics.reduce((sum, m) => 
-      sum + m.open_investigations_injuries + m.open_investigations_auto + 
-      m.open_investigations_property_damage + m.open_investigations_near_miss, 0);
+      sum + (m.open_investigations_injuries || 0) + (m.open_investigations_auto || 0) + 
+      (m.open_investigations_property_damage || 0) + (m.open_investigations_near_miss || 0), 0);
 
     return {
       totalEvaluations,
@@ -111,35 +82,101 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
     };
   };
 
-  const getRecentTrends = () => {
-    const recentPeriods = periods.slice(0, 3);
-    return recentPeriods.map(period => {
-      const periodMetrics = metrics.filter(m => m.period_id === period.id);
+  const getCoachPerformanceData = () => {
+    return coaches.map(coach => {
+      const coachMetrics = metrics.filter(m => m.coach_id === coach.id);
+      const totalEvaluations = coachMetrics.reduce((sum, m) => sum + (m.site_safety_evaluations || 0), 0);
+      const totalAudits = coachMetrics.reduce((sum, m) => sum + (m.forensic_survey_audits || 0), 0);
+      const totalWarehouseAudits = coachMetrics.reduce((sum, m) => sum + (m.warehouse_safety_audits || 0), 0);
+      const totalInvestigations = coachMetrics.reduce((sum, m) => 
+        sum + (m.open_investigations_injuries || 0) + (m.open_investigations_auto || 0) + 
+        (m.open_investigations_property_damage || 0) + (m.open_investigations_near_miss || 0), 0);
+
       return {
-        period: period.period_name,
-        evaluations: periodMetrics.reduce((sum, m) => sum + m.site_safety_evaluations, 0),
-        audits: periodMetrics.reduce((sum, m) => sum + m.forensic_survey_audits, 0),
-        investigations: periodMetrics.reduce((sum, m) => 
-          sum + m.open_investigations_injuries + m.open_investigations_auto + 
-          m.open_investigations_property_damage + m.open_investigations_near_miss, 0)
+        name: coach.name,
+        evaluations: totalEvaluations,
+        audits: totalAudits,
+        warehouse: totalWarehouseAudits,
+        investigations: totalInvestigations,
+        periodsReported: coachMetrics.length
       };
     });
   };
 
-  const getGoalProgress = () => {
-    const monthlyEvaluationGoal = 12; // 12-15 per month
-    const monthlyAuditGoal = 12; // 12-15 per month
-    const monthlyWarehouseGoal = 2; // 2 per month
+  const getTrendData = () => {
+    return periods.slice(0, 6).reverse().map(period => {
+      const periodMetrics = metrics.filter(m => m.period_id === period.id);
+      return {
+        period: period.period_name,
+        evaluations: periodMetrics.reduce((sum, m) => sum + (m.site_safety_evaluations || 0), 0),
+        audits: periodMetrics.reduce((sum, m) => sum + (m.forensic_survey_audits || 0), 0),
+        warehouse: periodMetrics.reduce((sum, m) => sum + (m.warehouse_safety_audits || 0), 0),
+        investigations: periodMetrics.reduce((sum, m) => 
+          sum + (m.open_investigations_injuries || 0) + (m.open_investigations_auto || 0) + 
+          (m.open_investigations_property_damage || 0) + (m.open_investigations_near_miss || 0), 0)
+      };
+    });
+  };
 
+  const getGoalProgressData = () => {
     const stats = calculateOverallStats();
-    const periodsPerMonth = 2; // Bi-weekly = 2 periods per month
+    const monthlyEvaluationGoal = 12;
+    const monthlyAuditGoal = 12;
+    const monthlyWarehouseGoal = 2;
+    const periodsPerMonth = 2;
     const monthlyPeriods = Math.ceil(periods.length / periodsPerMonth);
 
-    return {
-      evaluationProgress: monthlyPeriods > 0 ? (stats.totalEvaluations / (monthlyEvaluationGoal * monthlyPeriods)) * 100 : 0,
-      auditProgress: monthlyPeriods > 0 ? (stats.totalAudits / (monthlyAuditGoal * monthlyPeriods)) * 100 : 0,
-      warehouseProgress: monthlyPeriods > 0 ? (stats.totalWarehouseAudits / (monthlyWarehouseGoal * monthlyPeriods)) * 100 : 0
-    };
+    return [
+      {
+        name: "Site Evaluations",
+        value: monthlyPeriods > 0 ? Math.min((stats.totalEvaluations / (monthlyEvaluationGoal * monthlyPeriods)) * 100, 100) : 0,
+        goal: 100,
+        fill: brandColors.olive
+      },
+      {
+        name: "Forensic Audits", 
+        value: monthlyPeriods > 0 ? Math.min((stats.totalAudits / (monthlyAuditGoal * monthlyPeriods)) * 100, 100) : 0,
+        goal: 100,
+        fill: brandColors.sorbet
+      },
+      {
+        name: "Warehouse Audits",
+        value: monthlyPeriods > 0 ? Math.min((stats.totalWarehouseAudits / (monthlyWarehouseGoal * monthlyPeriods)) * 100, 100) : 0,
+        goal: 100,
+        fill: brandColors.lime
+      }
+    ];
+  };
+
+  const getIndividualCoachTrend = (coach: Coach) => {
+    return periods.slice(0, 6).reverse().map(period => {
+      const periodMetrics = metrics.filter(m => m.period_id === period.id && m.coach_id === coach.id);
+      const metric = periodMetrics[0];
+      return {
+        period: period.period_name,
+        evaluations: metric?.site_safety_evaluations || 0,
+        audits: metric?.forensic_survey_audits || 0,
+        warehouse: metric?.warehouse_safety_audits || 0,
+        investigations: (metric?.open_investigations_injuries || 0) + 
+                       (metric?.open_investigations_auto || 0) + 
+                       (metric?.open_investigations_property_damage || 0) + 
+                       (metric?.open_investigations_near_miss || 0)
+      };
+    });
+  };
+
+  const getInvestigationBreakdown = () => {
+    const injuries = metrics.reduce((sum, m) => sum + (m.open_investigations_injuries || 0), 0);
+    const auto = metrics.reduce((sum, m) => sum + (m.open_investigations_auto || 0), 0);
+    const property = metrics.reduce((sum, m) => sum + (m.open_investigations_property_damage || 0), 0);
+    const nearMiss = metrics.reduce((sum, m) => sum + (m.open_investigations_near_miss || 0), 0);
+
+    return [
+      { name: "Injuries", value: injuries, fill: brandColors.sorbet },
+      { name: "Auto", value: auto, fill: brandColors.olive },
+      { name: "Property Damage", value: property, fill: brandColors.lime },
+      { name: "Near Miss", value: nearMiss, fill: brandColors.deepTeal }
+    ];
   };
 
   if (loading) {
@@ -150,65 +187,66 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
     );
   }
 
-  const coachTotals = calculateTotalsByCoach();
   const overallStats = calculateOverallStats();
-  const trends = getRecentTrends();
-  const goalProgress = getGoalProgress();
+  const coachPerformanceData = getCoachPerformanceData();
+  const trendData = getTrendData();
+  const goalProgressData = getGoalProgressData();
+  const investigationData = getInvestigationBreakdown();
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Analytics Dashboard</h2>
-          <p className="text-muted-foreground">Safety metrics overview and performance tracking</p>
+          <h2 className="text-2xl font-bold text-brand-olive">📈 Analytics Dashboard</h2>
+          <p className="text-muted-foreground">Comprehensive safety metrics visualization and performance tracking</p>
         </div>
       </div>
 
-      {/* Overall Statistics */}
+      {/* Overall Statistics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="border-brand-olive/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Evaluations</CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
+            <Target className="h-4 w-4 text-brand-olive" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overallStats.totalEvaluations}</div>
+            <div className="text-2xl font-bold text-brand-olive">{overallStats.totalEvaluations}</div>
             <p className="text-xs text-muted-foreground">
               Avg: {overallStats.avgEvaluationsPerPeriod} per period
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-brand-sorbet/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Audits</CardTitle>
-            <BarChart3 className="h-4 w-4 text-muted-foreground" />
+            <BarChart3 className="h-4 w-4 text-brand-sorbet" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overallStats.totalAudits}</div>
+            <div className="text-2xl font-bold text-brand-sorbet">{overallStats.totalAudits}</div>
             <p className="text-xs text-muted-foreground">
               Avg: {overallStats.avgAuditsPerPeriod} per period
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-brand-lime/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Warehouse Audits</CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
+            <Target className="h-4 w-4 text-brand-lime" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overallStats.totalWarehouseAudits}</div>
+            <div className="text-2xl font-bold text-brand-lime">{overallStats.totalWarehouseAudits}</div>
             <p className="text-xs text-muted-foreground">
               Goal: 2 per month
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-brand-deep-teal/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Open Investigations</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+            <AlertTriangle className="h-4 w-4 text-brand-deep-teal" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overallStats.totalInvestigations}</div>
+            <div className="text-2xl font-bold text-brand-deep-teal">{overallStats.totalInvestigations}</div>
             <p className="text-xs text-muted-foreground">
               All types combined
             </p>
@@ -216,127 +254,291 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
         </Card>
       </div>
 
-      {/* Goal Progress */}
+      {/* Charts Section */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Goal Progress Chart */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-brand-olive">🎯 Goal Progress</CardTitle>
+            <CardDescription>Monthly safety goals achievement</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <RadialBarChart cx="50%" cy="50%" innerRadius="20%" outerRadius="90%" data={goalProgressData}>
+                <RadialBar dataKey="value" cornerRadius={10} fill="#8884d8" />
+                <Legend 
+                  iconSize={12}
+                  wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
+                />
+                <Tooltip 
+                  formatter={(value: number) => [`${value.toFixed(1)}%`, 'Progress']}
+                  labelStyle={{ color: '#2C5134', fontWeight: 'bold' }}
+                  contentStyle={{ 
+                    backgroundColor: '#f8f9fa', 
+                    border: '1px solid #2C5134',
+                    borderRadius: '8px',
+                    fontSize: '12px'
+                  }}
+                />
+              </RadialBarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Investigation Breakdown */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-brand-deep-teal">🔍 Investigation Types</CardTitle>
+            <CardDescription>Breakdown of open investigations</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={investigationData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  dataKey="value"
+                  label={({ name, value }) => `${name}: ${value}`}
+                >
+                  {investigationData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  labelStyle={{ color: '#2C5134', fontWeight: 'bold' }}
+                  contentStyle={{ 
+                    backgroundColor: '#f8f9fa', 
+                    border: '1px solid #2C5134',
+                    borderRadius: '8px',
+                    fontSize: '12px'
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Performance Trends */}
       <Card>
         <CardHeader>
-          <CardTitle>Goal Progress</CardTitle>
-          <CardDescription>Progress towards monthly safety goals</CardDescription>
+          <CardTitle className="text-brand-olive">📊 Performance Trends</CardTitle>
+          <CardDescription>Safety metrics over the last 6 bi-weekly periods</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Site Safety Evaluations (Goal: 12-15/month)</span>
-              <span className="text-sm text-muted-foreground">{goalProgress.evaluationProgress.toFixed(1)}%</span>
-            </div>
-            <div className="w-full bg-secondary rounded-full h-2">
-              <div
-                className="bg-primary h-2 rounded-full transition-all"
-                style={{ width: `${Math.min(goalProgress.evaluationProgress, 100)}%` }}
+        <CardContent>
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={trendData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+              <XAxis 
+                dataKey="period" 
+                tick={{ fontSize: 12, fill: '#2C5134' }}
+                tickLine={{ stroke: '#2C5134' }}
               />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Forensic/Survey Audits (Goal: 12-15/month)</span>
-              <span className="text-sm text-muted-foreground">{goalProgress.auditProgress.toFixed(1)}%</span>
-            </div>
-            <div className="w-full bg-secondary rounded-full h-2">
-              <div
-                className="bg-primary h-2 rounded-full transition-all"
-                style={{ width: `${Math.min(goalProgress.auditProgress, 100)}%` }}
+              <YAxis 
+                tick={{ fontSize: 12, fill: '#2C5134' }}
+                tickLine={{ stroke: '#2C5134' }}
               />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Warehouse Safety Audits (Goal: 2/month)</span>
-              <span className="text-sm text-muted-foreground">{goalProgress.warehouseProgress.toFixed(1)}%</span>
-            </div>
-            <div className="w-full bg-secondary rounded-full h-2">
-              <div
-                className="bg-primary h-2 rounded-full transition-all"
-                style={{ width: `${Math.min(goalProgress.warehouseProgress, 100)}%` }}
+              <Tooltip 
+                labelStyle={{ color: '#2C5134', fontWeight: 'bold' }}
+                contentStyle={{ 
+                  backgroundColor: '#f8f9fa', 
+                  border: '1px solid #2C5134',
+                  borderRadius: '8px',
+                  fontSize: '12px'
+                }}
               />
-            </div>
-          </div>
+              <Legend 
+                wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="evaluations" 
+                stroke={brandColors.olive} 
+                strokeWidth={3}
+                name="Site Evaluations"
+                dot={{ fill: brandColors.olive, strokeWidth: 2, r: 4 }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="audits" 
+                stroke={brandColors.sorbet} 
+                strokeWidth={3}
+                name="Forensic Audits"
+                dot={{ fill: brandColors.sorbet, strokeWidth: 2, r: 4 }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="warehouse" 
+                stroke={brandColors.lime} 
+                strokeWidth={3}
+                name="Warehouse Audits"
+                dot={{ fill: brandColors.lime, strokeWidth: 2, r: 4 }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="investigations" 
+                stroke={brandColors.deepTeal} 
+                strokeWidth={3}
+                name="Investigations"
+                dot={{ fill: brandColors.deepTeal, strokeWidth: 2, r: 4 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
 
-      {/* Coach Performance */}
+      {/* Coach Performance Comparison */}
       <Card>
         <CardHeader>
-          <CardTitle>Coach Performance Summary</CardTitle>
-          <CardDescription>Individual coach metrics across all periods</CardDescription>
+          <CardTitle className="text-brand-olive">👥 Coach Performance Comparison</CardTitle>
+          <CardDescription>Total metrics across all periods by coach</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {coachTotals.map(({ coach, totalEvaluations, totalAudits, totalWarehouseAudits, totalInvestigations, periodsReported }) => (
-              <div key={coach.id} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  <Users className="h-5 w-5 text-muted-foreground" />
-                  <div>
-                    <div className="font-medium">{coach.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {periodsReported} period{periodsReported !== 1 ? 's' : ''} reported
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={coachPerformanceData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+              <XAxis 
+                dataKey="name" 
+                tick={{ fontSize: 11, fill: '#2C5134' }}
+                tickLine={{ stroke: '#2C5134' }}
+                angle={-45}
+                textAnchor="end"
+                height={80}
+              />
+              <YAxis 
+                tick={{ fontSize: 12, fill: '#2C5134' }}
+                tickLine={{ stroke: '#2C5134' }}
+              />
+              <Tooltip 
+                labelStyle={{ color: '#2C5134', fontWeight: 'bold' }}
+                contentStyle={{ 
+                  backgroundColor: '#f8f9fa', 
+                  border: '1px solid #2C5134',
+                  borderRadius: '8px',
+                  fontSize: '12px'
+                }}
+              />
+              <Legend 
+                wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
+              />
+              <Bar dataKey="evaluations" fill={brandColors.olive} name="Site Evaluations" />
+              <Bar dataKey="audits" fill={brandColors.sorbet} name="Forensic Audits" />
+              <Bar dataKey="warehouse" fill={brandColors.lime} name="Warehouse Audits" />
+              <Bar dataKey="investigations" fill={brandColors.deepTeal} name="Investigations" />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
+      {/* Individual Coach Analysis */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-brand-olive">🔍 Individual Coach Analysis</CardTitle>
+          <CardDescription>Select a coach to view their detailed performance trends</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={selectedCoach?.id || "overview"} onValueChange={(value) => {
+            if (value === "overview") {
+              setSelectedCoach(null);
+            } else {
+              const coach = coaches.find(c => c.id === value);
+              setSelectedCoach(coach || null);
+            }
+          }}>
+            <TabsList className="grid w-full grid-cols-8 mb-6">
+              <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
+              {coaches.map((coach) => (
+                <TabsTrigger key={coach.id} value={coach.id} className="text-xs">
+                  {coach.name}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+
+            <TabsContent value="overview">
+              <div className="text-center py-8">
+                <TrendingUp className="h-12 w-12 text-brand-olive mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-brand-olive mb-2">Select a Coach</h3>
+                <p className="text-muted-foreground">Choose a coach from the tabs above to view their individual performance trends and detailed analytics.</p>
+              </div>
+            </TabsContent>
+
+            {coaches.map((coach) => (
+              <TabsContent key={coach.id} value={coach.id}>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 mb-6">
+                    <Users className="h-6 w-6 text-brand-olive" />
+                    <div>
+                      <h3 className="text-xl font-bold text-brand-olive">{coach.name}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Vacation: {coach.vacation_days_remaining}/{coach.vacation_days_total} days remaining
+                      </p>
                     </div>
                   </div>
+                  
+                  <ResponsiveContainer width="100%" height={350}>
+                    <LineChart data={getIndividualCoachTrend(coach)}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                      <XAxis 
+                        dataKey="period" 
+                        tick={{ fontSize: 12, fill: '#2C5134' }}
+                        tickLine={{ stroke: '#2C5134' }}
+                      />
+                      <YAxis 
+                        tick={{ fontSize: 12, fill: '#2C5134' }}
+                        tickLine={{ stroke: '#2C5134' }}
+                      />
+                      <Tooltip 
+                        labelStyle={{ color: '#2C5134', fontWeight: 'bold' }}
+                        contentStyle={{ 
+                          backgroundColor: '#f8f9fa', 
+                          border: '1px solid #2C5134',
+                          borderRadius: '8px',
+                          fontSize: '12px'
+                        }}
+                      />
+                      <Legend 
+                        wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="evaluations" 
+                        stroke={brandColors.olive} 
+                        strokeWidth={3}
+                        name="Site Evaluations"
+                        dot={{ fill: brandColors.olive, strokeWidth: 2, r: 5 }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="audits" 
+                        stroke={brandColors.sorbet} 
+                        strokeWidth={3}
+                        name="Forensic Audits"
+                        dot={{ fill: brandColors.sorbet, strokeWidth: 2, r: 5 }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="warehouse" 
+                        stroke={brandColors.lime} 
+                        strokeWidth={3}
+                        name="Warehouse Audits"
+                        dot={{ fill: brandColors.lime, strokeWidth: 2, r: 5 }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="investigations" 
+                        stroke={brandColors.deepTeal} 
+                        strokeWidth={3}
+                        name="Investigations"
+                        dot={{ fill: brandColors.deepTeal, strokeWidth: 2, r: 5 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
-                <div className="flex gap-4 text-sm">
-                  <div className="text-center">
-                    <div className="font-medium">{totalEvaluations}</div>
-                    <div className="text-muted-foreground">Evaluations</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-medium">{totalAudits}</div>
-                    <div className="text-muted-foreground">Audits</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-medium">{totalWarehouseAudits}</div>
-                    <div className="text-muted-foreground">Warehouse</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-medium">{totalInvestigations}</div>
-                    <div className="text-muted-foreground">Investigations</div>
-                  </div>
-                </div>
-              </div>
+              </TabsContent>
             ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Recent Trends */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Trends</CardTitle>
-          <CardDescription>Performance over the last 3 bi-weekly periods</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {trends.map((trend, index) => (
-              <div key={trend.period} className="flex items-center justify-between p-3 border rounded">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="font-medium">{trend.period}</span>
-                  {index === 0 && <Badge variant="secondary">Latest</Badge>}
-                </div>
-                <div className="flex gap-4 text-sm">
-                  <div className="text-center">
-                    <div className="font-medium">{trend.evaluations}</div>
-                    <div className="text-muted-foreground">Evaluations</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-medium">{trend.audits}</div>
-                    <div className="text-muted-foreground">Audits</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-medium">{trend.investigations}</div>
-                    <div className="text-muted-foreground">Investigations</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          </Tabs>
         </CardContent>
       </Card>
     </div>
