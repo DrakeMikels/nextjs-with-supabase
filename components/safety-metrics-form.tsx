@@ -187,8 +187,8 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Safety Metrics</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-2xl font-bold text-brand-olive">Safety Metrics</h2>
+          <p className="text-medium-contrast">
             Period: {period.period_name} ({new Date(period.start_date).toLocaleDateString()} - {new Date(period.end_date).toLocaleDateString()})
           </p>
         </div>
@@ -197,8 +197,8 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
       {/* Coach Selection */}
       <Card className="border-2 border-primary/20">
         <CardHeader>
-          <CardTitle className="text-xl">👤 Step 1: Select Your Coach Profile</CardTitle>
-          <CardDescription>Choose your name to enter or edit your safety metrics for this period</CardDescription>
+          <CardTitle className="text-xl text-high-contrast">👤 Step 1: Select Your Coach Profile</CardTitle>
+          <CardDescription className="text-medium-contrast">Choose your name to enter or edit your safety metrics for this period</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
@@ -211,8 +211,8 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
               >
                 <User className="h-4 w-4" />
                 <div className="text-left">
-                  <div className="font-medium">{coach.name}</div>
-                  <div className="text-xs opacity-70 flex items-center gap-2">
+                  <div className="font-medium text-high-contrast">{coach.name}</div>
+                  <div className="text-xs opacity-70 flex items-center gap-2 text-medium-contrast">
                     {coach.vacation_days_remaining}/{coach.vacation_days_total} vacation days
                     {hasMetrics(coach.id) && <Badge variant="secondary" className="text-xs">✓ Has Data</Badge>}
                   </div>
@@ -222,7 +222,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
           </div>
           {!selectedCoach && (
             <div className="mt-4 p-4 bg-muted/50 rounded-lg text-center">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-medium-contrast">
                 👆 Please select your name above to begin entering safety metrics
               </p>
             </div>
@@ -234,10 +234,10 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
       {selectedCoach ? (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-high-contrast">
               📊 Step 2: Enter Safety Metrics for {selectedCoach.name}
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-medium-contrast">
               Fill in your safety metrics for the period: {period.period_name}
             </CardDescription>
           </CardHeader>
@@ -245,7 +245,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
             {/* Travel and Training */}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="travel_plans">Travel Plans - Branch Location</Label>
+                <Label htmlFor="travel_plans" className="text-high-contrast">Travel Plans - Branch Location</Label>
                 <Input
                   id="travel_plans"
                   value={metrics.travel_plans}
@@ -254,7 +254,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="training_branch">Training Branch - TBT Location Attendance</Label>
+                <Label htmlFor="training_branch" className="text-high-contrast">Training Branch - TBT Location Attendance</Label>
                 <Input
                   id="training_branch"
                   value={metrics.training_branch_location}
@@ -267,7 +267,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
             {/* Safety Metrics */}
             <div className="grid gap-4 md:grid-cols-3">
               <div className="space-y-2">
-                <Label htmlFor="site_safety">Site Safety Evaluations (Goal: 12-15/month)</Label>
+                <Label htmlFor="site_safety" className="text-high-contrast">Site Safety Evaluations (Goal: 12-15/month)</Label>
                 <Input
                   id="site_safety"
                   type="number"
@@ -276,7 +276,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="forensic_survey">Forensic/Survey Audits (Goal: 12-15/month)</Label>
+                <Label htmlFor="forensic_survey" className="text-high-contrast">Forensic/Survey Audits (Goal: 12-15/month)</Label>
                 <Input
                   id="forensic_survey"
                   type="number"
@@ -285,7 +285,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="warehouse_audits">Warehouse Safety Audits (Goal: 2/month)</Label>
+                <Label htmlFor="warehouse_audits" className="text-high-contrast">Warehouse Safety Audits (Goal: 2/month)</Label>
                 <Input
                   id="warehouse_audits"
                   type="number"
@@ -297,10 +297,10 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
 
             {/* Open Investigations */}
             <div className="space-y-4">
-              <Label className="text-base font-medium">Open Investigations</Label>
+              <Label className="text-base font-medium text-high-contrast">Open Investigations</Label>
               <div className="grid gap-4 md:grid-cols-4">
                 <div className="space-y-2">
-                  <Label htmlFor="injuries">Injuries</Label>
+                  <Label htmlFor="injuries" className="text-high-contrast">Injuries</Label>
                   <Input
                     id="injuries"
                     type="number"
@@ -309,7 +309,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="auto">Auto</Label>
+                  <Label htmlFor="auto" className="text-high-contrast">Auto</Label>
                   <Input
                     id="auto"
                     type="number"
@@ -318,7 +318,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="property_damage">Property Damage</Label>
+                  <Label htmlFor="property_damage" className="text-high-contrast">Property Damage</Label>
                   <Input
                     id="property_damage"
                     type="number"
@@ -327,7 +327,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="near_miss">Near Miss</Label>
+                  <Label htmlFor="near_miss" className="text-high-contrast">Near Miss</Label>
                   <Input
                     id="near_miss"
                     type="number"
@@ -341,7 +341,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
             {/* Meeting Dates */}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="do_hr_meeting">DO/HR Partnership Meeting Date</Label>
+                <Label htmlFor="do_hr_meeting" className="text-high-contrast">DO/HR Partnership Meeting Date</Label>
                 <Input
                   id="do_hr_meeting"
                   type="date"
@@ -350,7 +350,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="bm_pm_meeting">BM/PM/WHS Partnership Meeting Date</Label>
+                <Label htmlFor="bm_pm_meeting" className="text-high-contrast">BM/PM/WHS Partnership Meeting Date</Label>
                 <Input
                   id="bm_pm_meeting"
                   type="date"
@@ -363,7 +363,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
             {/* Report Dates */}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="lms_reports">LMS Reports Date</Label>
+                <Label htmlFor="lms_reports" className="text-high-contrast">LMS Reports Date</Label>
                 <Input
                   id="lms_reports"
                   type="date"
@@ -372,7 +372,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="tbt_reports">TBT Attendance Reports Date</Label>
+                <Label htmlFor="tbt_reports" className="text-high-contrast">TBT Attendance Reports Date</Label>
                 <Input
                   id="tbt_reports"
                   type="date"
@@ -384,7 +384,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
 
             {/* Notes */}
             <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
+              <Label htmlFor="notes" className="text-high-contrast">Notes</Label>
               <textarea
                 id="notes"
                 className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -403,8 +403,8 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
       ) : (
         <Card>
           <CardHeader>
-            <CardTitle>Ready to Enter Metrics</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-high-contrast">Ready to Enter Metrics</CardTitle>
+            <CardDescription className="text-medium-contrast">
               Select a coach above to begin entering safety metrics for {period.period_name}
             </CardDescription>
           </CardHeader>

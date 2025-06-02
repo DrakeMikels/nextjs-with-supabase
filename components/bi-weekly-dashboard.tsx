@@ -5,7 +5,13 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PlusCircle, Calendar, Users, BarChart3 } from "lucide-react";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { PlusCircle, Calendar, Users, BarChart3, ChevronDown } from "lucide-react";
 import { BiWeeklyPeriodList } from "./bi-weekly-period-list";
 import { SafetyMetricsForm } from "./safety-metrics-form";
 import { CoachManagement } from "./coach-management";
@@ -136,7 +142,37 @@ export function BiWeeklyDashboard() {
             <BarChart3 className="h-4 w-4 text-brand-olive-medium" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-brand-olive-medium">{selectedPeriod?.period_name || "None"}</div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  className="h-auto p-0 text-left justify-start hover:bg-transparent"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="text-2xl font-bold text-brand-olive-medium">
+                      {selectedPeriod?.period_name || "None"}
+                    </div>
+                    <ChevronDown className="h-4 w-4 text-brand-olive-medium" />
+                  </div>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                {periods.map((period) => (
+                  <DropdownMenuItem
+                    key={period.id}
+                    onClick={() => setSelectedPeriod(period)}
+                    className={selectedPeriod?.id === period.id ? "bg-brand-olive/10" : ""}
+                  >
+                    <div className="flex flex-col">
+                      <span className="font-medium">{period.period_name}</span>
+                      <span className="text-xs text-medium-contrast">
+                        {new Date(period.start_date).toLocaleDateString()} - {new Date(period.end_date).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </CardContent>
         </Card>
         <Card className="border-brand-olive-soft/20 hover:border-brand-olive-soft/40 transition-colors">
@@ -145,12 +181,40 @@ export function BiWeeklyDashboard() {
             <Calendar className="h-4 w-4 text-brand-olive-soft" />
           </CardHeader>
           <CardContent>
-            <div className="text-sm text-brand-olive-soft font-medium">
-              {selectedPeriod ? 
-                `${new Date(selectedPeriod.start_date).toLocaleDateString()} - ${new Date(selectedPeriod.end_date).toLocaleDateString()}` 
-                : "No period selected"
-              }
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  className="h-auto p-0 text-left justify-start hover:bg-transparent"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="text-sm text-brand-olive-soft font-medium">
+                      {selectedPeriod ? 
+                        `${new Date(selectedPeriod.start_date).toLocaleDateString()} - ${new Date(selectedPeriod.end_date).toLocaleDateString()}` 
+                        : "No period selected"
+                      }
+                    </div>
+                    <ChevronDown className="h-4 w-4 text-brand-olive-soft" />
+                  </div>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                {periods.map((period) => (
+                  <DropdownMenuItem
+                    key={period.id}
+                    onClick={() => setSelectedPeriod(period)}
+                    className={selectedPeriod?.id === period.id ? "bg-brand-olive/10" : ""}
+                  >
+                    <div className="flex flex-col">
+                      <span className="font-medium">{period.period_name}</span>
+                      <span className="text-xs text-medium-contrast">
+                        {new Date(period.start_date).toLocaleDateString()} - {new Date(period.end_date).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </CardContent>
         </Card>
       </div>

@@ -76,8 +76,8 @@ export function BiWeeklyPeriodList({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Bi-Weekly Periods</h2>
-        <div className="text-sm text-muted-foreground">
+        <h2 className="text-2xl font-bold text-high-contrast">Bi-Weekly Periods</h2>
+        <div className="text-sm text-medium-contrast">
           {periods.length} period{periods.length !== 1 ? 's' : ''} total
         </div>
       </div>
@@ -95,7 +95,7 @@ export function BiWeeklyPeriodList({
           >
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">{period.period_name}</CardTitle>
+                <CardTitle className="text-lg text-high-contrast">{period.period_name}</CardTitle>
                 <div className="flex items-center gap-2">
                   {isCurrentPeriod(period.start_date, period.end_date) && (
                     <Badge variant="default">Current</Badge>
@@ -114,14 +114,14 @@ export function BiWeeklyPeriodList({
                   </Button>
                 </div>
               </div>
-              <CardDescription className="flex items-center gap-2">
+              <CardDescription className="flex items-center gap-2 text-medium-contrast">
                 <Calendar className="h-4 w-4" />
                 {formatDateRange(period.start_date, period.end_date)}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-medium-contrast">
                   Created: {new Date(period.created_at).toLocaleDateString()}
                 </div>
                 {onOpenPeriod && (
@@ -146,8 +146,8 @@ export function BiWeeklyPeriodList({
       {periods.length === 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>No Periods Found</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-high-contrast">No Periods Found</CardTitle>
+            <CardDescription className="text-medium-contrast">
               Create your first bi-weekly period to get started with tracking safety metrics.
             </CardDescription>
           </CardHeader>

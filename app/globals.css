@@ -6,17 +6,17 @@
   :root {
     /* Freedom Forever Brand Colors - Improved Contrast & Consistency */
     --background: 0 0% 98%; /* Slightly whiter background */
-    --foreground: 0 0% 8%; /* Much darker text for better contrast */
+    --foreground: 0 0% 5%; /* Even darker text for better contrast */
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 8%; /* Darker card text */
+    --card-foreground: 0 0% 5%; /* Even darker card text */
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 8%;
+    --popover-foreground: 0 0% 5%;
     --primary: 120 30% 25%; /* Olive - Primary brand color */
     --primary-foreground: 0 0% 98%;
     --secondary: 120 25% 35%; /* Lighter olive variation */
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 45%; /* Darker muted for better contrast */
-    --muted-foreground: 0 0% 15%; /* Much darker muted text */
+    --muted: 0 0% 40%; /* Darker muted for better contrast */
+    --muted-foreground: 0 0% 10%; /* Much darker muted text */
     --accent: 120 20% 45%; /* Olive-tinted accent */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 84.2% 60.2%;
@@ -32,30 +32,30 @@
     --radius: 0.5rem;
   }
   .dark {
-    --background: 0 0% 12%; /* Off-black */
-    --foreground: 0 0% 96%; /* Off-white */
-    --card: 0 0% 15%;
-    --card-foreground: 0 0% 96%;
-    --popover: 0 0% 15%;
-    --popover-foreground: 0 0% 96%;
-    --primary: 120 30% 25%; /* Olive - Primary brand color */
-    --primary-foreground: 0 0% 96%;
-    --secondary: 120 25% 35%; /* Lighter olive variation */
-    --secondary-foreground: 0 0% 96%;
-    --muted: 0 0% 25%;
-    --muted-foreground: 0 0% 65%;
-    --accent: 120 20% 45%; /* Olive-tinted accent */
-    --accent-foreground: 0 0% 12%;
-    --destructive: 0 62.8% 30.6%;
+    --background: 0 0% 8%; /* Darker background for better contrast */
+    --foreground: 0 0% 98%; /* Brighter text */
+    --card: 0 0% 12%; /* Slightly lighter cards */
+    --card-foreground: 0 0% 98%; /* Bright card text */
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 120 30% 35%; /* Brighter olive for dark mode */
+    --primary-foreground: 0 0% 8%;
+    --secondary: 120 25% 45%; /* Brighter olive variation */
+    --secondary-foreground: 0 0% 8%;
+    --muted: 0 0% 20%; /* Lighter muted background */
+    --muted-foreground: 0 0% 85%; /* Much brighter muted text */
+    --accent: 120 20% 55%; /* Brighter olive-tinted accent */
+    --accent-foreground: 0 0% 8%;
+    --destructive: 0 62.8% 50.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 25%;
-    --input: 0 0% 25%;
-    --ring: 120 30% 25%; /* Olive */
-    --chart-1: 120 30% 25%; /* Primary Olive */
-    --chart-2: 120 25% 35%; /* Lighter Olive */
-    --chart-3: 120 20% 45%; /* Medium Olive */
-    --chart-4: 120 15% 55%; /* Light Olive */
-    --chart-5: 120 10% 65%; /* Very Light Olive */
+    --border: 0 0% 20%; /* Lighter borders */
+    --input: 0 0% 20%; /* Lighter inputs */
+    --ring: 120 30% 35%; /* Brighter olive */
+    --chart-1: 120 30% 45%; /* Brighter Primary Olive */
+    --chart-2: 120 25% 55%; /* Brighter Lighter Olive */
+    --chart-3: 120 20% 65%; /* Brighter Medium Olive */
+    --chart-4: 120 15% 75%; /* Brighter Light Olive */
+    --chart-5: 120 10% 85%; /* Brighter Very Light Olive */
   }
 }
 
@@ -68,8 +68,9 @@
   }
 }
 
-/* Freedom Forever Brand Utilities - Consistent Olive Variations */
+/* Freedom Forever Brand Utilities - Theme-Responsive */
 @layer utilities {
+  /* Light mode brand colors */
   .text-brand-olive {
     color: #2C5134;
   }
@@ -101,19 +102,72 @@
     background-color: #70B980;
   }
   
-  /* Keep original sorbet for accent use only */
+  /* Dark mode brand colors - brighter for better contrast */
+  .dark .text-brand-olive {
+    color: #5F9F6D;
+  }
+  .dark .bg-brand-olive {
+    background-color: #5F9F6D;
+  }
+  .dark .text-brand-olive-light {
+    color: #70B980;
+  }
+  .dark .bg-brand-olive-light {
+    background-color: #70B980;
+  }
+  .dark .text-brand-olive-medium {
+    color: #81C993;
+  }
+  .dark .bg-brand-olive-medium {
+    background-color: #81C993;
+  }
+  .dark .text-brand-olive-soft {
+    color: #92D9A6;
+  }
+  .dark .bg-brand-olive-soft {
+    background-color: #92D9A6;
+  }
+  .dark .text-brand-olive-pale {
+    color: #A3E9B9;
+  }
+  .dark .bg-brand-olive-pale {
+    background-color: #A3E9B9;
+  }
+  
+  /* Sorbet accent - responsive to theme */
   .text-brand-sorbet {
     color: #FF6B35;
   }
   .bg-brand-sorbet {
     background-color: #FF6B35;
   }
+  .dark .text-brand-sorbet {
+    color: #FF8A5B;
+  }
+  .dark .bg-brand-sorbet {
+    background-color: #FF8A5B;
+  }
   
-  /* Improved contrast utilities */
+  /* Improved contrast utilities - theme responsive */
   .text-high-contrast {
-    color: #1a1a1a;
+    color: #0a0a0a;
   }
   .text-medium-contrast {
-    color: #404040;
+    color: #333333;
+  }
+  
+  .dark .text-high-contrast {
+    color: #f5f5f5;
+  }
+  .dark .text-medium-contrast {
+    color: #d1d1d1;
+  }
+  
+  /* Off-white background utility - theme responsive */
+  .bg-brand-off-white {
+    background-color: #fafafa;
+  }
+  .dark .bg-brand-off-white {
+    background-color: #1a1a1a;
   }
 }

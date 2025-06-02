@@ -162,8 +162,8 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Coach Management</h2>
-          <p className="text-muted-foreground">Manage regional safety coaches and their information</p>
+          <h2 className="text-2xl font-bold text-high-contrast">Coach Management</h2>
+          <p className="text-medium-contrast">Manage regional safety coaches and their information</p>
         </div>
         <Button onClick={() => setShowAddForm(true)} className="gap-2">
           <PlusCircle className="h-4 w-4" />
@@ -175,13 +175,13 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
       {showAddForm && (
         <Card>
           <CardHeader>
-            <CardTitle>Add New Coach</CardTitle>
-            <CardDescription>Enter the details for the new safety coach</CardDescription>
+            <CardTitle className="text-high-contrast">Add New Coach</CardTitle>
+            <CardDescription className="text-medium-contrast">Enter the details for the new safety coach</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="new_name">Name</Label>
+                <Label htmlFor="new_name" className="text-high-contrast">Name</Label>
                 <Input
                   id="new_name"
                   value={newCoach.name}
@@ -190,7 +190,7 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="new_hire_date">Date of Hire</Label>
+                <Label htmlFor="new_hire_date" className="text-high-contrast">Date of Hire</Label>
                 <Input
                   id="new_hire_date"
                   type="date"
@@ -201,7 +201,7 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="new_vacation_remaining">Vacation Days Remaining</Label>
+                <Label htmlFor="new_vacation_remaining" className="text-high-contrast">Vacation Days Remaining</Label>
                 <Input
                   id="new_vacation_remaining"
                   type="number"
@@ -210,7 +210,7 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="new_vacation_total">Total Vacation Days</Label>
+                <Label htmlFor="new_vacation_total" className="text-high-contrast">Total Vacation Days</Label>
                 <Input
                   id="new_vacation_total"
                   type="number"
@@ -238,7 +238,7 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
           <Card key={coach.id} className="relative">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-high-contrast">
                   <User className="h-5 w-5" />
                   {editingCoach?.id === coach.id ? (
                     <Input
@@ -274,8 +274,8 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
             <CardContent className="space-y-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Hire Date:</span>
+                  <Calendar className="h-4 w-4 text-medium-contrast" />
+                  <span className="text-medium-contrast">Hire Date:</span>
                   {editingCoach?.id === coach.id ? (
                     <Input
                       type="date"
@@ -284,17 +284,17 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
                       className="h-6 text-sm"
                     />
                   ) : (
-                    <span>{formatDate(coach.date_of_hire)}</span>
+                    <span className="text-high-contrast">{formatDate(coach.date_of_hire)}</span>
                   )}
                 </div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-medium-contrast">
                   Tenure: {calculateTenure(coach.date_of_hire)}
                 </div>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Vacation Days</span>
+                  <span className="text-sm font-medium text-high-contrast">Vacation Days</span>
                   <Badge variant="secondary">
                     {editingCoach?.id === coach.id ? (
                       <div className="flex items-center gap-1">
@@ -355,8 +355,8 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
       {coaches.length === 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>No Coaches Found</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-high-contrast">No Coaches Found</CardTitle>
+            <CardDescription className="text-medium-contrast">
               Add your first safety coach to get started with the tracking system.
             </CardDescription>
           </CardHeader>

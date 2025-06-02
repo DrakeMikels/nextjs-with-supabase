@@ -198,8 +198,8 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-brand-olive">📈 Analytics Dashboard</h2>
-          <p className="text-medium-contrast">Comprehensive safety metrics visualization and performance tracking</p>
+          <h2 className="text-2xl font-bold text-brand-olive">Analytics Dashboard</h2>
+          <p className="text-medium-contrast">Comprehensive safety metrics analysis and trends</p>
         </div>
       </div>
 
@@ -461,7 +461,7 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
               <div className="text-center py-8">
                 <TrendingUp className="h-12 w-12 text-brand-olive mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-brand-olive mb-2">Select a Coach</h3>
-                <p className="text-muted-foreground">Choose a coach from the tabs above to view their individual performance trends and detailed analytics.</p>
+                <p className="text-medium-contrast">Choose a coach from the tabs above to view their individual performance trends and detailed analytics.</p>
               </div>
             </TabsContent>
 
@@ -472,7 +472,7 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
                     <Users className="h-6 w-6 text-brand-olive" />
                     <div>
                       <h3 className="text-xl font-bold text-brand-olive">{coach.name}</h3>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-medium-contrast">
                         Vacation: {coach.vacation_days_remaining}/{coach.vacation_days_total} days remaining
                       </p>
                     </div>

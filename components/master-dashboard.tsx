@@ -117,7 +117,7 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
 
     return (
       <div
-        className="min-h-[32px] p-1 cursor-pointer hover:bg-muted/50 rounded text-xs flex items-center"
+        className="min-h-[32px] p-1 cursor-pointer hover:bg-muted/50 rounded text-xs flex items-center text-high-contrast"
         onClick={() => setEditingCell(cellId)}
       >
         {value || "-"}
@@ -129,8 +129,8 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold">{coach.name}</h3>
-          <p className="text-sm text-muted-foreground">
+          <h3 className="text-lg font-semibold text-high-contrast">{coach.name}</h3>
+          <p className="text-sm text-medium-contrast">
             Vacation: {coach.vacation_days_remaining}/{coach.vacation_days_total} days
           </p>
         </div>
@@ -149,23 +149,23 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
         <table className="w-full border-collapse border border-border">
           <thead>
             <tr className="bg-muted/50">
-              <th className="border border-border p-2 text-left text-xs font-medium">Period</th>
-              <th className="border border-border p-2 text-left text-xs font-medium">Travel Plans</th>
-              <th className="border border-border p-2 text-left text-xs font-medium">Training Branch</th>
-              <th className="border border-border p-2 text-left text-xs font-medium">Site Evals</th>
-              <th className="border border-border p-2 text-left text-xs font-medium">Audits</th>
-              <th className="border border-border p-2 text-left text-xs font-medium">Warehouse</th>
+              <th className="border border-border p-2 text-left text-xs font-medium text-high-contrast">Period</th>
+              <th className="border border-border p-2 text-left text-xs font-medium text-high-contrast">Travel Plans</th>
+              <th className="border border-border p-2 text-left text-xs font-medium text-high-contrast">Training Branch</th>
+              <th className="border border-border p-2 text-left text-xs font-medium text-high-contrast">Site Evals</th>
+              <th className="border border-border p-2 text-left text-xs font-medium text-high-contrast">Audits</th>
+              <th className="border border-border p-2 text-left text-xs font-medium text-high-contrast">Warehouse</th>
               {showAllColumns && (
                 <>
-                  <th className="border border-border p-2 text-left text-xs font-medium">Injuries</th>
-                  <th className="border border-border p-2 text-left text-xs font-medium">Auto</th>
-                  <th className="border border-border p-2 text-left text-xs font-medium">Property</th>
-                  <th className="border border-border p-2 text-left text-xs font-medium">Near Miss</th>
-                  <th className="border border-border p-2 text-left text-xs font-medium">DO/HR Meeting</th>
-                  <th className="border border-border p-2 text-left text-xs font-medium">BM/PM Meeting</th>
-                  <th className="border border-border p-2 text-left text-xs font-medium">LMS Reports</th>
-                  <th className="border border-border p-2 text-left text-xs font-medium">TBT Reports</th>
-                  <th className="border border-border p-2 text-left text-xs font-medium">Notes</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium text-high-contrast">Injuries</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium text-high-contrast">Auto</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium text-high-contrast">Property</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium text-high-contrast">Near Miss</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium text-high-contrast">DO/HR Meeting</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium text-high-contrast">BM/PM Meeting</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium text-high-contrast">LMS Reports</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium text-high-contrast">TBT Reports</th>
+                  <th className="border border-border p-2 text-left text-xs font-medium text-high-contrast">Notes</th>
                 </>
               )}
             </tr>
@@ -176,8 +176,8 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
               return (
                 <tr key={period.id} className="hover:bg-muted/25">
                   <td className="border border-border p-2">
-                    <div className="text-xs font-medium">{period.period_name}</div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="text-xs font-medium text-high-contrast">{period.period_name}</div>
+                    <div className="text-xs text-medium-contrast">
                       {new Date(period.start_date).toLocaleDateString()}
                     </div>
                   </td>
@@ -333,7 +333,7 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
             <Sparkles className="h-6 w-6 text-brand-olive" />
             <span className="text-brand-olive">Master Dashboard</span>
           </h2>
-          <p className="text-muted-foreground">
+          <p className="text-medium-contrast">
             Excel-style interface - Click any cell to edit data directly
           </p>
         </div>
@@ -354,12 +354,12 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
         }
       }}>
         <TabsList className="grid w-full grid-cols-8 bg-brand-off-white border border-brand-olive/20">
-          <TabsTrigger value="all" className="data-[state=active]:bg-brand-olive data-[state=active]:text-white">All Coaches</TabsTrigger>
+          <TabsTrigger value="all" className="data-[state=active]:bg-brand-olive data-[state=active]:text-white text-medium-contrast">All Coaches</TabsTrigger>
           {coaches.map((coach) => (
             <TabsTrigger 
               key={coach.id} 
               value={coach.id} 
-              className="text-xs data-[state=active]:bg-brand-sorbet data-[state=active]:text-white"
+              className="text-xs data-[state=active]:bg-brand-olive-light data-[state=active]:text-white text-medium-contrast"
             >
               {coach.name}
             </TabsTrigger>
@@ -370,7 +370,7 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
           {coaches.map((coach) => (
             <Card key={coach.id}>
               <CardHeader className="pb-4">
-                <CardTitle className="text-lg">{coach.name}</CardTitle>
+                <CardTitle className="text-lg text-high-contrast">{coach.name}</CardTitle>
               </CardHeader>
               <CardContent>
                 <CoachView coach={coach} />
@@ -383,8 +383,8 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
           <TabsContent key={coach.id} value={coach.id}>
             <Card>
               <CardHeader>
-                <CardTitle>{coach.name} - Detailed View</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-high-contrast">{coach.name} - Detailed View</CardTitle>
+                <CardDescription className="text-medium-contrast">
                   Complete data view for {coach.name} across all periods
                 </CardDescription>
               </CardHeader>
