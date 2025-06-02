@@ -43,7 +43,10 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
 
   const updateMetric = async (coachId: string, periodId: string, field: keyof SafetyMetric, value: string | number) => {
     try {
+      console.log('Updating metric:', { coachId, periodId, field, value });
+      
       const existingMetric = getMetricForCoachAndPeriod(coachId, periodId);
+      console.log('Existing metric:', existingMetric);
       
       const metricData = {
         period_id: periodId,
@@ -65,18 +68,27 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
         [field]: value
       };
 
-      const { error } = await supabase
+      console.log('Metric data to upsert:', metricData);
+
+      const { data, error } = await supabase
         .from("safety_metrics")
         .upsert(metricData, {
           onConflict: "period_id,coach_id"
-        });
+        })
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
 
+      console.log('Upsert successful:', data);
       await fetchMetrics();
       onDataChange();
     } catch (error) {
       console.error("Error updating metric:", error);
+      // Show user-friendly error message
+      alert(`Failed to save data: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
