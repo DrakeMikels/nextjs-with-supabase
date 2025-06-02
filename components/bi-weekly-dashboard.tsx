@@ -32,6 +32,7 @@ export function BiWeeklyDashboard() {
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<BiWeeklyPeriod | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("periods");
   const supabase = createClient();
 
   const fetchData = useCallback(async () => {
@@ -96,6 +97,11 @@ export function BiWeeklyDashboard() {
     } catch (error) {
       console.error("Error creating period:", error);
     }
+  };
+
+  const handleOpenPeriod = (period: BiWeeklyPeriod) => {
+    setSelectedPeriod(period);
+    setActiveTab("metrics");
   };
 
   if (loading) {
@@ -163,7 +169,7 @@ export function BiWeeklyDashboard() {
         </Card>
       </div>
 
-      <Tabs defaultValue="periods" className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="periods">Bi-Weekly Periods</TabsTrigger>
           <TabsTrigger value="metrics">Safety Metrics</TabsTrigger>
@@ -177,6 +183,7 @@ export function BiWeeklyDashboard() {
             selectedPeriod={selectedPeriod}
             onSelectPeriod={setSelectedPeriod}
             onPeriodsChange={setPeriods}
+            onOpenPeriod={handleOpenPeriod}
           />
         </TabsContent>
 
