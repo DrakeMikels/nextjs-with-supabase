@@ -27,10 +27,10 @@ export interface SafetyMetric {
   open_investigations_auto: number;
   open_investigations_property_damage: number;
   open_investigations_near_miss: number;
-  do_hr_partnership_meeting: string;
-  bm_pm_whs_partnership_meeting: string;
-  lms_reports_date: string;
-  tbt_attendance_reports_date: string;
+  do_hr_partnership_meeting: string | null;
+  bm_pm_whs_partnership_meeting: string | null;
+  lms_reports_date: string | null;
+  tbt_attendance_reports_date: string | null;
   notes: string;
 }
 

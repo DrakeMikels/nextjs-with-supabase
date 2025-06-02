@@ -43,10 +43,13 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
 
   const updateMetric = async (coachId: string, periodId: string, field: keyof SafetyMetric, value: string | number) => {
     try {
-      console.log('Updating metric:', { coachId, periodId, field, value });
-      
       const existingMetric = getMetricForCoachAndPeriod(coachId, periodId);
-      console.log('Existing metric:', existingMetric);
+      
+      // Helper function to handle date values - send null instead of empty string
+      const formatDateValue = (dateValue: string | null | undefined): string | null => {
+        if (!dateValue || dateValue.trim() === "") return null;
+        return dateValue;
+      };
       
       const metricData = {
         period_id: periodId,
@@ -60,15 +63,13 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
         open_investigations_auto: existingMetric?.open_investigations_auto || 0,
         open_investigations_property_damage: existingMetric?.open_investigations_property_damage || 0,
         open_investigations_near_miss: existingMetric?.open_investigations_near_miss || 0,
-        do_hr_partnership_meeting: existingMetric?.do_hr_partnership_meeting || "",
-        bm_pm_whs_partnership_meeting: existingMetric?.bm_pm_whs_partnership_meeting || "",
-        lms_reports_date: existingMetric?.lms_reports_date || "",
-        tbt_attendance_reports_date: existingMetric?.tbt_attendance_reports_date || "",
+        do_hr_partnership_meeting: formatDateValue(existingMetric?.do_hr_partnership_meeting),
+        bm_pm_whs_partnership_meeting: formatDateValue(existingMetric?.bm_pm_whs_partnership_meeting),
+        lms_reports_date: formatDateValue(existingMetric?.lms_reports_date),
+        tbt_attendance_reports_date: formatDateValue(existingMetric?.tbt_attendance_reports_date),
         notes: existingMetric?.notes || "",
-        [field]: value
+        [field]: field.includes('date') || field.includes('meeting') ? formatDateValue(value as string) : value
       };
-
-      console.log('Metric data to upsert:', metricData);
 
       const { data, error } = await supabase
         .from("safety_metrics")
@@ -82,7 +83,6 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
         throw error;
       }
 
-      console.log('Upsert successful:', data);
       await fetchMetrics();
       onDataChange();
     } catch (error) {
