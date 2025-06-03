@@ -56,7 +56,7 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
 
   // Certification update form state
   const [certificationUpdate, setCertificationUpdate] = useState({
-    status: 'not_started' as 'not_started' | 'in_progress' | 'completed' | 'expired',
+    status: 'not_started' as 'not_started' | 'scheduled' | 'in_progress' | 'completed' | 'expired',
     start_date: '',
     completion_date: '',
     certificate_number: '',
@@ -128,6 +128,7 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
     switch (status) {
       case 'completed': return 'bg-green-500';
       case 'in_progress': return 'bg-blue-500';
+      case 'scheduled': return 'bg-amber-500';
       case 'expired': return 'bg-red-500';
       default: return 'bg-gray-400';
     }
@@ -137,6 +138,7 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
     switch (status) {
       case 'completed': return <CheckCircle className="h-3 w-3" />;
       case 'in_progress': return <Clock className="h-3 w-3" />;
+      case 'scheduled': return <Calendar className="h-3 w-3" />;
       case 'expired': return <AlertTriangle className="h-3 w-3" />;
       default: return <BookOpen className="h-3 w-3" />;
     }
@@ -523,12 +525,13 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
           <div className="space-y-4">
             <div>
               <Label htmlFor="cert-status" className="text-high-contrast">Status</Label>
-              <Select value={certificationUpdate.status} onValueChange={(value: 'not_started' | 'in_progress' | 'completed' | 'expired') => setCertificationUpdate(prev => ({ ...prev, status: value }))}>
+              <Select value={certificationUpdate.status} onValueChange={(value: 'not_started' | 'scheduled' | 'in_progress' | 'completed' | 'expired') => setCertificationUpdate(prev => ({ ...prev, status: value }))}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="not_started">Not Started</SelectItem>
+                  <SelectItem value="scheduled">Scheduled</SelectItem>
                   <SelectItem value="in_progress">In Progress</SelectItem>
                   <SelectItem value="completed">Completed</SelectItem>
                   <SelectItem value="expired">Expired</SelectItem>

@@ -66,7 +66,7 @@ export interface CoachCertification {
   id: string;
   coach_id: string;
   certification_id: string;
-  status: 'not_started' | 'in_progress' | 'completed' | 'expired';
+  status: 'not_started' | 'scheduled' | 'in_progress' | 'completed' | 'expired';
   start_date: string | null;
   completion_date: string | null;
   expiration_date: string | null;

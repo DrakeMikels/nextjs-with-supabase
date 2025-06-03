@@ -3,17 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { 
   GraduationCap, 
   CheckCircle, 
@@ -23,6 +14,10 @@ import {
   Star,
   Award
 } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import type { 
   Coach,
   Certification, 
@@ -42,6 +37,20 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [showRequiredOnly, setShowRequiredOnly] = useState(false);
+  const [showCertificationDialog, setShowCertificationDialog] = useState(false);
+  const [selectedCertification, setSelectedCertification] = useState<Certification | null>(null);
+  const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
+  const [certificationUpdate, setCertificationUpdate] = useState<{
+    status: 'not_started' | 'scheduled' | 'in_progress' | 'completed' | 'expired';
+    start_date: string;
+    certificate_number: string;
+    notes: string;
+  }>({
+    status: 'not_started',
+    start_date: '',
+    certificate_number: '',
+    notes: '',
+  });
   const supabase = createClient();
 
   const fetchData = useCallback(async () => {
@@ -100,13 +109,6 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
     return requiredCerts.length > 0 ? (completedRequired.length / requiredCerts.length) * 100 : 0;
   };
 
-  const getTotalProgress = (coachId: string) => {
-    const completedTotal = certifications.filter(cert => 
-      getCoachCertificationStatus(coachId, cert.id) === 'completed'
-    );
-    return certifications.length > 0 ? (completedTotal.length / certifications.length) * 100 : 0;
-  };
-
   // Filter certifications based on search and category
   const filteredCertifications = certifications.filter(cert => {
     const matchesSearch = cert.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -114,6 +116,52 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
     const matchesRequired = !showRequiredOnly || cert.is_required;
     return matchesSearch && matchesCategory && matchesRequired;
   });
+
+  const openQuickUpdateDialog = (coach: Coach, certification: Certification) => {
+    setSelectedCertification(certification);
+    setSelectedCoach(coach);
+    
+    const existingCert = coachCertifications.find(
+      cc => cc.coach_id === coach.id && cc.certification_id === certification.id
+    );
+    
+    setCertificationUpdate({
+      status: (existingCert?.status || 'not_started') as 'not_started' | 'scheduled' | 'in_progress' | 'completed' | 'expired',
+      start_date: existingCert?.start_date || '',
+      certificate_number: existingCert?.certificate_number || '',
+      notes: existingCert?.notes || '',
+    });
+    setShowCertificationDialog(true);
+  };
+
+  const updateCertificationStatus = async () => {
+    if (!selectedCertification || !selectedCoach) return;
+
+    try {
+      const updateData = {
+        coach_id: selectedCoach.id,
+        certification_id: selectedCertification.id,
+        status: certificationUpdate.status,
+        start_date: certificationUpdate.start_date || null,
+        completion_date: certificationUpdate.status === 'completed' ? certificationUpdate.start_date : null,
+        certificate_number: certificationUpdate.certificate_number || null,
+        notes: certificationUpdate.notes || null,
+      };
+
+      const { error } = await supabase
+        .from("coach_certifications")
+        .upsert(updateData, {
+          onConflict: "coach_id,certification_id"
+        });
+
+      if (error) throw error;
+
+      await fetchData();
+      setShowCertificationDialog(false);
+    } catch (error) {
+      console.error("Error updating certification status:", error);
+    }
+  };
 
   if (loading) {
     return (
@@ -241,159 +289,249 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
       {/* Main Overview Table */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg text-high-contrast">Certification Matrix</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg text-high-contrast">Team Certification Status</CardTitle>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" className="gap-1">
+                <Download className="h-4 w-4" />
+                Export
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-brand-olive/5">
-                  <TableHead className="w-48 sticky left-0 bg-brand-olive/5 z-10 border-r border-brand-olive/20">
-                    <span className="font-semibold text-high-contrast">Coach</span>
-                  </TableHead>
-                  <TableHead className="w-32 text-center bg-brand-olive/5 border-r border-brand-olive/20">
-                    <span className="font-semibold text-high-contrast">Required Progress</span>
-                  </TableHead>
-                  <TableHead className="w-32 text-center bg-brand-olive/5 border-r border-brand-olive/20">
-                    <span className="font-semibold text-high-contrast">Overall Progress</span>
-                  </TableHead>
-                  {filteredCertifications.map(cert => {
-                    // Create smarter column headers by removing common prefixes and using key words
-                    let displayName = cert.name;
-                    
-                    // Remove common prefixes
-                    displayName = displayName.replace(/^(OSHA|NCOS)-?\s*/i, '');
-                    displayName = displayName.replace(/^(CPR|First Aid|BBP)\s*\/?\s*/i, '');
-                    displayName = displayName.replace(/^(Wicklander)\s*&?\s*(Zulawski)?\s*/i, 'W&Z');
-                    
-                    // Use key identifying words for specific certifications
-                    if (cert.name.toLowerCase().includes('510')) displayName = '510 Course';
-                    if (cert.name.toLowerCase().includes('470')) displayName = '470 Course';
-                    if (cert.name.toLowerCase().includes('fall protection')) displayName = 'Fall Protection';
-                    if (cert.name.toLowerCase().includes('maritime')) displayName = 'Maritime';
-                    if (cert.name.toLowerCase().includes('cpr') || cert.name.toLowerCase().includes('first aid')) displayName = 'CPR/First Aid';
-                    if (cert.name.toLowerCase().includes('wicklander')) displayName = 'Interview & Interrogation';
-                    
-                    // Limit to 12 characters and add ellipsis if needed
-                    if (displayName.length > 12) {
-                      displayName = displayName.substring(0, 10) + '...';
-                    }
-                    
-                    return (
-                      <TableHead key={cert.id} className="w-28 text-center bg-brand-olive/5 border-r border-brand-olive/10 last:border-r-0">
-                        <div className="flex flex-col items-center gap-1 py-2">
-                          {cert.is_required && <Star className="h-3 w-3 text-amber-500 fill-amber-500" />}
-                          <span className="text-xs font-semibold text-high-contrast leading-tight text-center" title={cert.name}>
-                            {displayName}
-                          </span>
+          <div className="space-y-6">
+            {/* Quick Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-brand-olive/5 rounded-lg">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">
+                  {coachCertifications.filter(cc => cc.status === 'completed').length}
+                </div>
+                <div className="text-sm text-medium-contrast">Total Completed</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">
+                  {coachCertifications.filter(cc => cc.status === 'in_progress').length}
+                </div>
+                <div className="text-sm text-medium-contrast">In Progress</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-amber-600">
+                  {coachCertifications.filter(cc => cc.status === 'scheduled').length}
+                </div>
+                <div className="text-sm text-medium-contrast">Scheduled</div>
+              </div>
+            </div>
+
+            {/* Certification List */}
+            <div className="space-y-4">
+              {filteredCertifications.map(cert => {
+                const coachesWithCert = coaches.map(coach => {
+                  const coachCert = coachCertifications.find(
+                    cc => cc.coach_id === coach.id && cc.certification_id === cert.id
+                  );
+                  return {
+                    coach,
+                    status: coachCert?.status || 'not_started',
+                    completion_date: coachCert?.completion_date,
+                    start_date: coachCert?.start_date,
+                    notes: coachCert?.notes
+                  };
+                });
+
+                const completedCount = coachesWithCert.filter(c => c.status === 'completed').length;
+                const inProgressCount = coachesWithCert.filter(c => c.status === 'in_progress').length;
+                const scheduledCount = coachesWithCert.filter(c => c.status === 'scheduled').length;
+
+                return (
+                  <Card key={cert.id} className="border-l-4 border-l-brand-olive/30">
+                    <CardContent className="pt-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          {cert.is_required && <Star className="h-4 w-4 text-amber-500 fill-amber-500" />}
+                          <div>
+                            <h3 className="font-semibold text-high-contrast">{cert.name}</h3>
+                            <p className="text-sm text-medium-contrast">
+                              {cert.description || 'Professional certification requirement'}
+                            </p>
+                          </div>
                         </div>
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {coaches.map((coach, index) => (
-                  <TableRow key={coach.id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50/50"}>
-                    <TableCell className="sticky left-0 bg-inherit z-10 border-r border-brand-olive/20">
-                      <div className="flex flex-col py-2">
-                        <span className="font-semibold text-high-contrast text-sm">{coach.name}</span>
-                        <span className="text-xs text-medium-contrast">
-                          Hired: {coach.date_of_hire ? new Date(coach.date_of_hire).toLocaleDateString() : 'N/A'}
-                        </span>
+                        <div className="flex items-center gap-4 text-sm">
+                          <div className="text-center">
+                            <div className="font-semibold text-green-600">{completedCount}</div>
+                            <div className="text-xs text-medium-contrast">Complete</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="font-semibold text-blue-600">{inProgressCount}</div>
+                            <div className="text-xs text-medium-contrast">In Progress</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="font-semibold text-amber-600">{scheduledCount}</div>
+                            <div className="text-xs text-medium-contrast">Scheduled</div>
+                          </div>
+                        </div>
                       </div>
-                    </TableCell>
-                    <TableCell className="text-center border-r border-brand-olive/20">
-                      <Badge 
-                        variant="outline" 
-                        className={`font-semibold ${
-                          getCoachProgress(coach.id) >= 80 
-                            ? 'bg-green-100 text-green-800 border-green-300' 
-                            : getCoachProgress(coach.id) >= 50 
-                            ? 'bg-yellow-100 text-yellow-800 border-yellow-300' 
-                            : 'bg-red-100 text-red-800 border-red-300'
-                        }`}
-                      >
-                        {Math.round(getCoachProgress(coach.id))}%
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-center border-r border-brand-olive/20">
-                      <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-300 font-semibold">
-                        {Math.round(getTotalProgress(coach.id))}%
-                      </Badge>
-                    </TableCell>
-                    {filteredCertifications.map(cert => {
-                      const status = getCoachCertificationStatus(coach.id, cert.id);
-                      return (
-                        <TableCell key={cert.id} className="text-center border-r border-brand-olive/10 last:border-r-0 py-3">
-                          <div className="flex justify-center">
-                            {status === 'completed' && (
-                              <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
-                                <CheckCircle className="h-5 w-5 text-white" />
+
+                      {/* Coach Status Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {coachesWithCert.map(({ coach, status, completion_date, start_date, notes }) => (
+                          <div 
+                            key={coach.id} 
+                            className={`p-3 rounded-lg border-2 transition-all ${
+                              status === 'completed' 
+                                ? 'border-green-200 bg-green-50' 
+                                : status === 'in_progress'
+                                ? 'border-blue-200 bg-blue-50'
+                                : status === 'scheduled'
+                                ? 'border-amber-200 bg-amber-50'
+                                : 'border-gray-200 bg-gray-50 hover:border-brand-olive/30'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-medium text-high-contrast text-sm">{coach.name}</span>
+                              <div className="flex items-center gap-1">
+                                {status === 'completed' && (
+                                  <CheckCircle className="h-4 w-4 text-green-600" />
+                                )}
+                                {status === 'in_progress' && (
+                                  <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
+                                    <span className="text-white text-xs">⏳</span>
+                                  </div>
+                                )}
+                                {status === 'scheduled' && (
+                                  <div className="w-4 h-4 rounded-full bg-amber-500 flex items-center justify-center">
+                                    <span className="text-white text-xs">📅</span>
+                                  </div>
+                                )}
+                                {status === 'not_started' && (
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline" 
+                                    className="h-6 px-2 text-xs"
+                                    onClick={() => openQuickUpdateDialog(coach, cert)}
+                                  >
+                                    Add
+                                  </Button>
+                                )}
+                              </div>
+                            </div>
+                            
+                            {completion_date && (
+                              <div className="text-xs text-medium-contrast">
+                                Completed: {new Date(completion_date).toLocaleDateString()}
                               </div>
                             )}
-                            {status === 'in_progress' && (
-                              <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
-                                <span className="text-white text-xs font-bold">⏳</span>
+                            {start_date && status === 'in_progress' && (
+                              <div className="text-xs text-medium-contrast">
+                                Started: {new Date(start_date).toLocaleDateString()}
                               </div>
                             )}
-                            {status === 'expired' && (
-                              <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center">
-                                <span className="text-white text-xs font-bold">⚠️</span>
+                            {start_date && status === 'scheduled' && (
+                              <div className="text-xs text-medium-contrast">
+                                Scheduled: {new Date(start_date).toLocaleDateString()}
                               </div>
                             )}
-                            {status === 'not_started' && (
-                              <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
-                                <span className="text-gray-600 text-xs font-bold">—</span>
+                            {notes && (
+                              <div className="text-xs text-medium-contrast mt-1 italic">
+                                {notes.length > 50 ? `${notes.substring(0, 50)}...` : notes}
                               </div>
+                            )}
+                            
+                            {status !== 'not_started' && (
+                              <Button 
+                                size="sm" 
+                                variant="ghost" 
+                                className="h-6 px-2 text-xs mt-1 w-full"
+                                onClick={() => openQuickUpdateDialog(coach, cert)}
+                              >
+                                Update
+                              </Button>
                             )}
                           </div>
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Enhanced Legend */}
-      <Card>
-        <CardContent className="pt-4">
-          <div className="flex items-center justify-center gap-8 text-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-                <CheckCircle className="h-4 w-4 text-white" />
-              </div>
-              <span className="font-medium text-high-contrast">Completed</span>
+      {/* Quick Update Dialog */}
+      <Dialog open={showCertificationDialog} onOpenChange={setShowCertificationDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Update Certification Status</DialogTitle>
+            <DialogDescription>
+              Update {selectedCertification?.name} for {selectedCoach?.name}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="cert-status" className="text-high-contrast">Status</Label>
+              <Select value={certificationUpdate.status} onValueChange={(value: 'not_started' | 'scheduled' | 'in_progress' | 'completed' | 'expired') => setCertificationUpdate(prev => ({ ...prev, status: value }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="not_started">Not Started</SelectItem>
+                  <SelectItem value="scheduled">Scheduled</SelectItem>
+                  <SelectItem value="in_progress">In Progress</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="expired">Expired</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
-                <span className="text-white text-xs font-bold">⏳</span>
+            
+            {(certificationUpdate.status === 'scheduled' || certificationUpdate.status === 'in_progress' || certificationUpdate.status === 'completed') && (
+              <div>
+                <Label htmlFor="cert-start-date" className="text-high-contrast">
+                  {certificationUpdate.status === 'scheduled' ? 'Scheduled Date' : 
+                   certificationUpdate.status === 'completed' ? 'Completion Date' : 'Start Date'}
+                </Label>
+                <Input
+                  id="cert-start-date"
+                  type="date"
+                  value={certificationUpdate.start_date}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCertificationUpdate(prev => ({ ...prev, start_date: e.target.value }))}
+                />
               </div>
-              <span className="font-medium text-high-contrast">In Progress</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center">
-                <span className="text-white text-xs font-bold">⚠️</span>
+            )}
+            
+            {certificationUpdate.status === 'completed' && (
+              <div>
+                <Label htmlFor="cert-number" className="text-high-contrast">Certificate Number</Label>
+                <Input
+                  id="cert-number"
+                  value={certificationUpdate.certificate_number}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCertificationUpdate(prev => ({ ...prev, certificate_number: e.target.value }))}
+                  placeholder="Certificate or ID number"
+                />
               </div>
-              <span className="font-medium text-high-contrast">Expired</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center">
-                <span className="text-gray-600 text-xs font-bold">—</span>
-              </div>
-              <span className="font-medium text-high-contrast">Not Started</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
-              <span className="font-medium text-high-contrast">Required Certification</span>
+            )}
+            
+            <div>
+              <Label htmlFor="cert-notes" className="text-high-contrast">Notes</Label>
+              <Textarea
+                id="cert-notes"
+                value={certificationUpdate.notes}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCertificationUpdate(prev => ({ ...prev, notes: e.target.value }))}
+                placeholder="Additional notes or comments..."
+              />
             </div>
           </div>
-        </CardContent>
-      </Card>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCertificationDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={updateCertificationStatus}>
+              Update Status
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 } 
