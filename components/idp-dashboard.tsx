@@ -23,7 +23,9 @@ import {
   Plus,
   BookOpen,
   TrendingUp,
-  FileText
+  FileText,
+  ChevronRight,
+  Star
 } from "lucide-react";
 import type { 
   Certification, 
@@ -42,6 +44,7 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
   const [showAddGoal, setShowAddGoal] = useState(false);
   const [showCertificationDialog, setShowCertificationDialog] = useState(false);
   const [selectedCertification, setSelectedCertification] = useState<Certification | null>(null);
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const supabase = createClient();
 
   // New goal form state
@@ -133,10 +136,10 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'completed': return <CheckCircle className="h-4 w-4" />;
-      case 'in_progress': return <Clock className="h-4 w-4" />;
-      case 'expired': return <AlertTriangle className="h-4 w-4" />;
-      default: return <BookOpen className="h-4 w-4" />;
+      case 'completed': return <CheckCircle className="h-3 w-3" />;
+      case 'in_progress': return <Clock className="h-3 w-3" />;
+      case 'expired': return <AlertTriangle className="h-3 w-3" />;
+      default: return <BookOpen className="h-3 w-3" />;
     }
   };
 
@@ -259,45 +262,49 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
   }
 
   const progress = calculateProgress();
+  const totalCompleted = coachCertifications.filter(cc => cc.status === 'completed').length;
+  const totalCertifications = certifications.length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      {/* Compact Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <GraduationCap className="h-6 w-6 text-brand-olive" />
-            <span className="text-brand-olive">Individual Development Plan</span>
+          <h2 className="text-xl font-bold flex items-center gap-2 text-brand-olive">
+            <GraduationCap className="h-5 w-5" />
+            {coach.name}&apos;s Development Plan
           </h2>
-          <p className="text-medium-contrast">
-            {coach.name}&apos;s professional development and certification tracking
-          </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Badge variant="outline" className="gap-1 border-brand-olive/30 text-brand-olive">
             <TrendingUp className="h-3 w-3" />
-            {Math.round(progress)}% Complete
+            {Math.round(progress)}% Required
+          </Badge>
+          <Badge variant="outline" className="gap-1 border-blue-500/30 text-blue-600">
+            <Award className="h-3 w-3" />
+            {totalCompleted}/{totalCertifications} Total
           </Badge>
         </div>
       </div>
 
-      {/* Progress Overview */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-high-contrast flex items-center gap-2">
-            <Target className="h-5 w-5" />
-            Certification Progress
-          </CardTitle>
-          <CardDescription className="text-medium-contrast">
-            Overall progress on required certifications
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-medium-contrast">Required Certifications</span>
-              <span className="text-high-contrast font-medium">{Math.round(progress)}%</span>
+      {/* Compact Progress Overview */}
+      <Card className="border-brand-olive/20">
+        <CardContent className="pt-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <div className="flex justify-between text-sm mb-1">
+                <span className="text-medium-contrast">Required Certifications</span>
+                <span className="text-high-contrast font-medium">{Math.round(progress)}%</span>
+              </div>
+              <Progress value={progress} className="h-2" />
             </div>
-            <Progress value={progress} className="h-2" />
+            <div>
+              <div className="flex justify-between text-sm mb-1">
+                <span className="text-medium-contrast">Overall Progress</span>
+                <span className="text-high-contrast font-medium">{Math.round((totalCompleted / totalCertifications) * 100)}%</span>
+              </div>
+              <Progress value={(totalCompleted / totalCertifications) * 100} className="h-2" />
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -308,126 +315,132 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
             Certifications
           </TabsTrigger>
           <TabsTrigger value="goals" className="data-[state=active]:bg-brand-olive data-[state=active]:text-white text-medium-contrast">
-            Development Goals
+            Goals
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="certifications" className="space-y-4">
+        <TabsContent value="certifications" className="space-y-3">
           {categories.map((category) => {
             const categoryCerts = certifications.filter(cert => cert.category_id === category.id);
             if (categoryCerts.length === 0) return null;
 
+            const categoryCompleted = categoryCerts.filter(cert => 
+              coachCertifications.find(cc => cc.certification_id === cert.id && cc.status === 'completed')
+            ).length;
+            const isExpanded = expandedCategory === category.id;
+
             return (
-              <Card key={category.id}>
-                <CardHeader>
-                  <CardTitle className="text-high-contrast flex items-center gap-2">
-                    <Award className="h-5 w-5" />
-                    {category.name}
-                    {category.is_required && (
-                      <Badge variant="destructive" className="text-xs">Required</Badge>
-                    )}
-                  </CardTitle>
-                  <CardDescription className="text-medium-contrast">
-                    {category.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-3">
-                    {categoryCerts.map((certification) => {
-                      const coachCert = coachCertifications.find(cc => cc.certification_id === certification.id);
-                      const status = coachCert?.status || 'not_started';
-                      
-                      return (
-                        <div
-                          key={certification.id}
-                          className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 cursor-pointer"
-                          onClick={() => openCertificationDialog(certification)}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className={`p-2 rounded-full ${getStatusColor(status)} text-white`}>
-                              {getStatusIcon(status)}
-                            </div>
-                            <div>
-                              <h4 className="font-medium text-high-contrast">{certification.name}</h4>
-                              <p className="text-sm text-medium-contrast">{certification.description}</p>
-                              {certification.duration_hours && (
-                                <p className="text-xs text-medium-contrast">
-                                  Duration: {certification.duration_hours} hours
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {certification.is_required && (
-                              <Badge variant="outline" className="text-xs">Required</Badge>
-                            )}
-                            <Badge variant="outline" className={`text-xs ${getStatusColor(status)} text-white border-0`}>
-                              {status.replace('_', ' ')}
-                            </Badge>
-                            {coachCert?.expiration_date && (
-                              <div className="text-xs text-medium-contrast">
-                                Expires: {new Date(coachCert.expiration_date).toLocaleDateString()}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
+              <Card key={category.id} className="border-l-4 border-l-brand-olive/30">
+                <CardHeader 
+                  className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors"
+                  onClick={() => setExpandedCategory(isExpanded ? null : category.id)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <ChevronRight className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                      <Award className="h-4 w-4 text-brand-olive" />
+                      <CardTitle className="text-base text-high-contrast">{category.name}</CardTitle>
+                      {category.is_required && (
+                        <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="text-xs">
+                        {categoryCompleted}/{categoryCerts.length}
+                      </Badge>
+                      <div className="w-16">
+                        <Progress value={(categoryCompleted / categoryCerts.length) * 100} className="h-1" />
+                      </div>
+                    </div>
                   </div>
-                </CardContent>
+                </CardHeader>
+                
+                {isExpanded && (
+                  <CardContent className="pt-0">
+                    <div className="grid gap-2">
+                      {categoryCerts.map((certification) => {
+                        const coachCert = coachCertifications.find(cc => cc.certification_id === certification.id);
+                        const status = coachCert?.status || 'not_started';
+                        
+                        return (
+                          <div
+                            key={certification.id}
+                            className="flex items-center justify-between p-2 border rounded hover:bg-muted/30 cursor-pointer transition-colors"
+                            onClick={() => openCertificationDialog(certification)}
+                          >
+                            <div className="flex items-center gap-2 flex-1 min-w-0">
+                              <div className={`p-1 rounded-full ${getStatusColor(status)} text-white flex-shrink-0`}>
+                                {getStatusIcon(status)}
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <h4 className="font-medium text-sm text-high-contrast truncate">{certification.name}</h4>
+                                {coachCert?.completion_date && (
+                                  <p className="text-xs text-medium-contrast">
+                                    Completed: {new Date(coachCert.completion_date).toLocaleDateString()}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-1 flex-shrink-0">
+                              {certification.is_required && (
+                                <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                              )}
+                              <Badge variant="outline" className={`text-xs ${getStatusColor(status)} text-white border-0`}>
+                                {status === 'not_started' ? 'New' : status.replace('_', ' ')}
+                              </Badge>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                )}
               </Card>
             );
           })}
         </TabsContent>
 
-        <TabsContent value="goals" className="space-y-4">
+        <TabsContent value="goals" className="space-y-3">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold text-high-contrast">Development Goals</h3>
-            <Button onClick={() => setShowAddGoal(true)} className="gap-2">
-              <Plus className="h-4 w-4" />
+            <Button onClick={() => setShowAddGoal(true)} size="sm" className="gap-1">
+              <Plus className="h-3 w-3" />
               Add Goal
             </Button>
           </div>
 
-          <div className="grid gap-4">
-            {idpGoals.map((goal) => (
-              <Card key={goal.id}>
-                <CardHeader>
+          <div className="grid gap-3">
+            {idpGoals.slice(0, 5).map((goal) => (
+              <Card key={goal.id} className="border-l-4 border-l-blue-500/30">
+                <CardContent className="pt-3 pb-3">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-high-contrast">{goal.title}</CardTitle>
-                    <div className="flex items-center gap-2">
-                      <Badge className={getPriorityColor(goal.priority)}>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-high-contrast truncate">{goal.title}</h4>
+                      {goal.target_completion_date && (
+                        <p className="text-xs text-medium-contrast flex items-center gap-1 mt-1">
+                          <Calendar className="h-3 w-3" />
+                          Target: {new Date(goal.target_completion_date).toLocaleDateString()}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <Badge className={`text-xs ${getPriorityColor(goal.priority)}`}>
                         {goal.priority}
-                      </Badge>
-                      <Badge variant="outline" className={`${getStatusColor(goal.status)} text-white border-0`}>
-                        {goal.status.replace('_', ' ')}
                       </Badge>
                     </div>
                   </div>
-                  {goal.target_completion_date && (
-                    <CardDescription className="text-medium-contrast flex items-center gap-1">
-                      <Calendar className="h-4 w-4" />
-                      Target: {new Date(goal.target_completion_date).toLocaleDateString()}
-                    </CardDescription>
-                  )}
-                </CardHeader>
-                {goal.description && (
-                  <CardContent>
-                    <p className="text-medium-contrast">{goal.description}</p>
-                  </CardContent>
-                )}
+                </CardContent>
               </Card>
             ))}
 
             {idpGoals.length === 0 && (
-              <Card>
-                <CardContent className="text-center py-8">
-                  <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-high-contrast mb-2">No Development Goals</h3>
-                  <p className="text-medium-contrast mb-4">Start by adding your first development goal.</p>
-                  <Button onClick={() => setShowAddGoal(true)} className="gap-2">
-                    <Plus className="h-4 w-4" />
-                    Add Your First Goal
+              <Card className="border-dashed">
+                <CardContent className="text-center py-6">
+                  <FileText className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-medium-contrast text-sm mb-3">No development goals yet</p>
+                  <Button onClick={() => setShowAddGoal(true)} size="sm" variant="outline" className="gap-1">
+                    <Plus className="h-3 w-3" />
+                    Add First Goal
                   </Button>
                 </CardContent>
               </Card>
