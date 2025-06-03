@@ -43,11 +43,13 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
   const [certificationUpdate, setCertificationUpdate] = useState<{
     status: 'not_started' | 'scheduled' | 'in_progress' | 'completed' | 'expired';
     start_date: string;
+    completion_date: string;
     certificate_number: string;
     notes: string;
   }>({
     status: 'not_started',
     start_date: '',
+    completion_date: '',
     certificate_number: '',
     notes: '',
   });
@@ -128,6 +130,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
     setCertificationUpdate({
       status: (existingCert?.status || 'not_started') as 'not_started' | 'scheduled' | 'in_progress' | 'completed' | 'expired',
       start_date: existingCert?.start_date || '',
+      completion_date: existingCert?.completion_date || '',
       certificate_number: existingCert?.certificate_number || '',
       notes: existingCert?.notes || '',
     });
@@ -143,7 +146,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
         certification_id: selectedCertification.id,
         status: certificationUpdate.status,
         start_date: certificationUpdate.start_date || null,
-        completion_date: certificationUpdate.status === 'completed' ? certificationUpdate.start_date : null,
+        completion_date: certificationUpdate.completion_date || null,
         certificate_number: certificationUpdate.certificate_number || null,
         notes: certificationUpdate.notes || null,
       };
@@ -489,7 +492,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
               <div>
                 <Label htmlFor="cert-start-date" className="text-high-contrast">
                   {certificationUpdate.status === 'scheduled' ? 'Scheduled Date' : 
-                   certificationUpdate.status === 'completed' ? 'Completion Date' : 'Start Date'}
+                   certificationUpdate.status === 'completed' ? 'Start Date' : 'Start Date'}
                 </Label>
                 <Input
                   id="cert-start-date"
@@ -501,15 +504,26 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
             )}
             
             {certificationUpdate.status === 'completed' && (
-              <div>
-                <Label htmlFor="cert-number" className="text-high-contrast">Certificate Number</Label>
-                <Input
-                  id="cert-number"
-                  value={certificationUpdate.certificate_number}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCertificationUpdate(prev => ({ ...prev, certificate_number: e.target.value }))}
-                  placeholder="Certificate or ID number"
-                />
-              </div>
+              <>
+                <div>
+                  <Label htmlFor="cert-completion-date" className="text-high-contrast">Completion Date</Label>
+                  <Input
+                    id="cert-completion-date"
+                    type="date"
+                    value={certificationUpdate.completion_date}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCertificationUpdate(prev => ({ ...prev, completion_date: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="cert-number" className="text-high-contrast">Certificate Number</Label>
+                  <Input
+                    id="cert-number"
+                    value={certificationUpdate.certificate_number}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCertificationUpdate(prev => ({ ...prev, certificate_number: e.target.value }))}
+                    placeholder="Certificate or ID number"
+                  />
+                </div>
+              </>
             )}
             
             <div>
