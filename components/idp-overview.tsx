@@ -85,15 +85,6 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
     fetchData();
   }, [fetchData]);
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'completed': return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">✓</Badge>;
-      case 'in_progress': return <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">⏳</Badge>;
-      case 'expired': return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">⚠️</Badge>;
-      default: return <Badge variant="outline" className="bg-gray-50 text-gray-500 border-gray-200">—</Badge>;
-    }
-  };
-
   const getCoachCertificationStatus = (coachId: string, certificationId: string) => {
     const coachCert = coachCertifications.find(
       cc => cc.coach_id === coachId && cc.certification_id === certificationId
@@ -250,54 +241,113 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
       {/* Main Overview Table */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Certification Matrix</CardTitle>
+          <CardTitle className="text-lg text-high-contrast">Certification Matrix</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead className="w-48 sticky left-0 bg-white z-10">Coach</TableHead>
-                  <TableHead className="w-24 text-center">Required %</TableHead>
-                  <TableHead className="w-24 text-center">Total %</TableHead>
-                  {filteredCertifications.map(cert => (
-                    <TableHead key={cert.id} className="w-20 text-center">
-                      <div className="flex flex-col items-center gap-1">
-                        {cert.is_required && <Star className="h-3 w-3 text-amber-500" />}
-                        <span className="text-xs font-medium truncate max-w-16" title={cert.name}>
-                          {cert.name.split(' ')[0]}
-                        </span>
-                      </div>
-                    </TableHead>
-                  ))}
+                <TableRow className="bg-brand-olive/5">
+                  <TableHead className="w-48 sticky left-0 bg-brand-olive/5 z-10 border-r border-brand-olive/20">
+                    <span className="font-semibold text-high-contrast">Coach</span>
+                  </TableHead>
+                  <TableHead className="w-32 text-center bg-brand-olive/5 border-r border-brand-olive/20">
+                    <span className="font-semibold text-high-contrast">Required Progress</span>
+                  </TableHead>
+                  <TableHead className="w-32 text-center bg-brand-olive/5 border-r border-brand-olive/20">
+                    <span className="font-semibold text-high-contrast">Overall Progress</span>
+                  </TableHead>
+                  {filteredCertifications.map(cert => {
+                    // Create smarter column headers by removing common prefixes and using key words
+                    let displayName = cert.name;
+                    
+                    // Remove common prefixes
+                    displayName = displayName.replace(/^(OSHA|NCOS)-?\s*/i, '');
+                    displayName = displayName.replace(/^(CPR|First Aid|BBP)\s*\/?\s*/i, '');
+                    displayName = displayName.replace(/^(Wicklander)\s*&?\s*(Zulawski)?\s*/i, 'W&Z');
+                    
+                    // Use key identifying words for specific certifications
+                    if (cert.name.toLowerCase().includes('510')) displayName = '510 Course';
+                    if (cert.name.toLowerCase().includes('470')) displayName = '470 Course';
+                    if (cert.name.toLowerCase().includes('fall protection')) displayName = 'Fall Protection';
+                    if (cert.name.toLowerCase().includes('maritime')) displayName = 'Maritime';
+                    if (cert.name.toLowerCase().includes('cpr') || cert.name.toLowerCase().includes('first aid')) displayName = 'CPR/First Aid';
+                    if (cert.name.toLowerCase().includes('wicklander')) displayName = 'Interview & Interrogation';
+                    
+                    // Limit to 12 characters and add ellipsis if needed
+                    if (displayName.length > 12) {
+                      displayName = displayName.substring(0, 10) + '...';
+                    }
+                    
+                    return (
+                      <TableHead key={cert.id} className="w-28 text-center bg-brand-olive/5 border-r border-brand-olive/10 last:border-r-0">
+                        <div className="flex flex-col items-center gap-1 py-2">
+                          {cert.is_required && <Star className="h-3 w-3 text-amber-500 fill-amber-500" />}
+                          <span className="text-xs font-semibold text-high-contrast leading-tight text-center" title={cert.name}>
+                            {displayName}
+                          </span>
+                        </div>
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {coaches.map(coach => (
-                  <TableRow key={coach.id}>
-                    <TableCell className="sticky left-0 bg-white z-10">
-                      <div className="flex flex-col">
-                        <span className="font-medium text-high-contrast">{coach.name}</span>
+                {coaches.map((coach, index) => (
+                  <TableRow key={coach.id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50/50"}>
+                    <TableCell className="sticky left-0 bg-inherit z-10 border-r border-brand-olive/20">
+                      <div className="flex flex-col py-2">
+                        <span className="font-semibold text-high-contrast text-sm">{coach.name}</span>
                         <span className="text-xs text-medium-contrast">
                           Hired: {coach.date_of_hire ? new Date(coach.date_of_hire).toLocaleDateString() : 'N/A'}
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-center">
-                      <Badge variant="outline" className={`${getCoachProgress(coach.id) >= 80 ? 'bg-green-50 text-green-700 border-green-200' : getCoachProgress(coach.id) >= 50 ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
+                    <TableCell className="text-center border-r border-brand-olive/20">
+                      <Badge 
+                        variant="outline" 
+                        className={`font-semibold ${
+                          getCoachProgress(coach.id) >= 80 
+                            ? 'bg-green-100 text-green-800 border-green-300' 
+                            : getCoachProgress(coach.id) >= 50 
+                            ? 'bg-yellow-100 text-yellow-800 border-yellow-300' 
+                            : 'bg-red-100 text-red-800 border-red-300'
+                        }`}
+                      >
                         {Math.round(getCoachProgress(coach.id))}%
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-center">
-                      <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                    <TableCell className="text-center border-r border-brand-olive/20">
+                      <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-300 font-semibold">
                         {Math.round(getTotalProgress(coach.id))}%
                       </Badge>
                     </TableCell>
                     {filteredCertifications.map(cert => {
                       const status = getCoachCertificationStatus(coach.id, cert.id);
                       return (
-                        <TableCell key={cert.id} className="text-center">
-                          {getStatusBadge(status)}
+                        <TableCell key={cert.id} className="text-center border-r border-brand-olive/10 last:border-r-0 py-3">
+                          <div className="flex justify-center">
+                            {status === 'completed' && (
+                              <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                                <CheckCircle className="h-5 w-5 text-white" />
+                              </div>
+                            )}
+                            {status === 'in_progress' && (
+                              <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+                                <span className="text-white text-xs font-bold">⏳</span>
+                              </div>
+                            )}
+                            {status === 'expired' && (
+                              <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center">
+                                <span className="text-white text-xs font-bold">⚠️</span>
+                              </div>
+                            )}
+                            {status === 'not_started' && (
+                              <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                                <span className="text-gray-600 text-xs font-bold">—</span>
+                              </div>
+                            )}
+                          </div>
                         </TableCell>
                       );
                     })}
@@ -309,29 +359,37 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
         </CardContent>
       </Card>
 
-      {/* Legend */}
+      {/* Enhanced Legend */}
       <Card>
         <CardContent className="pt-4">
-          <div className="flex items-center justify-center gap-6 text-sm">
-            <div className="flex items-center gap-1">
-              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">✓</Badge>
-              <span>Completed</span>
+          <div className="flex items-center justify-center gap-8 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
+                <CheckCircle className="h-4 w-4 text-white" />
+              </div>
+              <span className="font-medium text-high-contrast">Completed</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">⏳</Badge>
-              <span>In Progress</span>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
+                <span className="text-white text-xs font-bold">⏳</span>
+              </div>
+              <span className="font-medium text-high-contrast">In Progress</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">⚠️</Badge>
-              <span>Expired</span>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center">
+                <span className="text-white text-xs font-bold">⚠️</span>
+              </div>
+              <span className="font-medium text-high-contrast">Expired</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Badge variant="outline" className="bg-gray-50 text-gray-500 border-gray-200">—</Badge>
-              <span>Not Started</span>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center">
+                <span className="text-gray-600 text-xs font-bold">—</span>
+              </div>
+              <span className="font-medium text-high-contrast">Not Started</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Star className="h-3 w-3 text-amber-500" />
-              <span>Required</span>
+            <div className="flex items-center gap-2">
+              <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+              <span className="font-medium text-high-contrast">Required Certification</span>
             </div>
           </div>
         </CardContent>
