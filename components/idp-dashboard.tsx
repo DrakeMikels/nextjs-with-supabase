@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { 
   GraduationCap, 
@@ -21,13 +21,11 @@ import {
   AlertTriangle, 
   CheckCircle, 
   Plus,
-  Edit,
   BookOpen,
   TrendingUp,
   FileText
 } from "lucide-react";
 import type { 
-  Coach, 
   Certification, 
   CertificationCategory, 
   CoachCertification, 
@@ -271,7 +269,7 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
             <span className="text-brand-olive">Individual Development Plan</span>
           </h2>
           <p className="text-medium-contrast">
-            {coach.name}'s professional development and certification tracking
+            {coach.name}&apos;s professional development and certification tracking
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -438,16 +436,16 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
         </TabsContent>
       </Tabs>
 
-      {/* Simplified Add Goal Form */}
-      {showAddGoal && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-high-contrast">Add Development Goal</CardTitle>
-            <CardDescription className="text-medium-contrast">
+      {/* Add Goal Dialog */}
+      <Dialog open={showAddGoal} onOpenChange={setShowAddGoal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Development Goal</DialogTitle>
+            <DialogDescription>
               Create a new professional development goal for {coach.name}.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
             <div>
               <Label htmlFor="goal-title" className="text-high-contrast">Title</Label>
               <Input
@@ -477,42 +475,43 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
             </div>
             <div>
               <Label htmlFor="goal-priority" className="text-high-contrast">Priority</Label>
-              <select 
-                value={newGoal.priority} 
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setNewGoal(prev => ({ ...prev, priority: e.target.value as 'low' | 'medium' | 'high' | 'critical' }))}
-                className="w-full p-2 border rounded-md"
-              >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-                <option value="critical">Critical</option>
-              </select>
+              <Select value={newGoal.priority} onValueChange={(value: 'low' | 'medium' | 'high' | 'critical') => setNewGoal(prev => ({ ...prev, priority: value }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">Low</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="high">High</SelectItem>
+                  <SelectItem value="critical">Critical</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setShowAddGoal(false)}>
-                Cancel
-              </Button>
-              <Button onClick={addGoal} disabled={!newGoal.title.trim()}>
-                Add Goal
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAddGoal(false)}>
+              Cancel
+            </Button>
+            <Button onClick={addGoal} disabled={!newGoal.title.trim()}>
+              Add Goal
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-      {/* Simplified Certification Update Form */}
-      {showCertificationDialog && selectedCertification && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-high-contrast">Update Certification</CardTitle>
-            <CardDescription className="text-medium-contrast">
-              Update the status and details for {selectedCertification.name}.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+      {/* Certification Update Dialog */}
+      <Dialog open={showCertificationDialog} onOpenChange={setShowCertificationDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Update Certification</DialogTitle>
+            <DialogDescription>
+              Update the status and details for {selectedCertification?.name}.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
             <div>
               <Label htmlFor="cert-status" className="text-high-contrast">Status</Label>
-              <Select value={certificationUpdate.status} onValueChange={(value: any) => setCertificationUpdate(prev => ({ ...prev, status: value as 'not_started' | 'in_progress' | 'completed' | 'expired' }))} className="w-full p-2 border rounded-md">
+              <Select value={certificationUpdate.status} onValueChange={(value: 'not_started' | 'in_progress' | 'completed' | 'expired') => setCertificationUpdate(prev => ({ ...prev, status: value }))}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -566,17 +565,17 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
                 placeholder="Additional notes or comments..."
               />
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setShowCertificationDialog(false)}>
-                Cancel
-              </Button>
-              <Button onClick={updateCertificationStatus}>
-                Update Certification
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCertificationDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={updateCertificationStatus}>
+              Update Certification
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 } 

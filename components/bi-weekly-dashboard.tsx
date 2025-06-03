@@ -222,13 +222,13 @@ export function BiWeeklyDashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5 bg-brand-off-white border border-brand-olive/20">
+        <TabsList className="grid w-full grid-cols-6 bg-brand-off-white border border-brand-olive/20">
           <TabsTrigger value="master" className="data-[state=active]:bg-brand-olive data-[state=active]:text-white text-medium-contrast">📊 Master View</TabsTrigger>
           <TabsTrigger value="metrics" className="data-[state=active]:bg-brand-olive-light data-[state=active]:text-white text-medium-contrast">✏️ Quick Entry</TabsTrigger>
           <TabsTrigger value="periods" className="data-[state=active]:bg-brand-olive-medium data-[state=active]:text-white text-medium-contrast">📅 Periods</TabsTrigger>
           <TabsTrigger value="coaches" className="data-[state=active]:bg-brand-olive-soft data-[state=active]:text-white text-medium-contrast">👥 Coaches</TabsTrigger>
           <TabsTrigger value="dashboard" className="data-[state=active]:bg-brand-olive-pale data-[state=active]:text-white text-medium-contrast">📈 Analytics</TabsTrigger>
-          <TabsTrigger value="idp" className="data-[state=active]:bg-brand-olive-pale data-[state=active]:text-white text-medium-contrast">📄 Idp</TabsTrigger>
+          <TabsTrigger value="idp" className="data-[state=active]:bg-brand-olive-pale data-[state=active]:text-white text-medium-contrast">🎓 IDP</TabsTrigger>
         </TabsList>
 
         <TabsContent value="master" className="space-y-4">
