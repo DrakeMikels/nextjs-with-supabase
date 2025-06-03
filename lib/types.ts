@@ -38,4 +38,58 @@ export interface DashboardProps {
   periods: BiWeeklyPeriod[];
   coaches: Coach[];
   onDataChange: () => void;
+}
+
+// IDP (Individual Development Plan) Types
+export interface CertificationCategory {
+  id: string;
+  name: string;
+  description: string | null;
+  is_required: boolean;
+  created_at: string;
+}
+
+export interface Certification {
+  id: string;
+  category_id: string;
+  name: string;
+  description: string | null;
+  provider: string | null;
+  duration_hours: number | null;
+  expiration_months: number | null;
+  is_required: boolean;
+  created_at: string;
+  category?: CertificationCategory;
+}
+
+export interface CoachCertification {
+  id: string;
+  coach_id: string;
+  certification_id: string;
+  status: 'not_started' | 'in_progress' | 'completed' | 'expired';
+  start_date: string | null;
+  completion_date: string | null;
+  expiration_date: string | null;
+  certificate_number: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+  certification?: Certification;
+}
+
+export interface IdpGoal {
+  id: string;
+  coach_id: string;
+  title: string;
+  description: string | null;
+  target_completion_date: string | null;
+  status: 'not_started' | 'in_progress' | 'completed' | 'on_hold';
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface IdpDashboardProps {
+  coach: Coach;
+  onDataChange: () => void;
 } 

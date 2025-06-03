@@ -17,12 +17,14 @@ import { SafetyMetricsForm } from "./safety-metrics-form";
 import { CoachManagement } from "./coach-management";
 import { MetricsDashboard } from "./metrics-dashboard";
 import { MasterDashboard } from "./master-dashboard";
+import { IdpDashboard } from "./idp-dashboard";
 import type { BiWeeklyPeriod, Coach } from "@/lib/types";
 
 export function BiWeeklyDashboard() {
   const [periods, setPeriods] = useState<BiWeeklyPeriod[]>([]);
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<BiWeeklyPeriod | null>(null);
+  const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("master"); // Default to Master View
   const supabase = createClient();
@@ -226,6 +228,7 @@ export function BiWeeklyDashboard() {
           <TabsTrigger value="periods" className="data-[state=active]:bg-brand-olive-medium data-[state=active]:text-white text-medium-contrast">📅 Periods</TabsTrigger>
           <TabsTrigger value="coaches" className="data-[state=active]:bg-brand-olive-soft data-[state=active]:text-white text-medium-contrast">👥 Coaches</TabsTrigger>
           <TabsTrigger value="dashboard" className="data-[state=active]:bg-brand-olive-pale data-[state=active]:text-white text-medium-contrast">📈 Analytics</TabsTrigger>
+          <TabsTrigger value="idp" className="data-[state=active]:bg-brand-olive-pale data-[state=active]:text-white text-medium-contrast">📄 Idp</TabsTrigger>
         </TabsList>
 
         <TabsContent value="master" className="space-y-4">
@@ -277,6 +280,56 @@ export function BiWeeklyDashboard() {
             periods={periods}
             coaches={coaches}
           />
+        </TabsContent>
+
+        <TabsContent value="idp" className="space-y-4">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-brand-olive">Individual Development Plans</h2>
+                <p className="text-medium-contrast">Professional development and certification tracking for coaches</p>
+              </div>
+            </div>
+            
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {coaches.map((coach) => (
+                <div key={coach.id} className="p-4 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                  <h3 className="font-semibold text-high-contrast">{coach.name}</h3>
+                  <p className="text-sm text-medium-contrast">
+                    Hired: {coach.date_of_hire ? new Date(coach.date_of_hire).toLocaleDateString() : 'N/A'}
+                  </p>
+                  <p className="text-sm text-medium-contrast">
+                    Vacation: {coach.vacation_days_remaining}/{coach.vacation_days_total} days
+                  </p>
+                  <div className="mt-3">
+                    <button 
+                      onClick={() => setSelectedCoach(coach)}
+                      className="text-sm bg-brand-olive text-white px-3 py-1 rounded hover:bg-brand-olive-light"
+                    >
+                      View IDP
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {selectedCoach && (
+              <div className="mt-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <button 
+                    onClick={() => setSelectedCoach(null)}
+                    className="text-sm text-brand-olive hover:underline"
+                  >
+                    ← Back to Coach List
+                  </button>
+                </div>
+                <IdpDashboard 
+                  coach={selectedCoach}
+                  onDataChange={fetchData}
+                />
+              </div>
+            )}
+          </div>
         </TabsContent>
       </Tabs>
     </div>
