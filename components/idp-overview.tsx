@@ -305,21 +305,21 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
         <CardContent>
           <div className="space-y-6">
             {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-brand-olive/5 rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-brand-olive/5 dark:bg-brand-olive/10 rounded-lg">
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">
+                <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                   {coachCertifications.filter(cc => cc.status === 'completed').length}
                 </div>
                 <div className="text-sm text-medium-contrast">Total Completed</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">
+                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                   {coachCertifications.filter(cc => cc.status === 'in_progress').length}
                 </div>
                 <div className="text-sm text-medium-contrast">In Progress</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-amber-600">
+                <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
                   {coachCertifications.filter(cc => cc.status === 'scheduled').length}
                 </div>
                 <div className="text-sm text-medium-contrast">Scheduled</div>
@@ -361,15 +361,15 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                         </div>
                         <div className="flex items-center gap-4 text-sm">
                           <div className="text-center">
-                            <div className="font-semibold text-green-600">{completedCount}</div>
+                            <div className="font-semibold text-green-600 dark:text-green-400">{completedCount}</div>
                             <div className="text-xs text-medium-contrast">Complete</div>
                           </div>
                           <div className="text-center">
-                            <div className="font-semibold text-blue-600">{inProgressCount}</div>
+                            <div className="font-semibold text-blue-600 dark:text-blue-400">{inProgressCount}</div>
                             <div className="text-xs text-medium-contrast">In Progress</div>
                           </div>
                           <div className="text-center">
-                            <div className="font-semibold text-amber-600">{scheduledCount}</div>
+                            <div className="font-semibold text-amber-600 dark:text-amber-400">{scheduledCount}</div>
                             <div className="text-xs text-medium-contrast">Scheduled</div>
                           </div>
                         </div>
@@ -382,28 +382,28 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                             key={coach.id} 
                             className={`p-3 rounded-lg border-2 transition-all ${
                               status === 'completed' 
-                                ? 'border-green-200 bg-green-50' 
+                                ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30' 
                                 : status === 'in_progress'
-                                ? 'border-blue-200 bg-blue-50'
+                                ? 'border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30'
                                 : status === 'scheduled'
-                                ? 'border-amber-200 bg-amber-50'
-                                : 'border-gray-200 bg-gray-50 hover:border-brand-olive/30'
+                                ? 'border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30'
+                                : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30 hover:border-brand-olive/30'
                             }`}
                           >
                             <div className="flex items-center justify-between mb-2">
                               <span className="font-medium text-high-contrast text-sm">{coach.name}</span>
                               <div className="flex items-center gap-1">
                                 {status === 'completed' && (
-                                  <CheckCircle className="h-4 w-4 text-green-600" />
+                                  <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
                                 )}
                                 {status === 'in_progress' && (
-                                  <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
+                                  <div className="w-4 h-4 rounded-full bg-blue-500 dark:bg-blue-400 flex items-center justify-center">
                                     <span className="text-white text-xs">⏳</span>
                                   </div>
                                 )}
                                 {status === 'scheduled' && (
-                                  <div className="w-4 h-4 rounded-full bg-amber-500 flex items-center justify-center">
-                                    <span className="text-white text-xs">📅</span>
+                                  <div className="w-4 h-4 rounded-full bg-amber-500 dark:bg-amber-400 flex items-center justify-center">
+                                    <span className="text-white dark:text-black text-xs">📅</span>
                                   </div>
                                 )}
                                 {status === 'not_started' && (
