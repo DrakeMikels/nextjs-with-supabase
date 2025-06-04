@@ -545,3 +545,98 @@
     background-size: 20px 20px;
   }
 }
+
+/* NUCLEAR OPTION - ELIMINATE ALL ANIMATIONS GLOBALLY FOR DROPDOWNS */
+* {
+  --radix-dropdown-menu-content-transform-origin: center !important;
+  --radix-select-content-transform-origin: center !important;
+  --radix-dialog-content-transform-origin: center !important;
+}
+
+/* Target ALL possible animation sources with maximum specificity */
+[data-radix-dropdown-menu-content],
+[data-radix-select-content], 
+[data-radix-dialog-content],
+[data-radix-popover-content],
+[data-radix-tooltip-content],
+[data-radix-hover-card-content],
+[data-radix-context-menu-content],
+[data-radix-menubar-content],
+.radix-dropdown-menu-content,
+.radix-select-content,
+.radix-dialog-content {
+  animation: none !important;
+  transform: none !important;
+  transition: opacity 150ms ease-in-out !important;
+  transform-origin: center !important;
+}
+
+/* Override ALL Tailwind animation classes */
+.animate-in,
+.animate-out,
+.slide-in-from-top-2,
+.slide-in-from-bottom-2,
+.slide-in-from-left-2,
+.slide-in-from-right-2,
+.slide-out-to-top-2,
+.slide-out-to-bottom-2,
+.slide-out-to-left-2,
+.slide-out-to-right-2,
+.zoom-in-95,
+.zoom-out-95,
+.fade-in-0,
+.fade-out-0,
+.duration-200,
+.duration-300 {
+  animation: none !important;
+  transform: none !important;
+  transition: opacity 150ms ease-in-out !important;
+}
+
+/* Force override any CSS custom properties */
+[data-state="open"],
+[data-state="closed"] {
+  --tw-enter-opacity: 1 !important;
+  --tw-enter-scale: 1 !important;
+  --tw-enter-rotate: 0 !important;
+  --tw-enter-skew-x: 0 !important;
+  --tw-enter-skew-y: 0 !important;
+  --tw-enter-translate-x: 0 !important;
+  --tw-enter-translate-y: 0 !important;
+  --tw-exit-opacity: 0 !important;
+  --tw-exit-scale: 1 !important;
+  --tw-exit-rotate: 0 !important;
+  --tw-exit-skew-x: 0 !important;
+  --tw-exit-skew-y: 0 !important;
+  --tw-exit-translate-x: 0 !important;
+  --tw-exit-translate-y: 0 !important;
+  animation: none !important;
+  transform: none !important;
+}
+
+/* Override any remaining Radix animations */
+[data-radix-dropdown-menu-content][data-state="open"],
+[data-radix-select-content][data-state="open"],
+[data-radix-dialog-content][data-state="open"],
+[data-radix-popover-content][data-state="open"],
+[data-radix-tooltip-content][data-state="open"],
+[data-radix-hover-card-content][data-state="open"],
+[data-radix-context-menu-content][data-state="open"],
+[data-radix-menubar-content][data-state="open"] {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+[data-radix-dropdown-menu-content][data-state="closed"],
+[data-radix-select-content][data-state="closed"],
+[data-radix-dialog-content][data-state="closed"],
+[data-radix-popover-content][data-state="closed"],
+[data-radix-tooltip-content][data-state="closed"],
+[data-radix-hover-card-content][data-state="closed"],
+[data-radix-context-menu-content][data-state="closed"],
+[data-radix-menubar-content][data-state="closed"] {
+  opacity: 0 !important;
+  transform: none !important;
+  animation: none !important;
+}
