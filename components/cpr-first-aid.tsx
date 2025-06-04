@@ -5,7 +5,9 @@ import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { 
   Select,
   SelectContent,
@@ -13,6 +15,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { 
   Heart, 
   MapPin, 
@@ -31,10 +42,11 @@ import type {
   Office, 
   CoachOfficeAssignment, 
   CprFirstAidRecord, 
-  CprFirstAidProps 
+  CprFirstAidProps,
+  Coach
 } from "@/lib/types";
 
-export function CprFirstAid({ coaches }: CprFirstAidProps) {
+export function CprFirstAid({ coaches, onDataChange }: CprFirstAidProps) {
   const [loading, setLoading] = useState(true);
   const [offices, setOffices] = useState<Office[]>([]);
   const [assignments, setAssignments] = useState<CoachOfficeAssignment[]>([]);
@@ -42,6 +54,19 @@ export function CprFirstAid({ coaches }: CprFirstAidProps) {
   const [selectedCoach, setSelectedCoach] = useState<string>("all");
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [editingRecord, setEditingRecord] = useState<CprFirstAidRecord | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    coach_id: "",
+    office_id: "",
+    cpr_certification_date: "",
+    cpr_expiration_date: "",
+    first_aid_certification_date: "",
+    first_aid_expiration_date: "",
+    provider: "",
+    certificate_number: "",
+    notes: ""
+  });
   const supabase = createClient();
 
   const fetchData = useCallback(async () => {
@@ -169,6 +194,95 @@ export function CprFirstAid({ coaches }: CprFirstAidProps) {
     return counts;
   };
 
+  const resetForm = () => {
+    setFormData({
+      coach_id: "",
+      office_id: "",
+      cpr_certification_date: "",
+      cpr_expiration_date: "",
+      first_aid_certification_date: "",
+      first_aid_expiration_date: "",
+      provider: "",
+      certificate_number: "",
+      notes: ""
+    });
+    setEditingRecord(null);
+  };
+
+  const handleAddRecord = () => {
+    resetForm();
+    setIsDialogOpen(true);
+  };
+
+  const handleEditRecord = (record: CprFirstAidRecord) => {
+    setFormData({
+      coach_id: record.coach_id,
+      office_id: record.office_id,
+      cpr_certification_date: record.cpr_certification_date || "",
+      cpr_expiration_date: record.cpr_expiration_date || "",
+      first_aid_certification_date: record.first_aid_certification_date || "",
+      first_aid_expiration_date: record.first_aid_expiration_date || "",
+      provider: record.provider || "",
+      certificate_number: record.certificate_number || "",
+      notes: record.notes || ""
+    });
+    setEditingRecord(record);
+    setIsDialogOpen(true);
+  };
+
+  const handleSaveRecord = async () => {
+    try {
+      setLoading(true);
+      
+      if (editingRecord) {
+        // Update existing record
+        const { error } = await supabase
+          .from("cpr_first_aid_records")
+          .update({
+            coach_id: formData.coach_id,
+            office_id: formData.office_id,
+            cpr_certification_date: formData.cpr_certification_date || null,
+            cpr_expiration_date: formData.cpr_expiration_date || null,
+            first_aid_certification_date: formData.first_aid_certification_date || null,
+            first_aid_expiration_date: formData.first_aid_expiration_date || null,
+            provider: formData.provider || null,
+            certificate_number: formData.certificate_number || null,
+            notes: formData.notes || null
+          })
+          .eq("id", editingRecord.id);
+
+        if (error) throw error;
+      } else {
+        // Create new record
+        const { error } = await supabase
+          .from("cpr_first_aid_records")
+          .insert({
+            coach_id: formData.coach_id,
+            office_id: formData.office_id,
+            cpr_certification_date: formData.cpr_certification_date || null,
+            cpr_expiration_date: formData.cpr_expiration_date || null,
+            first_aid_certification_date: formData.first_aid_certification_date || null,
+            first_aid_expiration_date: formData.first_aid_expiration_date || null,
+            provider: formData.provider || null,
+            certificate_number: formData.certificate_number || null,
+            notes: formData.notes || null
+          });
+
+        if (error) throw error;
+      }
+
+      setIsDialogOpen(false);
+      resetForm();
+      await fetchData();
+      onDataChange();
+    } catch (error) {
+      console.error("Error saving record:", error);
+      alert("Failed to save record. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <AnimatedContainer variant="fadeIn" className="space-y-6">
@@ -209,7 +323,7 @@ export function CprFirstAid({ coaches }: CprFirstAidProps) {
             <Download className="h-4 w-4" />
             Export
           </Button>
-          <Button className="gap-2 bg-brand-olive hover:bg-brand-olive/90">
+          <Button onClick={handleAddRecord} className="gap-2 bg-brand-olive hover:bg-brand-olive/90">
             <Plus className="h-4 w-4" />
             Add Record
           </Button>
@@ -427,6 +541,7 @@ export function CprFirstAid({ coaches }: CprFirstAidProps) {
                           variant="outline"
                           size="sm"
                           className="gap-2"
+                          onClick={() => handleEditRecord(record)}
                         >
                           <Edit className="h-3 w-3" />
                           Edit
@@ -440,6 +555,149 @@ export function CprFirstAid({ coaches }: CprFirstAidProps) {
           </CardContent>
         </Card>
       </AnimatedItem>
+
+      {/* Add/Edit Record Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>
+              {editingRecord ? "Edit CPR/First Aid Record" : "Add CPR/First Aid Record"}
+            </DialogTitle>
+            <DialogDescription>
+              {editingRecord 
+                ? "Update the CPR and First Aid certification information for this coach and office."
+                : "Add CPR and First Aid certification information for a coach at a specific office."
+              }
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="coach">Coach</Label>
+                <Select value={formData.coach_id} onValueChange={(value) => setFormData(prev => ({ ...prev, coach_id: value }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select coach" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {coaches.map((coach) => (
+                      <SelectItem key={coach.id} value={coach.id}>
+                        {coach.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="office">Office</Label>
+                <Select value={formData.office_id} onValueChange={(value) => setFormData(prev => ({ ...prev, office_id: value }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select office" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {offices.map((office) => (
+                      <SelectItem key={office.id} value={office.id}>
+                        {office.name} - {office.location}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="cpr_cert_date">CPR Certification Date</Label>
+                <Input
+                  id="cpr_cert_date"
+                  type="date"
+                  value={formData.cpr_certification_date}
+                  onChange={(e) => setFormData(prev => ({ ...prev, cpr_certification_date: e.target.value }))}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="cpr_exp_date">CPR Expiration Date</Label>
+                <Input
+                  id="cpr_exp_date"
+                  type="date"
+                  value={formData.cpr_expiration_date}
+                  onChange={(e) => setFormData(prev => ({ ...prev, cpr_expiration_date: e.target.value }))}
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="first_aid_cert_date">First Aid Certification Date</Label>
+                <Input
+                  id="first_aid_cert_date"
+                  type="date"
+                  value={formData.first_aid_certification_date}
+                  onChange={(e) => setFormData(prev => ({ ...prev, first_aid_certification_date: e.target.value }))}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="first_aid_exp_date">First Aid Expiration Date</Label>
+                <Input
+                  id="first_aid_exp_date"
+                  type="date"
+                  value={formData.first_aid_expiration_date}
+                  onChange={(e) => setFormData(prev => ({ ...prev, first_aid_expiration_date: e.target.value }))}
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="provider">Training Provider</Label>
+                <Input
+                  id="provider"
+                  value={formData.provider}
+                  onChange={(e) => setFormData(prev => ({ ...prev, provider: e.target.value }))}
+                  placeholder="e.g., American Red Cross"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="certificate_number">Certificate Number</Label>
+                <Input
+                  id="certificate_number"
+                  value={formData.certificate_number}
+                  onChange={(e) => setFormData(prev => ({ ...prev, certificate_number: e.target.value }))}
+                  placeholder="Certificate number"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="notes">Notes</Label>
+              <Textarea
+                id="notes"
+                value={formData.notes}
+                onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                placeholder="Additional notes about the certification..."
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSaveRecord}
+              disabled={!formData.coach_id || !formData.office_id}
+              className="bg-brand-olive hover:bg-brand-olive/90"
+            >
+              {editingRecord ? "Update Record" : "Add Record"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AnimatedContainer>
   );
 } 
