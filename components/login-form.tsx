@@ -105,15 +105,6 @@ export function LoginForm({
                   {isLoading ? "Logging in..." : "Login"}
                 </Button>
               </div>
-              <div className="mt-4 text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <Link
-                  href="/auth/sign-up"
-                  className="underline underline-offset-4 text-brand-olive hover:text-brand-olive/80 hover-scale"
-                >
-                  Sign up
-                </Link>
-              </div>
             </form>
           </CardContent>
         </Card>
