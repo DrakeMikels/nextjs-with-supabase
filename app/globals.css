@@ -32,9 +32,9 @@
     --radius: 0.5rem;
     
     /* Animation variables */
-    --animation-duration-fast: 150ms;
-    --animation-duration-normal: 250ms;
-    --animation-duration-slow: 350ms;
+    --animation-duration-fast: 100ms;
+    --animation-duration-normal: 200ms;
+    --animation-duration-slow: 300ms;
     --animation-ease: cubic-bezier(0.4, 0, 0.2, 1);
     --animation-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
@@ -459,14 +459,14 @@
     animation: scaleIn var(--animation-duration-normal) var(--animation-ease);
   }
   
-  /* Staggered animation delays */
+  /* Stagger animation delays - reduced for smoother feel */
   .stagger-1 { animation-delay: 0ms; }
-  .stagger-2 { animation-delay: 50ms; }
-  .stagger-3 { animation-delay: 100ms; }
-  .stagger-4 { animation-delay: 150ms; }
-  .stagger-5 { animation-delay: 200ms; }
-  .stagger-6 { animation-delay: 250ms; }
-  .stagger-7 { animation-delay: 300ms; }
+  .stagger-2 { animation-delay: 20ms; }
+  .stagger-3 { animation-delay: 40ms; }
+  .stagger-4 { animation-delay: 60ms; }
+  .stagger-5 { animation-delay: 80ms; }
+  .stagger-6 { animation-delay: 100ms; }
+  .stagger-7 { animation-delay: 120ms; }
   
   /* Loading states */
   .loading-skeleton {
@@ -493,5 +493,31 @@
       linear-gradient(rgba(95, 159, 109, 0.1) 1px, transparent 1px),
       linear-gradient(90deg, rgba(95, 159, 109, 0.1) 1px, transparent 1px);
     background-size: 20px 20px;
+  }
+  
+  /* Subtle dropdown and dialog animations */
+  [data-radix-dropdown-menu-content][data-state="open"],
+  [data-radix-select-content][data-state="open"],
+  [data-radix-dialog-content][data-state="open"] {
+    animation-duration: 150ms !important;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  
+  [data-radix-dropdown-menu-content][data-state="closed"],
+  [data-radix-select-content][data-state="closed"],
+  [data-radix-dialog-content][data-state="closed"] {
+    animation-duration: 100ms !important;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  
+  /* Also target by class names for broader coverage */
+  .animate-in {
+    animation-duration: 150ms !important;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  
+  .animate-out {
+    animation-duration: 100ms !important;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
 }

@@ -8,43 +8,43 @@ export const fadeInVariants: Variants = {
   hidden: { opacity: 0 },
   visible: { 
     opacity: 1,
-    transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] }
+    transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
   }
 };
 
 export const fadeInUpVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 10 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] }
+    transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
   }
 };
 
 export const fadeInDownVariants: Variants = {
-  hidden: { opacity: 0, y: -20 },
+  hidden: { opacity: 0, y: -10 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] }
+    transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
   }
 };
 
 export const slideInLeftVariants: Variants = {
-  hidden: { opacity: 0, x: -20 },
+  hidden: { opacity: 0, x: -10 },
   visible: { 
     opacity: 1, 
     x: 0,
-    transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] }
+    transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
   }
 };
 
 export const slideInRightVariants: Variants = {
-  hidden: { opacity: 0, x: 20 },
+  hidden: { opacity: 0, x: 10 },
   visible: { 
     opacity: 1, 
     x: 0,
-    transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] }
+    transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
   }
 };
 
@@ -63,18 +63,18 @@ export const staggerContainerVariants: Variants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.05,
-      delayChildren: 0.1
+      staggerChildren: 0.02,
+      delayChildren: 0.05
     }
   }
 };
 
 export const staggerItemVariants: Variants = {
-  hidden: { opacity: 0, y: 10 },
+  hidden: { opacity: 0, y: 5 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
+    transition: { duration: 0.15, ease: [0.4, 0, 0.2, 1] }
   }
 };
 
