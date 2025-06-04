@@ -280,7 +280,7 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="professional-dropdown">
                     <SelectItem value="all">All Statuses</SelectItem>
                     <SelectItem value="open">Open</SelectItem>
                     <SelectItem value="in_progress">In Progress</SelectItem>
@@ -295,7 +295,7 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="professional-dropdown">
                     <SelectItem value="all">All Priorities</SelectItem>
                     <SelectItem value="critical">Critical</SelectItem>
                     <SelectItem value="high">High</SelectItem>
@@ -386,7 +386,7 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
 
       {/* Add Action Item Dialog */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent>
+        <DialogContent className="professional-dropdown">
           <DialogHeader>
             <DialogTitle>Add Action Item</DialogTitle>
             <DialogDescription>
@@ -419,7 +419,7 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
                   <SelectTrigger>
                     <SelectValue placeholder="Select coach" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="professional-dropdown">
                     <SelectItem value="">Unassigned</SelectItem>
                     {coaches.map((coach) => (
                       <SelectItem key={coach.id} value={coach.id}>{coach.name}</SelectItem>
@@ -433,7 +433,7 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="professional-dropdown">
                     <SelectItem value="low">Low</SelectItem>
                     <SelectItem value="medium">Medium</SelectItem>
                     <SelectItem value="high">High</SelectItem>
@@ -466,7 +466,7 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
       {/* Edit Action Item Dialog */}
       {editingItem && (
         <Dialog open={!!editingItem} onOpenChange={() => setEditingItem(null)}>
-          <DialogContent>
+          <DialogContent className="professional-dropdown">
             <DialogHeader>
               <DialogTitle>Edit Action Item</DialogTitle>
               <DialogDescription>
@@ -497,7 +497,7 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
                     <SelectTrigger>
                       <SelectValue placeholder="Select coach" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="professional-dropdown">
                       <SelectItem value="">Unassigned</SelectItem>
                       {coaches.map((coach) => (
                         <SelectItem key={coach.id} value={coach.id}>{coach.name}</SelectItem>
@@ -511,7 +511,7 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="professional-dropdown">
                       <SelectItem value="low">Low</SelectItem>
                       <SelectItem value="medium">Medium</SelectItem>
                       <SelectItem value="high">High</SelectItem>
@@ -527,7 +527,7 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="professional-dropdown">
                       <SelectItem value="open">Open</SelectItem>
                       <SelectItem value="in_progress">In Progress</SelectItem>
                       <SelectItem value="completed">Completed</SelectItem>

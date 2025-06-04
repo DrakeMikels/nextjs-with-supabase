@@ -84,13 +84,13 @@ export function BiWeeklyPeriodList({
       </AnimatedItem>
 
       <AnimatedContainer variant="stagger" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {periods.map((period, index) => (
-          <AnimatedItem key={period.id} className={`stagger-${Math.min(index + 1, 7)}`}>
+        {periods.map((period) => (
+          <AnimatedItem key={period.id}>
             <Card 
               className={`cursor-pointer transition-all hover:shadow-md hover-lift ${
                 selectedPeriod?.id === period.id 
                   ? "ring-2 ring-primary border-primary" 
-                  : ""
+                  : "border-brand-olive/20 hover:border-brand-olive/40"
               }`}
               onClick={() => onSelectPeriod(period)}
             >

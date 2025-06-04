@@ -10,6 +10,7 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { 
   PlusCircle, 
   Calendar, 
@@ -112,6 +113,10 @@ export function BiWeeklyDashboard() {
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState("master"); // Default to Master View
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [customDateRange, setCustomDateRange] = useState<{start: string, end: string}>({
+    start: "",
+    end: ""
+  });
   const supabase = createClient();
 
   const fetchData = useCallback(async () => {
@@ -248,8 +253,8 @@ export function BiWeeklyDashboard() {
             </div>
             
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {coaches.map((coach, index) => (
-                <AnimatedItem key={coach.id} className={`stagger-${Math.min(index + 1, 7)}`}>
+              {coaches.map((coach) => (
+                <AnimatedItem key={coach.id}>
                   <div className="p-4 border rounded-lg hover:bg-muted/50 cursor-pointer hover-lift">
                     <h3 className="font-semibold text-high-contrast text-sm sm:text-base">{coach.name}</h3>
                     <p className="text-xs sm:text-sm text-medium-contrast">
@@ -495,7 +500,7 @@ export function BiWeeklyDashboard() {
                         </div>
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-56">
+                    <DropdownMenuContent align="start" className="w-56 professional-dropdown">
                       {periods.map((period) => (
                         <DropdownMenuItem
                           key={period.id}
@@ -519,44 +524,33 @@ export function BiWeeklyDashboard() {
             <AnimatedItem>
               <Card className="border-brand-olive-soft/20 hover:border-brand-olive-soft/40 transition-colors hover-lift">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-high-contrast">Date Range</CardTitle>
+                  <CardTitle className="text-sm font-medium text-high-contrast">Custom Date Range</CardTitle>
                   <Calendar className="h-4 w-4 text-brand-olive-soft" />
                 </CardHeader>
                 <CardContent>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        className="h-auto p-0 text-left justify-start hover:bg-transparent w-full hover-scale"
-                      >
-                        <div className="flex items-center gap-2 w-full">
-                          <div className="text-xs sm:text-sm text-brand-olive-soft font-medium truncate">
-                            {selectedPeriod ? 
-                              `${new Date(selectedPeriod.start_date).toLocaleDateString()} - ${new Date(selectedPeriod.end_date).toLocaleDateString()}` 
-                              : "No period selected"
-                            }
-                          </div>
-                          <ChevronDown className="h-4 w-4 text-brand-olive-soft flex-shrink-0" />
-                        </div>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-56">
-                      {periods.map((period) => (
-                        <DropdownMenuItem
-                          key={period.id}
-                          onClick={() => setSelectedPeriod(period)}
-                          className={selectedPeriod?.id === period.id ? "bg-brand-olive/10" : ""}
-                        >
-                          <div className="flex flex-col">
-                            <span className="font-medium">{period.period_name}</span>
-                            <span className="text-xs text-medium-contrast">
-                              {new Date(period.start_date).toLocaleDateString()} - {new Date(period.end_date).toLocaleDateString()}
-                            </span>
-                          </div>
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <Input
+                        type="date"
+                        value={customDateRange.start}
+                        onChange={(e) => setCustomDateRange(prev => ({...prev, start: e.target.value}))}
+                        className="text-xs h-8"
+                        placeholder="Start date"
+                      />
+                      <Input
+                        type="date"
+                        value={customDateRange.end}
+                        onChange={(e) => setCustomDateRange(prev => ({...prev, end: e.target.value}))}
+                        className="text-xs h-8"
+                        placeholder="End date"
+                      />
+                    </div>
+                    {customDateRange.start && customDateRange.end && (
+                      <div className="text-xs text-brand-olive-soft font-medium">
+                        {new Date(customDateRange.start).toLocaleDateString()} - {new Date(customDateRange.end).toLocaleDateString()}
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </AnimatedItem>

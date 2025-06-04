@@ -160,8 +160,8 @@ export function MeetingView({ coaches, selectedPeriod }: MeetingViewProps) {
 
       {/* Coach Cards Grid */}
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {coachMetrics.map((coach, index) => (
-          <AnimatedItem key={coach.id} className={`stagger-${Math.min(index + 1, 7)}`}>
+        {coachMetrics.map((coach) => (
+          <AnimatedItem key={coach.id}>
             <Card className={`h-full ${coach.hasData ? 'border-green-200 hover:border-green-300' : 'border-red-200 hover:border-red-300'} transition-colors`}>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">

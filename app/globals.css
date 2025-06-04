@@ -383,19 +383,59 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
   
-  /* Professional dropdown animations - simple opacity only */
-  [data-radix-dropdown-menu-content],
-  [data-radix-select-content],
-  [data-radix-dialog-content] {
-    transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+  /* Professional dropdown animations - completely remove directional movement */
+  .professional-dropdown {
+    transition: opacity 150ms ease-in-out !important;
+    animation: none !important;
   }
   
-  /* Ensure smooth opacity transitions for all animate classes */
-  .animate-in,
+  .professional-dropdown[data-state="open"] {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  
+  .professional-dropdown[data-state="closed"] {
+    opacity: 0 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  
+  /* Override any Radix animations for professional dropdowns */
+  .professional-dropdown[data-radix-dropdown-menu-content] {
+    animation: none !important;
+    transform: none !important;
+  }
+  
+  /* Existing dropdown overrides */
+  [data-radix-dropdown-menu-content][data-state="open"],
+  [data-radix-select-content][data-state="open"],
+  [data-radix-dialog-content][data-state="open"] {
+    transition: opacity 150ms ease-in-out !important;
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  
+  [data-radix-dropdown-menu-content][data-state="closed"],
+  [data-radix-select-content][data-state="closed"],
+  [data-radix-dialog-content][data-state="closed"] {
+    transition: opacity 150ms ease-in-out !important;
+    opacity: 0 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  
+  /* Remove all Tailwind animate classes */
+  .animate-in {
+    animation: none !important;
+  }
+  
   .animate-out {
-    transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+    animation: none !important;
   }
   
+  /* Essential utility classes */
   .hover-scale {
     transition: transform var(--animation-duration-fast) var(--animation-ease);
   }
@@ -412,67 +452,7 @@
     box-shadow: 0 0 20px rgba(44, 81, 52, 0.3);
   }
   
-  /* Enhanced button animations */
-  .btn-animate {
-    transition: all var(--animation-duration-normal) var(--animation-ease);
-  }
-  
-  .btn-animate:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-  
-  .btn-animate:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Enhanced input animations */
-  .input-animate {
-    transition: all var(--animation-duration-normal) var(--animation-ease);
-  }
-  
-  .input-animate:focus {
-    transform: scale(1.01);
-    box-shadow: 0 0 0 3px rgba(44, 81, 52, 0.1);
-  }
-  
-  /* Enhanced card animations */
-  .card-animate {
-    transition: all var(--animation-duration-normal) var(--animation-ease);
-  }
-  
-  .card-animate:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Smooth fade transitions */
-  .fade-in {
-    animation: fadeIn var(--animation-duration-normal) var(--animation-ease);
-  }
-  
-  .fade-in-up {
-    animation: fadeInUp var(--animation-duration-normal) var(--animation-ease);
-  }
-  
-  .fade-in-down {
-    animation: fadeInDown var(--animation-duration-normal) var(--animation-ease);
-  }
-  
-  .slide-in-left {
-    animation: slideInLeft var(--animation-duration-normal) var(--animation-ease);
-  }
-  
-  .slide-in-right {
-    animation: slideInRight var(--animation-duration-normal) var(--animation-ease);
-  }
-  
-  .scale-in {
-    animation: scaleIn var(--animation-duration-normal) var(--animation-ease);
-  }
-  
-  /* Stagger animation delays - reduced for smoother feel */
+  /* Stagger animation delays */
   .stagger-1 { animation-delay: 0ms; }
   .stagger-2 { animation-delay: 20ms; }
   .stagger-3 { animation-delay: 40ms; }
@@ -506,31 +486,5 @@
       linear-gradient(rgba(95, 159, 109, 0.1) 1px, transparent 1px),
       linear-gradient(90deg, rgba(95, 159, 109, 0.1) 1px, transparent 1px);
     background-size: 20px 20px;
-  }
-  
-  /* Subtle dropdown and dialog animations */
-  [data-radix-dropdown-menu-content][data-state="open"],
-  [data-radix-select-content][data-state="open"],
-  [data-radix-dialog-content][data-state="open"] {
-    animation-duration: 150ms !important;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
-  }
-  
-  [data-radix-dropdown-menu-content][data-state="closed"],
-  [data-radix-select-content][data-state="closed"],
-  [data-radix-dialog-content][data-state="closed"] {
-    animation-duration: 100ms !important;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
-  }
-  
-  /* Also target by class names for broader coverage */
-  .animate-in {
-    animation-duration: 150ms !important;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
-  }
-  
-  .animate-out {
-    animation-duration: 100ms !important;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
 }
