@@ -500,7 +500,7 @@ export function BiWeeklyDashboard() {
                         </div>
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-56 professional-dropdown">
+                    <DropdownMenuContent align="start" className="w-56">
                       {periods.map((period) => (
                         <DropdownMenuItem
                           key={period.id}

@@ -4,65 +4,59 @@
 
 @layer base {
   :root {
-    /* Freedom Forever Brand Colors - Improved Contrast & Consistency */
-    --background: 0 0% 98%; /* Slightly whiter background */
-    --foreground: 0 0% 5%; /* Even darker text for better contrast */
+    /* Freedom Forever Brand Colors - Professional & Consistent */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 5%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 5%; /* Even darker card text */
+    --card-foreground: 0 0% 5%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 5%;
     --primary: 120 30% 25%; /* Olive - Primary brand color */
     --primary-foreground: 0 0% 98%;
-    --secondary: 120 25% 35%; /* Lighter olive variation */
+    --secondary: 120 25% 35%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 40%; /* Darker muted for better contrast */
-    --muted-foreground: 0 0% 10%; /* Much darker muted text */
-    --accent: 120 20% 45%; /* Olive-tinted accent */
+    --muted: 0 0% 40%;
+    --muted-foreground: 0 0% 10%;
+    --accent: 120 20% 45%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
-    --ring: 120 30% 25%; /* Olive */
-    --chart-1: 120 30% 25%; /* Primary Olive */
-    --chart-2: 120 25% 35%; /* Lighter Olive */
-    --chart-3: 120 20% 45%; /* Medium Olive */
-    --chart-4: 120 15% 55%; /* Light Olive */
-    --chart-5: 120 10% 65%; /* Very Light Olive */
+    --ring: 120 30% 25%;
+    --chart-1: 120 30% 25%;
+    --chart-2: 120 25% 35%;
+    --chart-3: 120 20% 45%;
+    --chart-4: 120 15% 55%;
+    --chart-5: 120 10% 65%;
     --radius: 0.5rem;
-    
-    /* Animation variables */
-    --animation-duration-fast: 100ms;
-    --animation-duration-normal: 200ms;
-    --animation-duration-slow: 300ms;
-    --animation-ease: cubic-bezier(0.4, 0, 0.2, 1);
-    --animation-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
+  
   .dark {
-    --background: 0 0% 8%; /* Darker background for better contrast */
-    --foreground: 0 0% 98%; /* Brighter text */
-    --card: 0 0% 12%; /* Slightly lighter cards */
-    --card-foreground: 0 0% 98%; /* Bright card text */
+    --background: 0 0% 8%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 98%;
     --popover: 0 0% 12%;
     --popover-foreground: 0 0% 98%;
-    --primary: 120 30% 35%; /* Brighter olive for dark mode */
+    --primary: 120 30% 35%;
     --primary-foreground: 0 0% 8%;
-    --secondary: 120 25% 45%; /* Brighter olive variation */
+    --secondary: 120 25% 45%;
     --secondary-foreground: 0 0% 8%;
-    --muted: 0 0% 20%; /* Lighter muted background */
-    --muted-foreground: 0 0% 85%; /* Much brighter muted text */
-    --accent: 120 20% 55%; /* Brighter olive-tinted accent */
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 85%;
+    --accent: 120 20% 55%;
     --accent-foreground: 0 0% 8%;
     --destructive: 0 62.8% 50.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 20%; /* Lighter borders */
-    --input: 0 0% 20%; /* Lighter inputs */
-    --ring: 120 30% 35%; /* Brighter olive */
-    --chart-1: 120 30% 45%; /* Brighter Primary Olive */
-    --chart-2: 120 25% 55%; /* Brighter Lighter Olive */
-    --chart-3: 120 20% 65%; /* Brighter Medium Olive */
-    --chart-4: 120 15% 75%; /* Brighter Light Olive */
-    --chart-5: 120 10% 85%; /* Brighter Very Light Olive */
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 120 30% 35%;
+    --chart-1: 120 30% 45%;
+    --chart-2: 120 25% 55%;
+    --chart-3: 120 20% 65%;
+    --chart-4: 120 15% 75%;
+    --chart-5: 120 10% 85%;
   }
 }
 
@@ -70,32 +64,23 @@
   * {
     @apply border-border;
   }
+  
   body {
     @apply bg-background text-foreground;
   }
   
-  /* Enhanced global smooth transitions */
-  * {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-    transition-timing-function: var(--animation-ease);
-    transition-duration: var(--animation-duration-fast);
+  /* Subtle, professional transitions for interactive elements */
+  button, [role="button"], input, select, textarea {
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
   
-  /* Enhanced interactive elements */
-  button, [role="button"], input, select, textarea, .hover-target {
-    transition-property: all;
-    transition-duration: var(--animation-duration-normal);
-    transition-timing-function: var(--animation-ease);
+  /* Card hover effects */
+  .card, [data-card] {
+    transition: border-color 200ms cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
   }
   
-  /* Enhanced card and container transitions */
-  .card, [data-card], .border {
-    transition-property: border-color, box-shadow, transform, background-color;
-    transition-duration: var(--animation-duration-normal);
-    transition-timing-function: var(--animation-ease);
-  }
-  
-  /* Reduce motion for users who prefer it */
+  /* Respect user motion preferences */
   @media (prefers-reduced-motion: reduce) {
     * {
       animation-duration: 0.01ms !important;
@@ -104,20 +89,17 @@
     }
   }
   
-  /* Mobile-specific improvements */
+  /* Mobile optimizations */
   @media (max-width: 640px) {
-    /* Improve touch targets on mobile */
     button, [role="button"], input, select, textarea {
       min-height: 44px;
     }
     
-    /* Better scrolling on mobile */
     .overflow-x-auto {
       -webkit-overflow-scrolling: touch;
       scrollbar-width: thin;
     }
     
-    /* Hide scrollbars on mobile for cleaner look */
     .overflow-x-auto::-webkit-scrollbar {
       height: 4px;
     }
@@ -133,80 +115,7 @@
   }
 }
 
-/* Professional Animation Keyframes */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
-}
-
+/* Professional keyframes for loading states */
 @keyframes shimmer {
   0% {
     background-position: -200px 0;
@@ -216,166 +125,52 @@
   }
 }
 
-/* Freedom Forever Brand Utilities - Theme-Responsive */
+/* Freedom Forever Brand Utilities */
 @layer utilities {
-  /* Light mode brand colors */
-  .text-brand-olive {
-    color: #2C5134;
-  }
-  .bg-brand-olive {
-    background-color: #2C5134;
-  }
-  .text-brand-olive-light {
-    color: #3D6B47;
-  }
-  .bg-brand-olive-light {
-    background-color: #3D6B47;
-  }
-  .text-brand-olive-medium {
-    color: #4E855A;
-  }
-  .bg-brand-olive-medium {
-    background-color: #4E855A;
-  }
-  .text-brand-olive-soft {
-    color: #5F9F6D;
-  }
-  .bg-brand-olive-soft {
-    background-color: #5F9F6D;
-  }
-  .text-brand-olive-pale {
-    color: #70B980;
-  }
-  .bg-brand-olive-pale {
-    background-color: #70B980;
-  }
+  /* Brand colors - light mode */
+  .text-brand-olive { color: #2C5134; }
+  .bg-brand-olive { background-color: #2C5134; }
+  .text-brand-olive-light { color: #3D6B47; }
+  .bg-brand-olive-light { background-color: #3D6B47; }
+  .text-brand-olive-medium { color: #4E855A; }
+  .bg-brand-olive-medium { background-color: #4E855A; }
+  .text-brand-olive-soft { color: #5F9F6D; }
+  .bg-brand-olive-soft { background-color: #5F9F6D; }
+  .text-brand-olive-pale { color: #70B980; }
+  .bg-brand-olive-pale { background-color: #70B980; }
   
-  /* Dark mode brand colors - brighter for better contrast */
-  .dark .text-brand-olive {
-    color: #5F9F6D;
-  }
-  .dark .bg-brand-olive {
-    background-color: #5F9F6D;
-  }
-  .dark .text-brand-olive-light {
-    color: #70B980;
-  }
-  .dark .bg-brand-olive-light {
-    background-color: #70B980;
-  }
-  .dark .text-brand-olive-medium {
-    color: #81C993;
-  }
-  .dark .bg-brand-olive-medium {
-    background-color: #81C993;
-  }
-  .dark .text-brand-olive-soft {
-    color: #92D9A6;
-  }
-  .dark .bg-brand-olive-soft {
-    background-color: #92D9A6;
-  }
-  .dark .text-brand-olive-pale {
-    color: #A3E9B9;
-  }
-  .dark .bg-brand-olive-pale {
-    background-color: #A3E9B9;
-  }
+  /* Brand colors - dark mode */
+  .dark .text-brand-olive { color: #5F9F6D; }
+  .dark .bg-brand-olive { background-color: #5F9F6D; }
+  .dark .text-brand-olive-light { color: #70B980; }
+  .dark .bg-brand-olive-light { background-color: #70B980; }
+  .dark .text-brand-olive-medium { color: #81C993; }
+  .dark .bg-brand-olive-medium { background-color: #81C993; }
+  .dark .text-brand-olive-soft { color: #92D9A6; }
+  .dark .bg-brand-olive-soft { background-color: #92D9A6; }
+  .dark .text-brand-olive-pale { color: #A3E9B9; }
+  .dark .bg-brand-olive-pale { background-color: #A3E9B9; }
   
-  /* Sorbet accent - responsive to theme */
-  .text-brand-sorbet {
-    color: #FF6B35;
-  }
-  .bg-brand-sorbet {
-    background-color: #FF6B35;
-  }
-  .dark .text-brand-sorbet {
-    color: #FF8A5B;
-  }
-  .dark .bg-brand-sorbet {
-    background-color: #FF8A5B;
-  }
+  /* Sorbet accent */
+  .text-brand-sorbet { color: #FF6B35; }
+  .bg-brand-sorbet { background-color: #FF6B35; }
+  .dark .text-brand-sorbet { color: #FF8A5B; }
+  .dark .bg-brand-sorbet { background-color: #FF8A5B; }
   
-  /* Improved contrast utilities - theme responsive */
-  .text-high-contrast {
-    color: #0a0a0a;
-  }
-  .text-medium-contrast {
-    color: #333333;
-  }
+  /* Contrast utilities */
+  .text-high-contrast { color: #0a0a0a; }
+  .text-medium-contrast { color: #333333; }
+  .dark .text-high-contrast { color: #f5f5f5; }
+  .dark .text-medium-contrast { color: #d1d1d1; }
   
-  .dark .text-high-contrast {
-    color: #f5f5f5;
-  }
-  .dark .text-medium-contrast {
-    color: #d1d1d1;
-  }
+  /* Background utilities */
+  .bg-brand-off-white { background-color: #fafafa; }
+  .dark .bg-brand-off-white { background-color: #1a1a1a; }
   
-  /* Off-white background utility - theme responsive */
-  .bg-brand-off-white {
-    background-color: #fafafa;
-  }
-  .dark .bg-brand-off-white {
-    background-color: #1a1a1a;
-  }
-  
-  /* Mobile-specific utilities */
-  .mobile-touch-target {
-    @apply min-h-[44px] min-w-[44px];
-  }
-  
-  .mobile-scroll {
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-  }
-  
-  /* Better mobile table styling */
-  .mobile-table-container {
-    @apply overflow-x-auto -mx-4 sm:mx-0;
-  }
-  
-  .mobile-table-wrapper {
-    @apply min-w-max px-4 sm:px-0;
-  }
-  
-  /* Professional Animation Classes */
-  .animate-fade-in {
-    animation: fadeIn var(--animation-duration-normal) var(--animation-ease) forwards;
-  }
-  
-  .animate-fade-in-up {
-    animation: fadeInUp var(--animation-duration-normal) var(--animation-ease) forwards;
-  }
-  
-  .animate-fade-in-down {
-    animation: fadeInDown var(--animation-duration-normal) var(--animation-ease) forwards;
-  }
-  
-  .animate-slide-in-left {
-    animation: slideInLeft var(--animation-duration-normal) var(--animation-ease) forwards;
-  }
-  
-  .animate-slide-in-right {
-    animation: slideInRight var(--animation-duration-normal) var(--animation-ease) forwards;
-  }
-  
-  .animate-scale-in {
-    animation: scaleIn var(--animation-duration-normal) var(--animation-ease) forwards;
-  }
-  
-  .animate-pulse-subtle {
-    animation: pulse 2s var(--animation-ease) infinite;
-  }
-  
-  .animate-shimmer {
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    background-size: 200px 100%;
-    animation: shimmer 1.5s infinite;
-  }
-  
-  /* Enhanced Animation Utilities */
+  /* Professional hover effects - subtle and smooth */
   .hover-lift {
-    transition: transform var(--animation-duration-normal) var(--animation-ease), box-shadow var(--animation-duration-normal) var(--animation-ease);
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   .hover-lift:hover {
@@ -383,118 +178,8 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
   
-  /* Professional dropdown animations - completely remove directional movement */
-  .professional-dropdown {
-    transition: opacity 150ms ease-in-out !important;
-    animation: none !important;
-  }
-  
-  .professional-dropdown[data-state="open"] {
-    opacity: 1 !important;
-    transform: none !important;
-    animation: none !important;
-  }
-  
-  .professional-dropdown[data-state="closed"] {
-    opacity: 0 !important;
-    transform: none !important;
-    animation: none !important;
-  }
-  
-  /* Override any Radix animations for professional dropdowns */
-  .professional-dropdown[data-radix-dropdown-menu-content] {
-    animation: none !important;
-    transform: none !important;
-  }
-  
-  /* COMPREHENSIVE DROPDOWN ANIMATION OVERRIDES - Target all Radix components */
-  [data-radix-dropdown-menu-content],
-  [data-radix-select-content],
-  [data-radix-dialog-content],
-  [data-radix-popover-content],
-  [data-radix-tooltip-content],
-  [data-radix-hover-card-content],
-  [data-radix-context-menu-content],
-  [data-radix-menubar-content] {
-    animation: none !important;
-    transform: none !important;
-    transition: opacity 150ms ease-in-out !important;
-  }
-  
-  [data-radix-dropdown-menu-content][data-state="open"],
-  [data-radix-select-content][data-state="open"],
-  [data-radix-dialog-content][data-state="open"],
-  [data-radix-popover-content][data-state="open"],
-  [data-radix-tooltip-content][data-state="open"],
-  [data-radix-hover-card-content][data-state="open"],
-  [data-radix-context-menu-content][data-state="open"],
-  [data-radix-menubar-content][data-state="open"] {
-    opacity: 1 !important;
-    transform: none !important;
-    animation: none !important;
-  }
-  
-  [data-radix-dropdown-menu-content][data-state="closed"],
-  [data-radix-select-content][data-state="closed"],
-  [data-radix-dialog-content][data-state="closed"],
-  [data-radix-popover-content][data-state="closed"],
-  [data-radix-tooltip-content][data-state="closed"],
-  [data-radix-hover-card-content][data-state="closed"],
-  [data-radix-context-menu-content][data-state="closed"],
-  [data-radix-menubar-content][data-state="closed"] {
-    opacity: 0 !important;
-    transform: none !important;
-    animation: none !important;
-  }
-  
-  /* Override Tailwind's animate classes completely */
-  .animate-in {
-    animation: none !important;
-  }
-  
-  .animate-out {
-    animation: none !important;
-  }
-  
-  /* Target any remaining animation classes */
-  .animate-in.slide-in-from-top,
-  .animate-in.slide-in-from-bottom,
-  .animate-in.slide-in-from-left,
-  .animate-in.slide-in-from-right,
-  .animate-in.zoom-in,
-  .animate-in.fade-in,
-  .animate-out.slide-out-to-top,
-  .animate-out.slide-out-to-bottom,
-  .animate-out.slide-out-to-left,
-  .animate-out.slide-out-to-right,
-  .animate-out.zoom-out,
-  .animate-out.fade-out {
-    animation: none !important;
-    transform: none !important;
-    transition: opacity 150ms ease-in-out !important;
-  }
-
-  /* Force all dropdown-like elements to use only opacity */
-  [role="menu"],
-  [role="listbox"],
-  [role="combobox"],
-  [data-state="open"],
-  [data-state="closed"] {
-    animation: none !important;
-    transform: none !important;
-  }
-
-  /* Ensure Select components specifically don't animate */
-  [data-radix-select-viewport],
-  [data-radix-select-content] {
-    animation: none !important;
-    transform: none !important;
-    transition: opacity 150ms ease-in-out !important;
-  }
-  
-  /* Essential utility classes */
   .hover-scale {
-    transition: transform var(--animation-duration-fast) var(--animation-ease);
+    transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   .hover-scale:hover {
@@ -502,23 +187,14 @@
   }
   
   .hover-glow {
-    transition: box-shadow var(--animation-duration-normal) var(--animation-ease);
+    transition: box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   .hover-glow:hover {
     box-shadow: 0 0 20px rgba(44, 81, 52, 0.3);
   }
   
-  /* Stagger animation delays */
-  .stagger-1 { animation-delay: 0ms; }
-  .stagger-2 { animation-delay: 20ms; }
-  .stagger-3 { animation-delay: 40ms; }
-  .stagger-4 { animation-delay: 60ms; }
-  .stagger-5 { animation-delay: 80ms; }
-  .stagger-6 { animation-delay: 100ms; }
-  .stagger-7 { animation-delay: 120ms; }
-  
-  /* Loading states */
+  /* Loading skeleton */
   .loading-skeleton {
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
     background-size: 200% 100%;
@@ -528,6 +204,24 @@
   .dark .loading-skeleton {
     background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
     background-size: 200% 100%;
+  }
+  
+  /* Mobile utilities */
+  .mobile-touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+  
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  
+  .mobile-table-container {
+    @apply overflow-x-auto -mx-4 sm:mx-0;
+  }
+  
+  .mobile-table-wrapper {
+    @apply min-w-max px-4 sm:px-0;
   }
   
   /* Grid pattern background */
@@ -546,97 +240,22 @@
   }
 }
 
-/* NUCLEAR OPTION - ELIMINATE ALL ANIMATIONS GLOBALLY FOR DROPDOWNS */
-* {
-  --radix-dropdown-menu-content-transform-origin: center !important;
-  --radix-select-content-transform-origin: center !important;
-  --radix-dialog-content-transform-origin: center !important;
-}
-
-/* Target ALL possible animation sources with maximum specificity */
+/* Clean dropdown animations - simple opacity only */
 [data-radix-dropdown-menu-content],
-[data-radix-select-content], 
-[data-radix-dialog-content],
-[data-radix-popover-content],
-[data-radix-tooltip-content],
-[data-radix-hover-card-content],
-[data-radix-context-menu-content],
-[data-radix-menubar-content],
-.radix-dropdown-menu-content,
-.radix-select-content,
-.radix-dialog-content {
+[data-radix-select-content],
+[data-radix-dialog-content] {
   animation: none !important;
-  transform: none !important;
-  transition: opacity 150ms ease-in-out !important;
-  transform-origin: center !important;
-}
-
-/* Override ALL Tailwind animation classes */
-.animate-in,
-.animate-out,
-.slide-in-from-top-2,
-.slide-in-from-bottom-2,
-.slide-in-from-left-2,
-.slide-in-from-right-2,
-.slide-out-to-top-2,
-.slide-out-to-bottom-2,
-.slide-out-to-left-2,
-.slide-out-to-right-2,
-.zoom-in-95,
-.zoom-out-95,
-.fade-in-0,
-.fade-out-0,
-.duration-200,
-.duration-300 {
-  animation: none !important;
-  transform: none !important;
   transition: opacity 150ms ease-in-out !important;
 }
 
-/* Force override any CSS custom properties */
-[data-state="open"],
-[data-state="closed"] {
-  --tw-enter-opacity: 1 !important;
-  --tw-enter-scale: 1 !important;
-  --tw-enter-rotate: 0 !important;
-  --tw-enter-skew-x: 0 !important;
-  --tw-enter-skew-y: 0 !important;
-  --tw-enter-translate-x: 0 !important;
-  --tw-enter-translate-y: 0 !important;
-  --tw-exit-opacity: 0 !important;
-  --tw-exit-scale: 1 !important;
-  --tw-exit-rotate: 0 !important;
-  --tw-exit-skew-x: 0 !important;
-  --tw-exit-skew-y: 0 !important;
-  --tw-exit-translate-x: 0 !important;
-  --tw-exit-translate-y: 0 !important;
-  animation: none !important;
-  transform: none !important;
-}
-
-/* Override any remaining Radix animations */
 [data-radix-dropdown-menu-content][data-state="open"],
 [data-radix-select-content][data-state="open"],
-[data-radix-dialog-content][data-state="open"],
-[data-radix-popover-content][data-state="open"],
-[data-radix-tooltip-content][data-state="open"],
-[data-radix-hover-card-content][data-state="open"],
-[data-radix-context-menu-content][data-state="open"],
-[data-radix-menubar-content][data-state="open"] {
+[data-radix-dialog-content][data-state="open"] {
   opacity: 1 !important;
-  transform: none !important;
-  animation: none !important;
 }
 
 [data-radix-dropdown-menu-content][data-state="closed"],
 [data-radix-select-content][data-state="closed"],
-[data-radix-dialog-content][data-state="closed"],
-[data-radix-popover-content][data-state="closed"],
-[data-radix-tooltip-content][data-state="closed"],
-[data-radix-hover-card-content][data-state="closed"],
-[data-radix-context-menu-content][data-state="closed"],
-[data-radix-menubar-content][data-state="closed"] {
+[data-radix-dialog-content][data-state="closed"] {
   opacity: 0 !important;
-  transform: none !important;
-  animation: none !important;
 }
