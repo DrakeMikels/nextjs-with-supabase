@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -41,89 +42,62 @@ export function CprFirstAid({ coaches }: CprFirstAidProps) {
   const [selectedCoach, setSelectedCoach] = useState<string>("all");
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const supabase = createClient();
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       
-      // For now, we'll create mock data since the tables don't exist yet
-      // In production, these would be actual Supabase queries
-      
-      // Mock offices data
-      const mockOffices: Office[] = [
-        { id: "1", name: "Denver", location: "Colorado", region: "Mountain West", created_at: new Date().toISOString() },
-        { id: "2", name: "Boise", location: "Idaho", region: "Mountain West", created_at: new Date().toISOString() },
-        { id: "3", name: "Salt Lake City", location: "Utah", region: "Mountain West", created_at: new Date().toISOString() },
-        { id: "4", name: "Portland", location: "Oregon", region: "Mountain West", created_at: new Date().toISOString() },
-        { id: "5", name: "Lubbock", location: "Texas", region: "Texas", created_at: new Date().toISOString() },
-        { id: "6", name: "South Houston", location: "Texas", region: "Texas", created_at: new Date().toISOString() },
-        { id: "7", name: "Dallas", location: "Texas", region: "Texas", created_at: new Date().toISOString() },
-        { id: "8", name: "Fort Worth", location: "Texas", region: "Texas", created_at: new Date().toISOString() },
-        { id: "9", name: "Yuma", location: "Arizona", region: "SouthWest", created_at: new Date().toISOString() },
-        { id: "10", name: "Albuquerque", location: "New Mexico", region: "Southwest", created_at: new Date().toISOString() },
-        { id: "11", name: "Sacramento", location: "California", region: "NorCal", created_at: new Date().toISOString() },
-        { id: "12", name: "Livermore", location: "California", region: "NorCal", created_at: new Date().toISOString() },
-        { id: "13", name: "South Shore MA", location: "Massachusetts", region: "Northeast", created_at: new Date().toISOString() },
-        { id: "14", name: "Orlando", location: "Florida", region: "SouthEast", created_at: new Date().toISOString() },
-      ];
+      // Fetch offices
+      const { data: officesData, error: officesError } = await supabase
+        .from("offices")
+        .select("*")
+        .order("name");
 
-      // Mock assignments - assign coaches to offices based on the image data
-      const mockAssignments: CoachOfficeAssignment[] = [
-        // Mike - Mountain West offices
-        { id: "1", coach_id: coaches[0]?.id || "1", office_id: "1", assigned_date: "2024-01-01", is_primary: true, created_at: new Date().toISOString() },
-        { id: "2", coach_id: coaches[0]?.id || "1", office_id: "2", assigned_date: "2024-01-01", is_primary: false, created_at: new Date().toISOString() },
-        { id: "3", coach_id: coaches[0]?.id || "1", office_id: "3", assigned_date: "2024-01-01", is_primary: false, created_at: new Date().toISOString() },
-        { id: "4", coach_id: coaches[0]?.id || "1", office_id: "4", assigned_date: "2024-01-01", is_primary: false, created_at: new Date().toISOString() },
-        
-        // Hugh - Texas offices
-        { id: "5", coach_id: coaches[1]?.id || "2", office_id: "5", assigned_date: "2024-01-01", is_primary: true, created_at: new Date().toISOString() },
-        { id: "6", coach_id: coaches[1]?.id || "2", office_id: "6", assigned_date: "2024-01-01", is_primary: false, created_at: new Date().toISOString() },
-        { id: "7", coach_id: coaches[1]?.id || "2", office_id: "7", assigned_date: "2024-01-01", is_primary: false, created_at: new Date().toISOString() },
-        { id: "8", coach_id: coaches[1]?.id || "2", office_id: "8", assigned_date: "2024-01-01", is_primary: false, created_at: new Date().toISOString() },
-        
-        // Joe - Southwest offices
-        { id: "9", coach_id: coaches[2]?.id || "3", office_id: "9", assigned_date: "2024-01-01", is_primary: true, created_at: new Date().toISOString() },
-        { id: "10", coach_id: coaches[2]?.id || "3", office_id: "10", assigned_date: "2024-01-01", is_primary: false, created_at: new Date().toISOString() },
-        
-        // Additional coaches for other regions...
-      ];
+      if (officesError) {
+        console.error("Error fetching offices:", officesError);
+      } else {
+        setOffices(officesData || []);
+      }
 
-      // Mock CPR/First Aid records with various statuses
-      const mockCprRecords: CprFirstAidRecord[] = mockAssignments.map((assignment, index) => {
-        const statuses: CprFirstAidRecord['status'][] = ['current', 'expiring_soon', 'expired', 'not_certified'];
-        const randomStatus = statuses[index % statuses.length];
-        
-        const baseDate = new Date();
-        const cprDate = new Date(baseDate.getTime() - (Math.random() * 365 * 24 * 60 * 60 * 1000));
-        const firstAidDate = new Date(baseDate.getTime() - (Math.random() * 365 * 24 * 60 * 60 * 1000));
-        
-        return {
-          id: `cpr-${assignment.id}`,
-          coach_id: assignment.coach_id,
-          office_id: assignment.office_id,
-          cpr_certification_date: randomStatus !== 'not_certified' ? cprDate.toISOString().split('T')[0] : null,
-          cpr_expiration_date: randomStatus !== 'not_certified' ? new Date(cprDate.getTime() + (2 * 365 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] : null,
-          first_aid_certification_date: randomStatus !== 'not_certified' ? firstAidDate.toISOString().split('T')[0] : null,
-          first_aid_expiration_date: randomStatus !== 'not_certified' ? new Date(firstAidDate.getTime() + (2 * 365 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] : null,
-          provider: randomStatus !== 'not_certified' ? ['American Red Cross', 'American Heart Association', 'National Safety Council'][index % 3] : null,
-          certificate_number: randomStatus !== 'not_certified' ? `CERT-${Math.random().toString(36).substr(2, 9).toUpperCase()}` : null,
-          status: randomStatus,
-          notes: index % 3 === 0 ? 'Renewal scheduled for next month' : null,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        };
-      });
+      // Fetch coach office assignments
+      const { data: assignmentsData, error: assignmentsError } = await supabase
+        .from("coach_office_assignments")
+        .select(`
+          *,
+          coach:coaches(name),
+          office:offices(name, location, region)
+        `)
+        .order("created_at");
 
-      setOffices(mockOffices);
-      setAssignments(mockAssignments);
-      setCprRecords(mockCprRecords);
+      if (assignmentsError) {
+        console.error("Error fetching assignments:", assignmentsError);
+      } else {
+        setAssignments(assignmentsData || []);
+      }
+
+      // Fetch CPR/First Aid records
+      const { data: cprData, error: cprError } = await supabase
+        .from("cpr_first_aid_records")
+        .select(`
+          *,
+          coach:coaches(name),
+          office:offices(name, location, region)
+        `)
+        .order("updated_at", { ascending: false });
+
+      if (cprError) {
+        console.error("Error fetching CPR records:", cprError);
+      } else {
+        setCprRecords(cprData || []);
+      }
       
     } catch (error) {
       console.error("Error fetching CPR/First Aid data:", error);
     } finally {
       setLoading(false);
     }
-  }, [coaches]);
+  }, [supabase]);
 
   useEffect(() => {
     fetchData();
