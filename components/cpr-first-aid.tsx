@@ -36,6 +36,7 @@ import {
   Filter,
   Download
 } from "lucide-react";
+import * as motion from "motion/react-client";
 import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/ui/animated-container";
 import type { 
   Office, 
@@ -341,7 +342,19 @@ export function CprFirstAid({ coaches, onDataChange }: CprFirstAidProps) {
       <AnimatedItem className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-brand-olive flex items-center gap-2">
-            <Heart className="h-6 w-6" />
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ 
+                duration: 0.5, 
+                delay: 0.2,
+                type: "spring",
+                stiffness: 200,
+                damping: 15
+              }}
+            >
+              <Heart className="h-6 w-6" />
+            </motion.div>
             CPR & First Aid Certifications
           </h2>
           <p className="text-medium-contrast">
@@ -349,62 +362,254 @@ export function CprFirstAid({ coaches, onDataChange }: CprFirstAidProps) {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
-            <Download className="h-4 w-4" />
-            Export
-          </Button>
-          <Button onClick={handleAddRecord} className="gap-2 bg-brand-olive hover:bg-brand-olive/90">
-            <Plus className="h-4 w-4" />
-            Add Record
-          </Button>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ 
+              duration: 0.4, 
+              delay: 0.3,
+              type: "spring",
+              stiffness: 100,
+              damping: 15
+            }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Button variant="outline" className="gap-2 hover-scale">
+              <Download className="h-4 w-4" />
+              Export
+            </Button>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ 
+              duration: 0.4, 
+              delay: 0.4,
+              type: "spring",
+              stiffness: 100,
+              damping: 15
+            }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Button onClick={handleAddRecord} className="gap-2 bg-brand-olive hover:bg-brand-olive/90 hover-scale">
+              <Plus className="h-4 w-4" />
+              Add Record
+            </Button>
+          </motion.div>
         </div>
       </AnimatedItem>
 
       {/* Status Overview Cards */}
       <AnimatedItem className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-green-200 hover:border-green-300 transition-colors">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-high-contrast">Current</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{statusCounts.current}</div>
-            <p className="text-xs text-medium-contrast">Up to date certifications</p>
-          </CardContent>
-        </Card>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            duration: 0.4, 
+            delay: 0.1,
+            type: "spring",
+            stiffness: 100,
+            damping: 15
+          }}
+          whileHover={{ 
+            scale: 1.02,
+            transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
+          }}
+        >
+          <Card className="border-green-200 hover:border-green-300 hover:shadow-lg transition-all duration-300 hover-lift">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-high-contrast">Current</CardTitle>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ 
+                  duration: 0.3, 
+                  delay: 0.3,
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 15
+                }}
+              >
+                <CheckCircle className="h-4 w-4 text-green-600" />
+              </motion.div>
+            </CardHeader>
+            <CardContent>
+              <motion.div 
+                className="text-2xl font-bold text-green-600"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ 
+                  duration: 0.4, 
+                  delay: 0.4,
+                  type: "spring",
+                  stiffness: 150,
+                  damping: 12
+                }}
+              >
+                {statusCounts.current}
+              </motion.div>
+              <p className="text-xs text-medium-contrast">Up to date certifications</p>
+            </CardContent>
+          </Card>
+        </motion.div>
 
-        <Card className="border-yellow-200 hover:border-yellow-300 transition-colors">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-high-contrast">Expiring Soon</CardTitle>
-            <Clock className="h-4 w-4 text-yellow-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">{statusCounts.expiring_soon}</div>
-            <p className="text-xs text-medium-contrast">Renewal needed within 30 days</p>
-          </CardContent>
-        </Card>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            duration: 0.4, 
+            delay: 0.2,
+            type: "spring",
+            stiffness: 100,
+            damping: 15
+          }}
+          whileHover={{ 
+            scale: 1.02,
+            transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
+          }}
+        >
+          <Card className="border-yellow-200 hover:border-yellow-300 hover:shadow-lg transition-all duration-300 hover-lift">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-high-contrast">Expiring Soon</CardTitle>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ 
+                  duration: 0.3, 
+                  delay: 0.4,
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 15
+                }}
+              >
+                <Clock className="h-4 w-4 text-yellow-600" />
+              </motion.div>
+            </CardHeader>
+            <CardContent>
+              <motion.div 
+                className="text-2xl font-bold text-yellow-600"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ 
+                  duration: 0.4, 
+                  delay: 0.5,
+                  type: "spring",
+                  stiffness: 150,
+                  damping: 12
+                }}
+              >
+                {statusCounts.expiring_soon}
+              </motion.div>
+              <p className="text-xs text-medium-contrast">Renewal needed within 30 days</p>
+            </CardContent>
+          </Card>
+        </motion.div>
 
-        <Card className="border-red-200 hover:border-red-300 transition-colors">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-high-contrast">Expired</CardTitle>
-            <XCircle className="h-4 w-4 text-red-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{statusCounts.expired}</div>
-            <p className="text-xs text-medium-contrast">Immediate action required</p>
-          </CardContent>
-        </Card>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            duration: 0.4, 
+            delay: 0.3,
+            type: "spring",
+            stiffness: 100,
+            damping: 15
+          }}
+          whileHover={{ 
+            scale: 1.02,
+            transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
+          }}
+        >
+          <Card className="border-red-200 hover:border-red-300 hover:shadow-lg transition-all duration-300 hover-lift">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-high-contrast">Expired</CardTitle>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ 
+                  duration: 0.3, 
+                  delay: 0.5,
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 15
+                }}
+              >
+                <XCircle className="h-4 w-4 text-red-600" />
+              </motion.div>
+            </CardHeader>
+            <CardContent>
+              <motion.div 
+                className="text-2xl font-bold text-red-600"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ 
+                  duration: 0.4, 
+                  delay: 0.6,
+                  type: "spring",
+                  stiffness: 150,
+                  damping: 12
+                }}
+              >
+                {statusCounts.expired}
+              </motion.div>
+              <p className="text-xs text-medium-contrast">Immediate action required</p>
+            </CardContent>
+          </Card>
+        </motion.div>
 
-        <Card className="border-gray-200 hover:border-gray-300 transition-colors">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-high-contrast">Not Certified</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-gray-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-600">{statusCounts.not_certified}</div>
-            <p className="text-xs text-medium-contrast">Certification needed</p>
-          </CardContent>
-        </Card>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            duration: 0.4, 
+            delay: 0.4,
+            type: "spring",
+            stiffness: 100,
+            damping: 15
+          }}
+          whileHover={{ 
+            scale: 1.02,
+            transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
+          }}
+        >
+          <Card className="border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-300 hover-lift">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-high-contrast">Not Certified</CardTitle>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ 
+                  duration: 0.3, 
+                  delay: 0.6,
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 15
+                }}
+              >
+                <AlertTriangle className="h-4 w-4 text-gray-600" />
+              </motion.div>
+            </CardHeader>
+            <CardContent>
+              <motion.div 
+                className="text-2xl font-bold text-gray-600"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ 
+                  duration: 0.4, 
+                  delay: 0.7,
+                  type: "spring",
+                  stiffness: 150,
+                  damping: 12
+                }}
+              >
+                {statusCounts.not_certified}
+              </motion.div>
+              <p className="text-xs text-medium-contrast">Certification needed</p>
+            </CardContent>
+          </Card>
+        </motion.div>
       </AnimatedItem>
 
       {/* Filters */}
@@ -499,48 +704,112 @@ export function CprFirstAid({ coaches, onDataChange }: CprFirstAidProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredData.map((record) => (
-                    <tr key={record.id} className="hover:bg-muted/25">
+                  {filteredData.map((record, index) => (
+                    <motion.tr 
+                      key={record.id} 
+                      className="hover:bg-muted/25"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ 
+                        duration: 0.3, 
+                        delay: index * 0.05,
+                        type: "spring",
+                        stiffness: 120,
+                        damping: 15
+                      }}
+                      whileHover={{ 
+                        backgroundColor: "rgba(0, 0, 0, 0.02)",
+                        transition: { duration: 0.2 }
+                      }}
+                    >
                       <td className="border border-border p-3 text-sm">
-                        <div className="font-medium text-high-contrast">
+                        <motion.div 
+                          className="font-medium text-high-contrast"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.3, delay: index * 0.05 + 0.1 }}
+                        >
                           {record.coach?.name || 'Unknown Coach'}
-                        </div>
+                        </motion.div>
                       </td>
                       <td className="border border-border p-3 text-sm">
-                        <div className="flex items-center gap-2">
+                        <motion.div 
+                          className="flex items-center gap-2"
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ 
+                            duration: 0.3, 
+                            delay: index * 0.05 + 0.15,
+                            type: "spring",
+                            stiffness: 100,
+                            damping: 15
+                          }}
+                        >
                           <MapPin className="h-4 w-4 text-brand-olive" />
                           <div>
                             <div className="font-medium text-high-contrast">{record.office?.name}</div>
                             <div className="text-xs text-medium-contrast">{record.office?.location}</div>
                           </div>
-                        </div>
+                        </motion.div>
                       </td>
                       <td className="border border-border p-3 text-sm text-medium-contrast">
                         {record.office?.region}
                       </td>
                       <td className="border border-border p-3 text-sm">
-                        {record.assignment?.is_primary ? (
-                          <Badge className="bg-blue-100 text-blue-800 border-blue-200">Primary</Badge>
-                        ) : (
-                          <Badge variant="outline">Secondary</Badge>
-                        )}
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ 
+                            duration: 0.3, 
+                            delay: index * 0.05 + 0.2,
+                            type: "spring",
+                            stiffness: 150,
+                            damping: 15
+                          }}
+                        >
+                          {record.assignment?.is_primary ? (
+                            <Badge className="bg-blue-100 text-blue-800 border-blue-200">Primary</Badge>
+                          ) : (
+                            <Badge variant="outline">Secondary</Badge>
+                          )}
+                        </motion.div>
                       </td>
                       <td className="border border-border p-3 text-sm">
                         {record.cpr_certification_date ? (
-                          <div>
+                          <motion.div
+                            initial={{ opacity: 0, y: 5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ 
+                              duration: 0.3, 
+                              delay: index * 0.05 + 0.25,
+                              type: "spring",
+                              stiffness: 120,
+                              damping: 15
+                            }}
+                          >
                             <div className="text-high-contrast">{new Date(record.cpr_certification_date).toLocaleDateString()}</div>
                             <div className="text-xs text-medium-contrast">Certified</div>
-                          </div>
+                          </motion.div>
                         ) : (
                           <div className="text-medium-contrast">Not certified</div>
                         )}
                       </td>
                       <td className="border border-border p-3 text-sm">
                         {record.first_aid_certification_date ? (
-                          <div>
+                          <motion.div
+                            initial={{ opacity: 0, y: 5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ 
+                              duration: 0.3, 
+                              delay: index * 0.05 + 0.3,
+                              type: "spring",
+                              stiffness: 120,
+                              damping: 15
+                            }}
+                          >
                             <div className="text-high-contrast">{new Date(record.first_aid_certification_date).toLocaleDateString()}</div>
                             <div className="text-xs text-medium-contrast">Certified</div>
-                          </div>
+                          </motion.div>
                         ) : (
                           <div className="text-medium-contrast">Not certified</div>
                         )}
@@ -550,7 +819,18 @@ export function CprFirstAid({ coaches, onDataChange }: CprFirstAidProps) {
                       </td>
                       <td className="border border-border p-3 text-sm">
                         {record.cpr_expiration_date ? (
-                          <div className="flex items-center gap-2">
+                          <motion.div 
+                            className="flex items-center gap-2"
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ 
+                              duration: 0.3, 
+                              delay: index * 0.05 + 0.35,
+                              type: "spring",
+                              stiffness: 100,
+                              damping: 15
+                            }}
+                          >
                             <Calendar className="h-4 w-4 text-brand-olive" />
                             <div>
                               <div className="text-high-contrast">{new Date(record.cpr_expiration_date).toLocaleDateString()}</div>
@@ -558,26 +838,52 @@ export function CprFirstAid({ coaches, onDataChange }: CprFirstAidProps) {
                                 {Math.ceil((new Date(record.cpr_expiration_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days
                               </div>
                             </div>
-                          </div>
+                          </motion.div>
                         ) : (
                           <div className="text-medium-contrast">N/A</div>
                         )}
                       </td>
                       <td className="border border-border p-3 text-sm">
-                        {getStatusBadge(record.status)}
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ 
+                            duration: 0.3, 
+                            delay: index * 0.05 + 0.4,
+                            type: "spring",
+                            stiffness: 150,
+                            damping: 15
+                          }}
+                        >
+                          {getStatusBadge(record.status)}
+                        </motion.div>
                       </td>
                       <td className="border border-border p-3 text-sm">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="gap-2"
-                          onClick={() => handleEditRecord(record)}
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ 
+                            duration: 0.3, 
+                            delay: index * 0.05 + 0.45,
+                            type: "spring",
+                            stiffness: 150,
+                            damping: 15
+                          }}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
                         >
-                          <Edit className="h-3 w-3" />
-                          Edit
-                        </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="gap-2 hover-scale"
+                            onClick={() => handleEditRecord(record)}
+                          >
+                            <Edit className="h-3 w-3" />
+                            Edit
+                          </Button>
+                        </motion.div>
                       </td>
-                    </tr>
+                    </motion.tr>
                   ))}
                 </tbody>
               </table>
@@ -589,149 +895,207 @@ export function CprFirstAid({ coaches, onDataChange }: CprFirstAidProps) {
       {/* Add/Edit Record Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>
-              {editingRecord ? "Edit CPR/First Aid Record" : "Add CPR/First Aid Record"}
-            </DialogTitle>
-            <DialogDescription>
-              {editingRecord 
-                ? "Update the CPR and First Aid certification information for this coach and office."
-                : "Add CPR and First Aid certification information for a coach at a specific office."
-              }
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="coach">Coach</Label>
-                <Select value={formData.coach_id} onValueChange={(value) => setFormData(prev => ({ ...prev, coach_id: value }))}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select coach" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {coaches.map((coach) => (
-                      <SelectItem key={coach.id} value={coach.id}>
-                        {coach.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ 
+              duration: 0.3,
+              type: "spring",
+              stiffness: 200,
+              damping: 20
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>
+                {editingRecord ? "Edit CPR/First Aid Record" : "Add CPR/First Aid Record"}
+              </DialogTitle>
+              <DialogDescription>
+                {editingRecord 
+                  ? "Update the CPR and First Aid certification information for this coach and office."
+                  : "Add CPR and First Aid certification information for a coach at a specific office."
+                }
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="grid gap-4 py-4">
+              <motion.div 
+                className="grid gap-4 md:grid-cols-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+              >
+                <div className="space-y-2">
+                  <Label htmlFor="coach">Coach</Label>
+                  <Select value={formData.coach_id} onValueChange={(value) => setFormData(prev => ({ ...prev, coach_id: value }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select coach" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {coaches.map((coach) => (
+                        <SelectItem key={coach.id} value={coach.id}>
+                          {coach.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="region">Region</Label>
-                <Input
-                  id="region"
-                  value={formData.region}
-                  onChange={(e) => setFormData(prev => ({ ...prev, region: e.target.value }))}
-                  placeholder="Enter region"
+                <div className="space-y-2">
+                  <Label htmlFor="region">Region</Label>
+                  <Input
+                    id="region"
+                    value={formData.region}
+                    onChange={(e) => setFormData(prev => ({ ...prev, region: e.target.value }))}
+                    placeholder="Enter region"
+                  />
+                </div>
+              </motion.div>
+
+              <motion.div 
+                className="grid gap-4 md:grid-cols-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.15 }}
+              >
+                <div className="space-y-2">
+                  <Label htmlFor="office">Office</Label>
+                  <Input
+                    id="office"
+                    value={formData.office}
+                    onChange={(e) => setFormData(prev => ({ ...prev, office: e.target.value }))}
+                    placeholder="Enter office"
+                  />
+                </div>
+              </motion.div>
+
+              <motion.div 
+                className="grid gap-4 md:grid-cols-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+              >
+                <div className="space-y-2">
+                  <Label htmlFor="cpr_cert_date">CPR Certification Date</Label>
+                  <Input
+                    id="cpr_cert_date"
+                    type="date"
+                    value={formData.cpr_certification_date}
+                    onChange={(e) => setFormData(prev => ({ ...prev, cpr_certification_date: e.target.value }))}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="cpr_exp_date">CPR Expiration Date</Label>
+                  <Input
+                    id="cpr_exp_date"
+                    type="date"
+                    value={formData.cpr_expiration_date}
+                    onChange={(e) => setFormData(prev => ({ ...prev, cpr_expiration_date: e.target.value }))}
+                  />
+                </div>
+              </motion.div>
+
+              <motion.div 
+                className="grid gap-4 md:grid-cols-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.25 }}
+              >
+                <div className="space-y-2">
+                  <Label htmlFor="first_aid_cert_date">First Aid Certification Date</Label>
+                  <Input
+                    id="first_aid_cert_date"
+                    type="date"
+                    value={formData.first_aid_certification_date}
+                    onChange={(e) => setFormData(prev => ({ ...prev, first_aid_certification_date: e.target.value }))}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="first_aid_exp_date">First Aid Expiration Date</Label>
+                  <Input
+                    id="first_aid_exp_date"
+                    type="date"
+                    value={formData.first_aid_expiration_date}
+                    onChange={(e) => setFormData(prev => ({ ...prev, first_aid_expiration_date: e.target.value }))}
+                  />
+                </div>
+              </motion.div>
+
+              <motion.div 
+                className="grid gap-4 md:grid-cols-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.3 }}
+              >
+                <div className="space-y-2">
+                  <Label htmlFor="provider">Training Provider</Label>
+                  <Input
+                    id="provider"
+                    value={formData.provider}
+                    onChange={(e) => setFormData(prev => ({ ...prev, provider: e.target.value }))}
+                    placeholder="e.g., American Red Cross"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="certificate_number">Certificate Number</Label>
+                  <Input
+                    id="certificate_number"
+                    value={formData.certificate_number}
+                    onChange={(e) => setFormData(prev => ({ ...prev, certificate_number: e.target.value }))}
+                    placeholder="Certificate number"
+                  />
+                </div>
+              </motion.div>
+
+              <motion.div 
+                className="space-y-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.35 }}
+              >
+                <Label htmlFor="notes">Notes</Label>
+                <Textarea
+                  id="notes"
+                  value={formData.notes}
+                  onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                  placeholder="Additional notes about the certification..."
+                  rows={3}
                 />
-              </div>
+              </motion.div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="office">Office</Label>
-                <Input
-                  id="office"
-                  value={formData.office}
-                  onChange={(e) => setFormData(prev => ({ ...prev, office: e.target.value }))}
-                  placeholder="Enter office"
-                />
-              </div>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="cpr_cert_date">CPR Certification Date</Label>
-                <Input
-                  id="cpr_cert_date"
-                  type="date"
-                  value={formData.cpr_certification_date}
-                  onChange={(e) => setFormData(prev => ({ ...prev, cpr_certification_date: e.target.value }))}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="cpr_exp_date">CPR Expiration Date</Label>
-                <Input
-                  id="cpr_exp_date"
-                  type="date"
-                  value={formData.cpr_expiration_date}
-                  onChange={(e) => setFormData(prev => ({ ...prev, cpr_expiration_date: e.target.value }))}
-                />
-              </div>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="first_aid_cert_date">First Aid Certification Date</Label>
-                <Input
-                  id="first_aid_cert_date"
-                  type="date"
-                  value={formData.first_aid_certification_date}
-                  onChange={(e) => setFormData(prev => ({ ...prev, first_aid_certification_date: e.target.value }))}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="first_aid_exp_date">First Aid Expiration Date</Label>
-                <Input
-                  id="first_aid_exp_date"
-                  type="date"
-                  value={formData.first_aid_expiration_date}
-                  onChange={(e) => setFormData(prev => ({ ...prev, first_aid_expiration_date: e.target.value }))}
-                />
-              </div>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="provider">Training Provider</Label>
-                <Input
-                  id="provider"
-                  value={formData.provider}
-                  onChange={(e) => setFormData(prev => ({ ...prev, provider: e.target.value }))}
-                  placeholder="e.g., American Red Cross"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="certificate_number">Certificate Number</Label>
-                <Input
-                  id="certificate_number"
-                  value={formData.certificate_number}
-                  onChange={(e) => setFormData(prev => ({ ...prev, certificate_number: e.target.value }))}
-                  placeholder="Certificate number"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea
-                id="notes"
-                value={formData.notes}
-                onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                placeholder="Additional notes about the certification..."
-                rows={3}
-              />
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleSaveRecord}
-              disabled={!formData.coach_id || !formData.region || !formData.office}
-              className="bg-brand-olive hover:bg-brand-olive/90"
-            >
-              {editingRecord ? "Update Record" : "Add Record"}
-            </Button>
-          </DialogFooter>
+            <DialogFooter>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.4 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                  Cancel
+                </Button>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.45 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button 
+                  onClick={handleSaveRecord}
+                  disabled={!formData.coach_id || !formData.region || !formData.office}
+                  className="bg-brand-olive hover:bg-brand-olive/90"
+                >
+                  {editingRecord ? "Update Record" : "Add Record"}
+                </Button>
+              </motion.div>
+            </DialogFooter>
+          </motion.div>
         </DialogContent>
       </Dialog>
     </AnimatedContainer>
