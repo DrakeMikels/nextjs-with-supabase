@@ -401,7 +401,7 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
 
       {/* Summary Cards */}
       <AnimatedItem>
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {[
             {
               title: "Total Entries",
@@ -451,12 +451,12 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
               }}
             >
               <Card className={`border-${card.color}/20 hover:border-${card.color}/40 hover:shadow-lg transition-all duration-300 hover-lift`}>
-                <CardContent className="pt-4">
+                <CardContent className="p-3 sm:p-4 lg:p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-medium-contrast">{card.title}</p>
+                      <p className="text-xs sm:text-sm font-medium text-medium-contrast">{card.title}</p>
                       <motion.p 
-                        className={`text-2xl font-bold text-${card.color}`}
+                        className={`text-lg sm:text-xl lg:text-2xl font-bold text-${card.color}`}
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{
@@ -479,7 +479,7 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
                         scale: { type: "spring", visualDuration: 0.43, bounce: 0.4 }
                       }}
                     >
-                      <card.icon className={`h-8 w-8 text-${card.color}/30`} />
+                      <card.icon className={`h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-${card.color}/30`} />
                     </motion.div>
                   </div>
                 </CardContent>

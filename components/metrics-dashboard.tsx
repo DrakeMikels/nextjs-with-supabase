@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Users, Target, AlertTriangle, TrendingUp } from "lucide-react";
+import { BarChart3, Users, AlertTriangle, TrendingUp, Search, Package } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -209,7 +209,6 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod }: MetricsDa
     );
   }
 
-  const overallStats = calculateOverallStats();
   const coachPerformanceData = getCoachPerformanceData();
   const trendData = getTrendData();
   const goalProgressData = getGoalProgressData();
@@ -231,42 +230,42 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod }: MetricsDa
 
       {/* Overall Statistics Cards */}
       <AnimatedItem>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-2 sm:gap-4 md:grid-cols-2 lg:grid-cols-4">
           {[
             {
-              title: selectedPeriod ? "Period" : "Total",
+              title: "Total",
               subtitle: "Evaluations",
-              value: overallStats.totalEvaluations,
-              description: selectedPeriod ? "Goal: 6 per period" : `Avg: ${overallStats.avgEvaluationsPerPeriod} per period`,
-              icon: Target,
+              value: metrics.length,
+              description: selectedPeriod ? "Current period" : "All periods",
+              icon: BarChart3,
               color: "brand-olive",
               delay: 0.1
             },
             {
-              title: selectedPeriod ? "Period" : "Total", 
-              subtitle: "Audits",
-              value: overallStats.totalAudits,
-              description: selectedPeriod ? "Goal: 6 per period" : `Avg: ${overallStats.avgAuditsPerPeriod} per period`,
-              icon: BarChart3,
-              color: "green-600",
+              title: "Total",
+              subtitle: "Audits", 
+              value: metrics.filter(m => m.forensic_survey_audits > 0).length,
+              description: selectedPeriod ? "Current period" : "All periods",
+              icon: Search,
+              color: "blue-600",
               delay: 0.2
             },
             {
               title: "Warehouse",
-              subtitle: "Audits", 
-              value: overallStats.totalWarehouseAudits,
-              description: selectedPeriod ? "Goal: 1 per period" : "Goal: 2 per month",
-              icon: Target,
-              color: "blue-600",
+              subtitle: "Audits",
+              value: metrics.filter(m => m.warehouse_safety_audits > 0).length,
+              description: selectedPeriod ? "Current period" : "All periods", 
+              icon: Package,
+              color: "green-600",
               delay: 0.3
             },
             {
               title: "Open",
               subtitle: "Investigations",
-              value: overallStats.totalInvestigations,
-              description: selectedPeriod ? "Current period" : "All types combined",
+              value: metrics.filter(m => m.open_investigations_auto > 0).length,
+              description: selectedPeriod ? "Current period" : "All periods",
               icon: AlertTriangle,
-              color: "amber-600",
+              color: "red-600",
               delay: 0.4
             }
           ].map((card) => (
@@ -285,14 +284,14 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod }: MetricsDa
               }}
             >
               <Card className={`border-${card.color}/20 hover:border-${card.color}/40 hover:shadow-lg transition-all duration-300 hover-lift`}>
-                <CardContent className="pt-4">
+                <CardContent className="p-3 sm:p-4 lg:p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-medium-contrast">
+                      <p className="text-xs sm:text-sm font-medium text-medium-contrast">
                         {card.title} {card.subtitle}
                       </p>
                       <motion.p 
-                        className={`text-2xl font-bold text-${card.color}`}
+                        className={`text-lg sm:text-xl lg:text-2xl font-bold text-${card.color}`}
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{
@@ -317,7 +316,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod }: MetricsDa
                         scale: { type: "spring", visualDuration: 0.43, bounce: 0.4 }
                       }}
                     >
-                      <card.icon className={`h-8 w-8 text-${card.color}/30`} />
+                      <card.icon className={`h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-${card.color}/30`} />
                     </motion.div>
                   </div>
                 </CardContent>

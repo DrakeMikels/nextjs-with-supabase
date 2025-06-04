@@ -8,7 +8,9 @@ import {
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { 
@@ -695,7 +697,7 @@ export function BiWeeklyDashboard() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          className="fixed inset-0 bg-black/20 z-30 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -703,13 +705,13 @@ export function BiWeeklyDashboard() {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <div className="bg-background border-b border-brand-olive/20 p-4 lg:p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
+        <div className="bg-background border-b border-brand-olive/20 p-2 sm:p-4 lg:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               {/* Mobile menu button - Improved hamburger style */}
               <motion.button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden p-3 rounded-xl bg-brand-olive/10 hover:bg-brand-olive/20 text-brand-olive transition-colors border border-brand-olive/20 mobile-touch-target"
+                className="lg:hidden p-2 sm:p-3 rounded-xl bg-brand-olive/10 hover:bg-brand-olive/20 text-brand-olive transition-colors border border-brand-olive/20 mobile-touch-target"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -718,7 +720,7 @@ export function BiWeeklyDashboard() {
                     rotate: sidebarOpen ? 90 : 0,
                   }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="relative w-6 h-6 flex items-center justify-center"
+                  className="relative w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center"
                 >
                   {/* Hamburger menu icon that transforms */}
                   <motion.div
@@ -729,7 +731,7 @@ export function BiWeeklyDashboard() {
                     }}
                     transition={{ duration: 0.3 }}
                   >
-                    <div className="w-5 h-0.5 bg-current rounded-full" />
+                    <div className="w-4 h-0.5 sm:w-5 sm:h-0.5 bg-current rounded-full" />
                   </motion.div>
                   <motion.div
                     className="absolute"
@@ -739,7 +741,7 @@ export function BiWeeklyDashboard() {
                     }}
                     transition={{ duration: 0.2 }}
                   >
-                    <div className="w-5 h-0.5 bg-current rounded-full" />
+                    <div className="w-4 h-0.5 sm:w-5 sm:h-0.5 bg-current rounded-full" />
                   </motion.div>
                   <motion.div
                     className="absolute"
@@ -749,33 +751,34 @@ export function BiWeeklyDashboard() {
                     }}
                     transition={{ duration: 0.3 }}
                   >
-                    <div className="w-5 h-0.5 bg-current rounded-full" />
+                    <div className="w-4 h-0.5 sm:w-5 sm:h-0.5 bg-current rounded-full" />
                   </motion.div>
                 </motion.div>
               </motion.button>
               
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-brand-olive">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-brand-olive">
                 {currentNavItem?.label || "Dashboard"}
               </h1>
-              <p className="text-medium-contrast text-sm sm:text-base">
+              <p className="text-medium-contrast text-xs sm:text-sm lg:text-base">
                 {currentNavItem?.description || "Regional Safety Coaches Dashboard"}
               </p>
-              </div>
+            </div>
             </div>
             <Button 
               onClick={createNewPeriod} 
-              className="gap-2 bg-brand-olive hover:bg-brand-olive/90 text-white w-full sm:w-auto hover-lift hover-glow"
+              className="gap-2 bg-brand-olive hover:bg-brand-olive/90 text-white w-full sm:w-auto hover-lift hover-glow text-sm sm:text-base"
             >
-              <PlusCircle className="h-4 w-4" />
-              New Period
+              <PlusCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">New Period</span>
+              <span className="sm:hidden">New</span>
             </Button>
           </div>
         </div>
 
         {/* Stats Cards */}
-        <div className="p-4 lg:p-6 border-b border-brand-olive/10">
-          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="p-2 sm:p-4 lg:p-6 border-b border-brand-olive/10">
+          <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { title: "Total Periods", value: periods.length, icon: Calendar, color: "brand-olive" },
               { title: "Active Coaches", value: coaches.length, icon: Users, color: "brand-olive-light" },
@@ -793,8 +796,8 @@ export function BiWeeklyDashboard() {
                 }}
               >
                 <Card className={`border-${card.color}/20 hover:border-${card.color}/40 hover:shadow-lg transition-all duration-300 hover-lift`}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-high-contrast">{card.title}</CardTitle>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 sm:pb-2 p-3 sm:p-4 lg:p-6">
+                    <CardTitle className="text-xs sm:text-sm font-medium text-high-contrast">{card.title}</CardTitle>
                     <motion.div
                       initial={{ opacity: 0, scale: 0 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -804,10 +807,10 @@ export function BiWeeklyDashboard() {
                         ease: [0, 0.71, 0.2, 1.01],
                       }}
                     >
-                      <card.icon className={`h-4 w-4 text-${card.color}`} />
+                      <card.icon className={`h-3 w-3 sm:h-4 sm:w-4 text-${card.color}`} />
                     </motion.div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-3 sm:p-4 lg:p-6 pt-0">
                     {card.isDropdown ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -817,7 +820,7 @@ export function BiWeeklyDashboard() {
                       >
                         <div className="flex items-center gap-2 w-full">
                               <motion.div 
-                                className={`text-xl sm:text-2xl font-bold text-${card.color} truncate`}
+                                className={`text-lg sm:text-xl lg:text-2xl font-bold text-${card.color} truncate`}
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{
@@ -828,42 +831,41 @@ export function BiWeeklyDashboard() {
                               >
                             {selectedPeriod?.period_name || "None"}
                               </motion.div>
-                              <ChevronDown className={`h-4 w-4 text-${card.color} flex-shrink-0`} />
+                              <ChevronDown className={`h-3 w-3 sm:h-4 sm:w-4 text-${card.color} flex-shrink-0`} />
                         </div>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start" className="w-56">
+                      <DropdownMenuLabel>Select Period</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => setSelectedPeriod(null)}>
+                        All Periods
+                      </DropdownMenuItem>
                       {periods.map((period) => (
-                        <DropdownMenuItem
-                          key={period.id}
+                        <DropdownMenuItem 
+                          key={period.id} 
                           onClick={() => setSelectedPeriod(period)}
-                          className={selectedPeriod?.id === period.id ? "bg-brand-olive/10" : ""}
                         >
-                          <div className="flex flex-col">
-                            <span className="font-medium">{period.period_name}</span>
-                            <span className="text-xs text-medium-contrast">
-                              {new Date(period.start_date).toLocaleDateString()} - {new Date(period.end_date).toLocaleDateString()}
-                            </span>
-                          </div>
+                          {period.period_name}
                         </DropdownMenuItem>
                       ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
                     ) : card.isCustomRange ? (
-                      <div className="space-y-2">
-                        <div className="flex gap-2">
+                      <div className="space-y-1 sm:space-y-2">
+                        <div className="flex gap-1 sm:gap-2">
                           <Input
                             type="date"
                             value={customDateRange.start}
                             onChange={(e) => setCustomDateRange(prev => ({...prev, start: e.target.value}))}
-                            className="text-xs h-8"
+                            className="text-xs h-6 sm:h-8"
                             placeholder="Start date"
                           />
                           <Input
                             type="date"
                             value={customDateRange.end}
                             onChange={(e) => setCustomDateRange(prev => ({...prev, end: e.target.value}))}
-                            className="text-xs h-8"
+                            className="text-xs h-6 sm:h-8"
                             placeholder="End date"
                           />
                         </div>
@@ -884,7 +886,7 @@ export function BiWeeklyDashboard() {
                           </div>
                     ) : (
                       <motion.div 
-                        className={`text-2xl font-bold text-${card.color}`}
+                        className={`text-lg sm:text-xl lg:text-2xl font-bold text-${card.color}`}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{
@@ -904,7 +906,7 @@ export function BiWeeklyDashboard() {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 p-4 lg:p-6 overflow-auto">
+        <div className="flex-1 p-2 sm:p-4 lg:p-6 overflow-auto">
           <motion.div 
             className="h-full"
             initial={{ opacity: 0, y: 20 }}
