@@ -12,22 +12,16 @@ export default function Page() {
     >
       {/* Animated Gradient Background */}
       <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-brand-olive via-brand-olive-light to-brand-olive-medium"
+        className="absolute inset-0"
+        style={{
+          background: "linear-gradient(45deg, #2C5134, #4A7C59, #5F9F6D, #4A7C59, #2C5134)",
+          backgroundSize: "400% 400%"
+        }}
         animate={{
-          background: [
-            "linear-gradient(45deg, #2C5134, #4A7C59, #2C5134)",
-            "linear-gradient(90deg, #4A7C59, #2C5134, #4A7C59)",
-            "linear-gradient(135deg, #2C5134, #4A7C59, #2C5134)",
-            "linear-gradient(180deg, #4A7C59, #2C5134, #4A7C59)",
-            "linear-gradient(225deg, #2C5134, #4A7C59, #2C5134)",
-            "linear-gradient(270deg, #4A7C59, #2C5134, #4A7C59)",
-            "linear-gradient(315deg, #2C5134, #4A7C59, #2C5134)",
-            "linear-gradient(360deg, #4A7C59, #2C5134, #4A7C59)",
-            "linear-gradient(45deg, #2C5134, #4A7C59, #2C5134)"
-          ]
+          backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
         }}
         transition={{
-          duration: 20,
+          duration: 15,
           repeat: Infinity,
           ease: "linear"
         }}
