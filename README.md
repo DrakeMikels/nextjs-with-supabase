@@ -1,6 +1,8 @@
-# Regional Safety Coaches - Bi-Weekly Tracker
+# Regional Safety Coaches Dashboard
 
-A comprehensive web application for tracking and managing Regional Safety Coaches' bi-weekly touch base metrics and performance data.
+<!-- Build cache refresh: 2024-12-19 -->
+
+A comprehensive safety metrics tracking system for regional safety coaches built with Next.js and Supabase.
 
 ## Features
 

@@ -84,12 +84,12 @@ export default function Page() {
               <p className="text-white/80">Regional Safety Coaches Management</p>
             </div>
             
-            <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-white/50">
+            <div className="bg-white/98 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-white/50">
               <LoginForm />
             </div>
             
             <div className="mt-8 text-center">
-              <p className="text-xs text-white/70 bg-black/20 backdrop-blur-sm rounded-full px-4 py-2 inline-block">
+              <p className="text-xs text-white font-medium bg-black/30 backdrop-blur-sm rounded-full px-4 py-2 inline-block shadow-lg">
                 Secure access for authorized Freedom Forever team members
               </p>
             </div>

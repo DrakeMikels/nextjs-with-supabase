@@ -27,11 +27,11 @@ export default async function Home() {
           <div className="w-full max-w-7xl flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 px-5 text-sm gap-3 sm:gap-0">
             <div className="flex gap-5 items-center font-semibold">
               <Link href={"/"} className="text-base sm:text-lg text-brand-olive hover:text-brand-olive/80 transition-colors hover-scale">
-                <span className="hidden sm:inline">Regional Safety Coaches - Bi-Weekly Tracker</span>
-                <span className="sm:hidden">RSC Tracker</span>
+                <span className="hidden sm:inline">RSC Safety Platform</span>
+                <span className="sm:hidden">RSC Platform</span>
               </Link>
             </div>
-            <div className="flex items-center gap-4 self-end sm:self-auto">
+            <div className="flex items-center gap-4">
               <ThemeSwitcher />
               {!hasEnvVars ? <EnvVarWarning /> : <AuthButton />}
             </div>
