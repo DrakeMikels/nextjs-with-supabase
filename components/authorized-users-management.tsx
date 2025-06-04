@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, Plus, Users, Mail } from "lucide-react";
-import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/ui/animated-container";
+import { AnimatedContainer, AnimatedItem, LoadingSpinner } from "@/components/ui/animated-container";
 
 interface AuthorizedUser {
   id: string;
@@ -105,16 +105,8 @@ export function AuthorizedUsersManagement() {
 
   if (loading) {
     return (
-      <AnimatedContainer variant="fadeIn" className="space-y-4 sm:space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-2">
-            <LoadingSkeleton className="h-8 w-64" />
-            <LoadingSkeleton className="h-4 w-48" />
-          </div>
-          <LoadingSkeleton className="h-6 w-24" />
-        </div>
-        <LoadingSkeleton className="h-64" />
-        <LoadingSkeleton className="h-96" />
+      <AnimatedContainer variant="fadeIn" className="space-y-6">
+        <LoadingSpinner />
       </AnimatedContainer>
     );
   }

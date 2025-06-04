@@ -175,14 +175,25 @@ export const PageTransition = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-// Loading skeleton component
-export const LoadingSkeleton = ({ className = "" }: { className?: string }) => {
+// Simple loading component without jarring effects
+export const LoadingSpinner = () => {
   return (
     <motion.div
-      className={`loading-skeleton rounded ${className}`}
+      className="flex items-center justify-center py-12"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-    />
+    >
+      <motion.div
+        className="w-6 h-6 border-2 border-brand-olive/20 border-t-brand-olive rounded-full"
+        animate={{ rotate: 360 }}
+        transition={{
+          duration: 1,
+          repeat: Infinity,
+          ease: "linear"
+        }}
+      />
+    </motion.div>
   );
 }; 

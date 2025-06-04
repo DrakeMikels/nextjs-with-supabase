@@ -22,7 +22,7 @@ import {
   RadialBar,
   Legend
 } from "recharts";
-import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/ui/animated-container";
+import { AnimatedContainer, AnimatedItem, LoadingSpinner } from "@/components/ui/animated-container";
 import type { BiWeeklyPeriod, Coach, SafetyMetric } from "@/lib/types";
 
 interface MetricsDashboardProps {
@@ -203,18 +203,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod }: MetricsDa
   if (loading) {
     return (
       <AnimatedContainer variant="fadeIn" className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-2">
-            <LoadingSkeleton className="h-8 w-64" />
-            <LoadingSkeleton className="h-4 w-48" />
-          </div>
-        </div>
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          {[...Array(4)].map((_, i) => (
-            <LoadingSkeleton key={i} className="h-24" />
-          ))}
-        </div>
-        <LoadingSkeleton className="h-96" />
+        <LoadingSpinner />
       </AnimatedContainer>
     );
   }

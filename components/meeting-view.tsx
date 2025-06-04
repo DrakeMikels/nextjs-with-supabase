@@ -16,7 +16,7 @@ import {
   Shield,
   Eye
 } from "lucide-react";
-import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/ui/animated-container";
+import { AnimatedContainer, AnimatedItem, LoadingSpinner } from "@/components/ui/animated-container";
 import type { BiWeeklyPeriod, Coach, SafetyMetric } from "@/lib/types";
 
 interface MeetingViewProps {
@@ -102,14 +102,7 @@ export function MeetingView({ coaches, selectedPeriod }: MeetingViewProps) {
   if (loading) {
     return (
       <AnimatedContainer variant="fadeIn" className="space-y-6">
-        <div className="flex items-center justify-between">
-          <LoadingSkeleton className="h-8 w-64" />
-        </div>
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {[...Array(8)].map((_, i) => (
-            <LoadingSkeleton key={i} className="h-96" />
-          ))}
-        </div>
+        <LoadingSpinner />
       </AnimatedContainer>
     );
   }

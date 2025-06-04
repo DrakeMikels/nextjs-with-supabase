@@ -36,7 +36,7 @@ import { MetricsDashboard } from "./metrics-dashboard";
 import { MasterDashboard } from "./master-dashboard";
 import { IdpDashboard } from "./idp-dashboard";
 import { ActionItems } from "./action-items";
-import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/ui/animated-container";
+import { AnimatedContainer, AnimatedItem, LoadingSpinner } from "@/components/ui/animated-container";
 import type { BiWeeklyPeriod, Coach } from "@/lib/types";
 import { BranchVisits } from "./branch-visits";
 import { CprFirstAid } from "./cpr-first-aid";
@@ -494,84 +494,13 @@ export function BiWeeklyDashboard() {
 
   if (loading) {
     return (
-      <motion.div 
-        className="flex h-screen"
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
+        className="min-h-screen flex items-center justify-center"
       >
-        <motion.div 
-          className="w-64 bg-brand-off-white border-r border-brand-olive/20 p-4"
-          initial={{ x: -100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ 
-            duration: 0.4,
-            x: { type: "spring", stiffness: 100, damping: 15 }
-          }}
-        >
-          <LoadingSkeleton className="h-8 w-32 mb-6" />
-          <div className="space-y-2">
-            {[...Array(6)].map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  duration: 0.3,
-                  delay: i * 0.1,
-                  scale: { type: "spring", visualDuration: 0.3, bounce: 0.2 }
-                }}
-              >
-                <LoadingSkeleton className="h-10 w-full" />
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-        <motion.div 
-          className="flex-1 p-6 space-y-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 0.5,
-            delay: 0.2,
-            y: { type: "spring", stiffness: 100, damping: 15 }
-          }}
-        >
-          <div className="flex justify-between items-center">
-            <div className="space-y-2">
-              <LoadingSkeleton className="h-8 w-64" />
-              <LoadingSkeleton className="h-4 w-48" />
-            </div>
-            <LoadingSkeleton className="h-10 w-32" />
-          </div>
-          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-            {[...Array(4)].map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  duration: 0.4,
-                  delay: 0.4 + (i * 0.1),
-                  scale: { type: "spring", visualDuration: 0.4, bounce: 0.3 }
-                }}
-              >
-                <LoadingSkeleton className="h-24" />
-              </motion.div>
-            ))}
-          </div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              duration: 0.5,
-              delay: 0.8,
-              scale: { type: "spring", visualDuration: 0.5, bounce: 0.1 }
-            }}
-          >
-          <LoadingSkeleton className="h-96" />
-          </motion.div>
-        </motion.div>
+        <LoadingSpinner />
       </motion.div>
     );
   }

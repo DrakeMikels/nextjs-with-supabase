@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Eye, EyeOff, Calendar, Users, TrendingUp, AlertTriangle } from "lucide-react";
-import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/ui/animated-container";
+import { AnimatedContainer, AnimatedItem, LoadingSpinner } from "@/components/ui/animated-container";
 import type { Coach, SafetyMetric, DashboardProps } from "@/lib/types";
 
 export function MasterDashboard({ periods, coaches, onDataChange }: DashboardProps) {
@@ -371,19 +371,7 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
   if (loading) {
     return (
       <AnimatedContainer variant="fadeIn" className="space-y-4 sm:space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-2">
-            <LoadingSkeleton className="h-8 w-64" />
-            <LoadingSkeleton className="h-4 w-48" />
-          </div>
-          <LoadingSkeleton className="h-10 w-32" />
-        </div>
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          {[...Array(4)].map((_, i) => (
-            <LoadingSkeleton key={i} className="h-24" />
-          ))}
-        </div>
-        <LoadingSkeleton className="h-96" />
+        <LoadingSpinner />
       </AnimatedContainer>
     );
   }
