@@ -308,16 +308,21 @@ export function BiWeeklyDashboard() {
 
       {/* Sidebar */}
       <div className={`
-        fixed lg:static inset-y-0 left-0 z-40 w-64 bg-brand-off-white border-r border-brand-olive/20 transform transition-transform duration-300 ease-in-out
+        fixed lg:static inset-y-0 left-0 z-40 w-64 bg-gradient-to-b from-brand-olive via-brand-olive-light to-brand-olive-medium border-r border-white/20 transform transition-transform duration-300 ease-in-out
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
-        <div className="flex flex-col h-full">
-          <div className="p-6 border-b border-brand-olive/20">
-            <h2 className="text-lg font-semibold text-brand-olive">Navigation</h2>
-            <p className="text-sm text-medium-contrast">Regional Safety Coaches</p>
+        <div className="flex flex-col h-full relative">
+          {/* Enhanced background pattern for better texture */}
+          <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+          {/* Subtle overlay for better text contrast */}
+          <div className="absolute inset-0 bg-black/10"></div>
+          
+          <div className="p-6 border-b border-white/30 relative z-10">
+            <h2 className="text-lg font-semibold text-white drop-shadow-md">Navigation</h2>
+            <p className="text-sm text-white/90 drop-shadow-sm">Regional Safety Coaches</p>
           </div>
           
-          <nav className="flex-1 p-4 space-y-2">
+          <nav className="flex-1 p-4 space-y-2 relative z-10">
             {navigationItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeView === item.id;
@@ -330,17 +335,17 @@ export function BiWeeklyDashboard() {
                     setSidebarOpen(false); // Close mobile sidebar on selection
                   }}
                   className={`
-                    w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all duration-200 hover-scale
+                    w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 hover-scale
                     ${isActive 
-                      ? 'bg-brand-olive text-white shadow-sm' 
-                      : 'text-medium-contrast hover:bg-brand-olive/10 hover:text-brand-olive'
+                      ? 'bg-white/25 text-white shadow-lg backdrop-blur-sm border border-white/40 drop-shadow-sm' 
+                      : 'text-white/90 hover:bg-white/15 hover:text-white hover:drop-shadow-sm'
                     }
                   `}
                 >
-                  <Icon className="h-5 w-5 flex-shrink-0" />
+                  <Icon className={`h-5 w-5 flex-shrink-0 ${isActive ? 'drop-shadow-sm' : ''}`} />
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-sm">{item.label}</div>
-                    <div className={`text-xs truncate ${isActive ? 'text-white/80' : 'text-medium-contrast/80'}`}>
+                    <div className={`font-medium text-sm ${isActive ? 'drop-shadow-sm' : ''}`}>{item.label}</div>
+                    <div className={`text-xs truncate ${isActive ? 'text-white/95 drop-shadow-sm' : 'text-white/75'}`}>
                       {item.description}
                     </div>
                   </div>

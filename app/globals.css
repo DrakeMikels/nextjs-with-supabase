@@ -74,11 +74,25 @@
     @apply bg-background text-foreground;
   }
   
-  /* Global smooth transitions */
+  /* Enhanced global smooth transitions */
   * {
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
     transition-timing-function: var(--animation-ease);
     transition-duration: var(--animation-duration-fast);
+  }
+  
+  /* Enhanced interactive elements */
+  button, [role="button"], input, select, textarea, .hover-target {
+    transition-property: all;
+    transition-duration: var(--animation-duration-normal);
+    transition-timing-function: var(--animation-ease);
+  }
+  
+  /* Enhanced card and container transitions */
+  .card, [data-card], .border {
+    transition-property: border-color, box-shadow, transform, background-color;
+    transition-duration: var(--animation-duration-normal);
+    transition-timing-function: var(--animation-ease);
   }
   
   /* Reduce motion for users who prefer it */
@@ -359,13 +373,14 @@
     animation: shimmer 1.5s infinite;
   }
   
-  /* Hover and interaction animations */
+  /* Enhanced Animation Utilities */
   .hover-lift {
-    transition: transform var(--animation-duration-normal) var(--animation-ease);
+    transition: transform var(--animation-duration-normal) var(--animation-ease), box-shadow var(--animation-duration-normal) var(--animation-ease);
   }
   
   .hover-lift:hover {
     transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
   
   .hover-scale {
@@ -384,7 +399,67 @@
     box-shadow: 0 0 20px rgba(44, 81, 52, 0.3);
   }
   
-  /* Staggered animations */
+  /* Enhanced button animations */
+  .btn-animate {
+    transition: all var(--animation-duration-normal) var(--animation-ease);
+  }
+  
+  .btn-animate:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .btn-animate:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Enhanced input animations */
+  .input-animate {
+    transition: all var(--animation-duration-normal) var(--animation-ease);
+  }
+  
+  .input-animate:focus {
+    transform: scale(1.01);
+    box-shadow: 0 0 0 3px rgba(44, 81, 52, 0.1);
+  }
+  
+  /* Enhanced card animations */
+  .card-animate {
+    transition: all var(--animation-duration-normal) var(--animation-ease);
+  }
+  
+  .card-animate:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Smooth fade transitions */
+  .fade-in {
+    animation: fadeIn var(--animation-duration-normal) var(--animation-ease);
+  }
+  
+  .fade-in-up {
+    animation: fadeInUp var(--animation-duration-normal) var(--animation-ease);
+  }
+  
+  .fade-in-down {
+    animation: fadeInDown var(--animation-duration-normal) var(--animation-ease);
+  }
+  
+  .slide-in-left {
+    animation: slideInLeft var(--animation-duration-normal) var(--animation-ease);
+  }
+  
+  .slide-in-right {
+    animation: slideInRight var(--animation-duration-normal) var(--animation-ease);
+  }
+  
+  .scale-in {
+    animation: scaleIn var(--animation-duration-normal) var(--animation-ease);
+  }
+  
+  /* Staggered animation delays */
   .stagger-1 { animation-delay: 0ms; }
   .stagger-2 { animation-delay: 50ms; }
   .stagger-3 { animation-delay: 100ms; }

@@ -22,6 +22,7 @@ import {
   RadialBar,
   Legend
 } from "recharts";
+import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/ui/animated-container";
 import type { BiWeeklyPeriod, Coach, SafetyMetric } from "@/lib/types";
 
 interface MetricsDashboardProps {
@@ -182,9 +183,20 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <div className="text-lg">Loading analytics...</div>
-      </div>
+      <AnimatedContainer variant="fadeIn" className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <LoadingSkeleton className="h-8 w-64" />
+            <LoadingSkeleton className="h-4 w-48" />
+          </div>
+        </div>
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          {[...Array(4)].map((_, i) => (
+            <LoadingSkeleton key={i} className="h-24" />
+          ))}
+        </div>
+        <LoadingSkeleton className="h-96" />
+      </AnimatedContainer>
     );
   }
 
@@ -195,16 +207,16 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
   const investigationData = getInvestigationBreakdown();
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <AnimatedContainer variant="stagger" className="space-y-6">
+      <AnimatedItem className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-brand-olive">Analytics Dashboard</h2>
           <p className="text-medium-contrast">Comprehensive safety metrics analysis and trends</p>
         </div>
-      </div>
+      </AnimatedItem>
 
       {/* Overall Statistics Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <AnimatedItem className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="border-brand-olive/20 hover:border-brand-olive/40 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-high-contrast">Total Evaluations</CardTitle>
@@ -253,10 +265,10 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
             </p>
           </CardContent>
         </Card>
-      </div>
+      </AnimatedItem>
 
       {/* Charts Section */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <AnimatedItem className="grid gap-6 lg:grid-cols-2">
         {/* Goal Progress Chart */}
         <Card>
           <CardHeader>
@@ -320,228 +332,234 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
             </ResponsiveContainer>
           </CardContent>
         </Card>
-      </div>
+      </AnimatedItem>
 
       {/* Performance Trends */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-brand-olive">📊 Performance Trends</CardTitle>
-          <CardDescription className="text-medium-contrast">Safety metrics over the last 6 bi-weekly periods</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={trendData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis 
-                dataKey="period" 
-                tick={{ fontSize: 12, fill: '#2C5134' }}
-                tickLine={{ stroke: '#2C5134' }}
-              />
-              <YAxis 
-                tick={{ fontSize: 12, fill: '#2C5134' }}
-                tickLine={{ stroke: '#2C5134' }}
-              />
-              <Tooltip 
-                labelStyle={{ color: '#2C5134', fontWeight: 'bold' }}
-                contentStyle={{ 
-                  backgroundColor: '#f8f9fa', 
-                  border: '1px solid #2C5134',
-                  borderRadius: '8px',
-                  fontSize: '12px'
-                }}
-              />
-              <Legend 
-                wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="evaluations" 
-                stroke={brandColors.olive} 
-                strokeWidth={3}
-                name="Site Evaluations"
-                dot={{ fill: brandColors.olive, strokeWidth: 2, r: 4 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="audits" 
-                stroke={brandColors.oliveLight} 
-                strokeWidth={3}
-                name="Forensic Audits"
-                dot={{ fill: brandColors.oliveLight, strokeWidth: 2, r: 4 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="warehouse" 
-                stroke={brandColors.oliveMedium} 
-                strokeWidth={3}
-                name="Warehouse Audits"
-                dot={{ fill: brandColors.oliveMedium, strokeWidth: 2, r: 4 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="investigations" 
-                stroke={brandColors.oliveSoft} 
-                strokeWidth={3}
-                name="Investigations"
-                dot={{ fill: brandColors.oliveSoft, strokeWidth: 2, r: 4 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+      <AnimatedItem>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-brand-olive">📊 Performance Trends</CardTitle>
+            <CardDescription className="text-medium-contrast">Safety metrics over the last 6 bi-weekly periods</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={trendData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                <XAxis 
+                  dataKey="period" 
+                  tick={{ fontSize: 12, fill: '#2C5134' }}
+                  tickLine={{ stroke: '#2C5134' }}
+                />
+                <YAxis 
+                  tick={{ fontSize: 12, fill: '#2C5134' }}
+                  tickLine={{ stroke: '#2C5134' }}
+                />
+                <Tooltip 
+                  labelStyle={{ color: '#2C5134', fontWeight: 'bold' }}
+                  contentStyle={{ 
+                    backgroundColor: '#f8f9fa', 
+                    border: '1px solid #2C5134',
+                    borderRadius: '8px',
+                    fontSize: '12px'
+                  }}
+                />
+                <Legend 
+                  wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="evaluations" 
+                  stroke={brandColors.olive} 
+                  strokeWidth={3}
+                  name="Site Evaluations"
+                  dot={{ fill: brandColors.olive, strokeWidth: 2, r: 4 }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="audits" 
+                  stroke={brandColors.oliveLight} 
+                  strokeWidth={3}
+                  name="Forensic Audits"
+                  dot={{ fill: brandColors.oliveLight, strokeWidth: 2, r: 4 }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="warehouse" 
+                  stroke={brandColors.oliveMedium} 
+                  strokeWidth={3}
+                  name="Warehouse Audits"
+                  dot={{ fill: brandColors.oliveMedium, strokeWidth: 2, r: 4 }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="investigations" 
+                  stroke={brandColors.oliveSoft} 
+                  strokeWidth={3}
+                  name="Investigations"
+                  dot={{ fill: brandColors.oliveSoft, strokeWidth: 2, r: 4 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </AnimatedItem>
 
       {/* Coach Performance Comparison */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-brand-olive">👥 Coach Performance Comparison</CardTitle>
-          <CardDescription className="text-medium-contrast">Total metrics across all periods by coach</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={coachPerformanceData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis 
-                dataKey="name" 
-                tick={{ fontSize: 11, fill: '#2C5134' }}
-                tickLine={{ stroke: '#2C5134' }}
-                angle={-45}
-                textAnchor="end"
-                height={80}
-              />
-              <YAxis 
-                tick={{ fontSize: 12, fill: '#2C5134' }}
-                tickLine={{ stroke: '#2C5134' }}
-              />
-              <Tooltip 
-                labelStyle={{ color: '#2C5134', fontWeight: 'bold' }}
-                contentStyle={{ 
-                  backgroundColor: '#f8f9fa', 
-                  border: '1px solid #2C5134',
-                  borderRadius: '8px',
-                  fontSize: '12px'
-                }}
-              />
-              <Legend 
-                wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
-              />
-              <Bar dataKey="evaluations" fill={brandColors.olive} name="Site Evaluations" />
-              <Bar dataKey="audits" fill={brandColors.oliveLight} name="Forensic Audits" />
-              <Bar dataKey="warehouse" fill={brandColors.oliveMedium} name="Warehouse Audits" />
-              <Bar dataKey="investigations" fill={brandColors.oliveSoft} name="Investigations" />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+      <AnimatedItem>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-brand-olive">👥 Coach Performance Comparison</CardTitle>
+            <CardDescription className="text-medium-contrast">Total metrics across all periods by coach</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={coachPerformanceData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                <XAxis 
+                  dataKey="name" 
+                  tick={{ fontSize: 11, fill: '#2C5134' }}
+                  tickLine={{ stroke: '#2C5134' }}
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                />
+                <YAxis 
+                  tick={{ fontSize: 12, fill: '#2C5134' }}
+                  tickLine={{ stroke: '#2C5134' }}
+                />
+                <Tooltip 
+                  labelStyle={{ color: '#2C5134', fontWeight: 'bold' }}
+                  contentStyle={{ 
+                    backgroundColor: '#f8f9fa', 
+                    border: '1px solid #2C5134',
+                    borderRadius: '8px',
+                    fontSize: '12px'
+                  }}
+                />
+                <Legend 
+                  wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
+                />
+                <Bar dataKey="evaluations" fill={brandColors.olive} name="Site Evaluations" />
+                <Bar dataKey="audits" fill={brandColors.oliveLight} name="Forensic Audits" />
+                <Bar dataKey="warehouse" fill={brandColors.oliveMedium} name="Warehouse Audits" />
+                <Bar dataKey="investigations" fill={brandColors.oliveSoft} name="Investigations" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </AnimatedItem>
 
       {/* Individual Coach Analysis */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-brand-olive">🔍 Individual Coach Analysis</CardTitle>
-          <CardDescription className="text-medium-contrast">Select a coach to view their detailed performance trends</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Tabs value={selectedCoach?.id || "overview"} onValueChange={(value) => {
-            if (value === "overview") {
-              setSelectedCoach(null);
-            } else {
-              const coach = coaches.find(c => c.id === value);
-              setSelectedCoach(coach || null);
-            }
-          }}>
-            <TabsList className="grid w-full grid-cols-8 mb-6">
-              <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
-              {coaches.map((coach) => (
-                <TabsTrigger key={coach.id} value={coach.id} className="text-xs">
-                  {coach.name}
-                </TabsTrigger>
-              ))}
-            </TabsList>
+      <AnimatedItem>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-brand-olive">🔍 Individual Coach Analysis</CardTitle>
+            <CardDescription className="text-medium-contrast">Select a coach to view their detailed performance trends</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs value={selectedCoach?.id || "overview"} onValueChange={(value) => {
+              if (value === "overview") {
+                setSelectedCoach(null);
+              } else {
+                const coach = coaches.find(c => c.id === value);
+                setSelectedCoach(coach || null);
+              }
+            }}>
+              <TabsList className="grid w-full grid-cols-8 mb-6">
+                <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
+                {coaches.map((coach) => (
+                  <TabsTrigger key={coach.id} value={coach.id} className="text-xs">
+                    {coach.name}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
 
-            <TabsContent value="overview">
-              <div className="text-center py-8">
-                <TrendingUp className="h-12 w-12 text-brand-olive mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-brand-olive mb-2">Select a Coach</h3>
-                <p className="text-medium-contrast">Choose a coach from the tabs above to view their individual performance trends and detailed analytics.</p>
-              </div>
-            </TabsContent>
-
-            {coaches.map((coach) => (
-              <TabsContent key={coach.id} value={coach.id}>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 mb-6">
-                    <Users className="h-6 w-6 text-brand-olive" />
-                    <div>
-                      <h3 className="text-xl font-bold text-brand-olive">{coach.name}</h3>
-                      <p className="text-sm text-medium-contrast">
-                        Vacation: {coach.vacation_days_remaining}/{coach.vacation_days_total} days remaining
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <ResponsiveContainer width="100%" height={350}>
-                    <LineChart data={getIndividualCoachTrend(coach)}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                      <XAxis 
-                        dataKey="period" 
-                        tick={{ fontSize: 12, fill: '#2C5134' }}
-                        tickLine={{ stroke: '#2C5134' }}
-                      />
-                      <YAxis 
-                        tick={{ fontSize: 12, fill: '#2C5134' }}
-                        tickLine={{ stroke: '#2C5134' }}
-                      />
-                      <Tooltip 
-                        labelStyle={{ color: '#2C5134', fontWeight: 'bold' }}
-                        contentStyle={{ 
-                          backgroundColor: '#f8f9fa', 
-                          border: '1px solid #2C5134',
-                          borderRadius: '8px',
-                          fontSize: '12px'
-                        }}
-                      />
-                      <Legend 
-                        wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
-                      />
-                      <Line 
-                        type="monotone" 
-                        dataKey="evaluations" 
-                        stroke={brandColors.olive} 
-                        strokeWidth={3}
-                        name="Site Evaluations"
-                        dot={{ fill: brandColors.olive, strokeWidth: 2, r: 5 }}
-                      />
-                      <Line 
-                        type="monotone" 
-                        dataKey="audits" 
-                        stroke={brandColors.oliveLight} 
-                        strokeWidth={3}
-                        name="Forensic Audits"
-                        dot={{ fill: brandColors.oliveLight, strokeWidth: 2, r: 5 }}
-                      />
-                      <Line 
-                        type="monotone" 
-                        dataKey="warehouse" 
-                        stroke={brandColors.oliveMedium} 
-                        strokeWidth={3}
-                        name="Warehouse Audits"
-                        dot={{ fill: brandColors.oliveMedium, strokeWidth: 2, r: 5 }}
-                      />
-                      <Line 
-                        type="monotone" 
-                        dataKey="investigations" 
-                        stroke={brandColors.oliveSoft} 
-                        strokeWidth={3}
-                        name="Investigations"
-                        dot={{ fill: brandColors.oliveSoft, strokeWidth: 2, r: 5 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
+              <TabsContent value="overview">
+                <div className="text-center py-8">
+                  <TrendingUp className="h-12 w-12 text-brand-olive mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-brand-olive mb-2">Select a Coach</h3>
+                  <p className="text-medium-contrast">Choose a coach from the tabs above to view their individual performance trends and detailed analytics.</p>
                 </div>
               </TabsContent>
-            ))}
-          </Tabs>
-        </CardContent>
-      </Card>
-    </div>
+
+              {coaches.map((coach) => (
+                <TabsContent key={coach.id} value={coach.id}>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 mb-6">
+                      <Users className="h-6 w-6 text-brand-olive" />
+                      <div>
+                        <h3 className="text-xl font-bold text-brand-olive">{coach.name}</h3>
+                        <p className="text-sm text-medium-contrast">
+                          Vacation: {coach.vacation_days_remaining}/{coach.vacation_days_total} days remaining
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <ResponsiveContainer width="100%" height={350}>
+                      <LineChart data={getIndividualCoachTrend(coach)}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                        <XAxis 
+                          dataKey="period" 
+                          tick={{ fontSize: 12, fill: '#2C5134' }}
+                          tickLine={{ stroke: '#2C5134' }}
+                        />
+                        <YAxis 
+                          tick={{ fontSize: 12, fill: '#2C5134' }}
+                          tickLine={{ stroke: '#2C5134' }}
+                        />
+                        <Tooltip 
+                          labelStyle={{ color: '#2C5134', fontWeight: 'bold' }}
+                          contentStyle={{ 
+                            backgroundColor: '#f8f9fa', 
+                            border: '1px solid #2C5134',
+                            borderRadius: '8px',
+                            fontSize: '12px'
+                          }}
+                        />
+                        <Legend 
+                          wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="evaluations" 
+                          stroke={brandColors.olive} 
+                          strokeWidth={3}
+                          name="Site Evaluations"
+                          dot={{ fill: brandColors.olive, strokeWidth: 2, r: 5 }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="audits" 
+                          stroke={brandColors.oliveLight} 
+                          strokeWidth={3}
+                          name="Forensic Audits"
+                          dot={{ fill: brandColors.oliveLight, strokeWidth: 2, r: 5 }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="warehouse" 
+                          stroke={brandColors.oliveMedium} 
+                          strokeWidth={3}
+                          name="Warehouse Audits"
+                          dot={{ fill: brandColors.oliveMedium, strokeWidth: 2, r: 5 }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="investigations" 
+                          stroke={brandColors.oliveSoft} 
+                          strokeWidth={3}
+                          name="Investigations"
+                          dot={{ fill: brandColors.oliveSoft, strokeWidth: 2, r: 5 }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </TabsContent>
+              ))}
+            </Tabs>
+          </CardContent>
+        </Card>
+      </AnimatedItem>
+    </AnimatedContainer>
   );
 } 

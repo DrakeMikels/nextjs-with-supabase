@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { PlusCircle, Save, Trash2, User, Calendar } from "lucide-react";
+import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/ui/animated-container";
 
 interface Coach {
   id: string;
@@ -159,77 +160,79 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <AnimatedContainer variant="stagger" className="space-y-6">
+      <AnimatedItem className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-high-contrast">Coach Management</h2>
           <p className="text-medium-contrast">Manage regional safety coaches and their information</p>
         </div>
-        <Button onClick={() => setShowAddForm(true)} className="gap-2">
+        <Button onClick={() => setShowAddForm(true)} className="gap-2 hover-lift">
           <PlusCircle className="h-4 w-4" />
           Add Coach
         </Button>
-      </div>
+      </AnimatedItem>
 
       {/* Add New Coach Form */}
       {showAddForm && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-high-contrast">Add New Coach</CardTitle>
-            <CardDescription className="text-medium-contrast">Enter the details for the new safety coach</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="new_name" className="text-high-contrast">Name</Label>
-                <Input
-                  id="new_name"
-                  value={newCoach.name}
-                  onChange={(e) => setNewCoach(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Coach name"
-                />
+        <AnimatedItem>
+          <Card className="hover-lift">
+            <CardHeader>
+              <CardTitle className="text-high-contrast">Add New Coach</CardTitle>
+              <CardDescription className="text-medium-contrast">Enter the details for the new safety coach</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="new_name" className="text-high-contrast">Name</Label>
+                  <Input
+                    id="new_name"
+                    value={newCoach.name}
+                    onChange={(e) => setNewCoach(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Coach name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="new_hire_date" className="text-high-contrast">Date of Hire</Label>
+                  <Input
+                    id="new_hire_date"
+                    type="date"
+                    value={newCoach.date_of_hire}
+                    onChange={(e) => setNewCoach(prev => ({ ...prev, date_of_hire: e.target.value }))}
+                  />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="new_hire_date" className="text-high-contrast">Date of Hire</Label>
-                <Input
-                  id="new_hire_date"
-                  type="date"
-                  value={newCoach.date_of_hire}
-                  onChange={(e) => setNewCoach(prev => ({ ...prev, date_of_hire: e.target.value }))}
-                />
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="new_vacation_remaining" className="text-high-contrast">Vacation Days Remaining</Label>
+                  <Input
+                    id="new_vacation_remaining"
+                    type="number"
+                    value={newCoach.vacation_days_remaining}
+                    onChange={(e) => setNewCoach(prev => ({ ...prev, vacation_days_remaining: parseInt(e.target.value) || 0 }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="new_vacation_total" className="text-high-contrast">Total Vacation Days</Label>
+                  <Input
+                    id="new_vacation_total"
+                    type="number"
+                    value={newCoach.vacation_days_total}
+                    onChange={(e) => setNewCoach(prev => ({ ...prev, vacation_days_total: parseInt(e.target.value) || 2 }))}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="new_vacation_remaining" className="text-high-contrast">Vacation Days Remaining</Label>
-                <Input
-                  id="new_vacation_remaining"
-                  type="number"
-                  value={newCoach.vacation_days_remaining}
-                  onChange={(e) => setNewCoach(prev => ({ ...prev, vacation_days_remaining: parseInt(e.target.value) || 0 }))}
-                />
+              <div className="flex gap-2">
+                <Button onClick={addCoach} disabled={loading || !newCoach.name.trim()} className="gap-2">
+                  <Save className="h-4 w-4" />
+                  {loading ? "Adding..." : "Add Coach"}
+                </Button>
+                <Button variant="outline" onClick={() => setShowAddForm(false)}>
+                  Cancel
+                </Button>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="new_vacation_total" className="text-high-contrast">Total Vacation Days</Label>
-                <Input
-                  id="new_vacation_total"
-                  type="number"
-                  value={newCoach.vacation_days_total}
-                  onChange={(e) => setNewCoach(prev => ({ ...prev, vacation_days_total: parseInt(e.target.value) || 2 }))}
-                />
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <Button onClick={addCoach} disabled={loading || !newCoach.name.trim()} className="gap-2">
-                <Save className="h-4 w-4" />
-                {loading ? "Adding..." : "Add Coach"}
-              </Button>
-              <Button variant="outline" onClick={() => setShowAddForm(false)}>
-                Cancel
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </AnimatedItem>
       )}
 
       {/* Coaches List */}
@@ -362,6 +365,6 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
           </CardHeader>
         </Card>
       )}
-    </div>
+    </AnimatedContainer>
   );
 } 

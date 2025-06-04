@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Trash2 } from "lucide-react";
+import { AnimatedContainer, AnimatedItem } from "@/components/ui/animated-container";
 
 interface BiWeeklyPeriod {
   id: string;
@@ -74,74 +75,75 @@ export function BiWeeklyPeriodList({
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
+    <AnimatedContainer variant="stagger" className="space-y-4">
+      <AnimatedItem className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-high-contrast">Bi-Weekly Periods</h2>
         <div className="text-sm text-medium-contrast">
           {periods.length} period{periods.length !== 1 ? 's' : ''} total
         </div>
-      </div>
+      </AnimatedItem>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {periods.map((period) => (
-          <Card 
-            key={period.id}
-            className={`cursor-pointer transition-all hover:shadow-md ${
-              selectedPeriod?.id === period.id 
-                ? "ring-2 ring-primary border-primary" 
-                : ""
-            }`}
-            onClick={() => onSelectPeriod(period)}
-          >
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg text-high-contrast">{period.period_name}</CardTitle>
-                <div className="flex items-center gap-2">
-                  {isCurrentPeriod(period.start_date, period.end_date) && (
-                    <Badge variant="default">Current</Badge>
+      <AnimatedContainer variant="stagger" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {periods.map((period, index) => (
+          <AnimatedItem key={period.id} className={`stagger-${Math.min(index + 1, 7)}`}>
+            <Card 
+              className={`cursor-pointer transition-all hover:shadow-md hover-lift ${
+                selectedPeriod?.id === period.id 
+                  ? "ring-2 ring-primary border-primary" 
+                  : ""
+              }`}
+              onClick={() => onSelectPeriod(period)}
+            >
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg text-high-contrast">{period.period_name}</CardTitle>
+                  <div className="flex items-center gap-2">
+                    {isCurrentPeriod(period.start_date, period.end_date) && (
+                      <Badge variant="default">Current</Badge>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deletePeriod(period.id);
+                      }}
+                      disabled={loading}
+                      className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                <CardDescription className="flex items-center gap-2 text-medium-contrast">
+                  <Calendar className="h-4 w-4" />
+                  {formatDateRange(period.start_date, period.end_date)}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-medium-contrast">
+                    Created: {new Date(period.created_at).toLocaleDateString()}
+                  </div>
+                  {onOpenPeriod && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOpenPeriod(period);
+                      }}
+                      className="text-xs"
+                    >
+                      Open Period
+                    </Button>
                   )}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deletePeriod(period.id);
-                    }}
-                    disabled={loading}
-                    className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
                 </div>
-              </div>
-              <CardDescription className="flex items-center gap-2 text-medium-contrast">
-                <Calendar className="h-4 w-4" />
-                {formatDateRange(period.start_date, period.end_date)}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-medium-contrast">
-                  Created: {new Date(period.created_at).toLocaleDateString()}
-                </div>
-                {onOpenPeriod && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onOpenPeriod(period);
-                    }}
-                    className="text-xs"
-                  >
-                    Open Period
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </AnimatedItem>
         ))}
-      </div>
+      </AnimatedContainer>
 
       {periods.length === 0 && (
         <Card>
@@ -153,6 +155,6 @@ export function BiWeeklyPeriodList({
           </CardHeader>
         </Card>
       )}
-    </div>
+    </AnimatedContainer>
   );
 } 
