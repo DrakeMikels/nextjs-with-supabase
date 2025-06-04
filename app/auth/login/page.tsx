@@ -1,7 +1,6 @@
 import { LoginForm } from "@/components/login-form";
-import { Shield, Users, BarChart3, UserCheck } from "lucide-react";
+import { Shield, Users, BarChart3 } from "lucide-react";
 import * as motion from "motion/react-client";
-import Link from "next/link";
 
 export default function Page() {
   return (
@@ -107,7 +106,7 @@ export default function Page() {
               </div>
             </motion.div>
             
-            {/* Enhanced Feature Cards */}
+            {/* Feature Cards */}
             <div className="grid gap-4">
               {[
                 {
@@ -231,146 +230,6 @@ export default function Page() {
               <p className="text-xs text-white/80">
                 Only authorized Freedom Forever team members can access this system
               </p>
-            </motion.div>
-          </motion.div>
-          
-          {/* Right Side - Branding & Info */}
-          <motion.div 
-            className="hidden lg:block space-y-8"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{
-              duration: 0.6,
-              delay: 0.4,
-              x: { type: "spring", stiffness: 100, damping: 15 }
-            }}
-          >
-            <motion.div 
-              className="space-y-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.5,
-                delay: 0.6,
-                y: { type: "spring", stiffness: 100, damping: 15 }
-              }}
-            >
-              <div className="flex items-center gap-3">
-                <motion.div 
-                  className="p-3 bg-white/20 rounded-xl border border-white/30"
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{
-                    duration: 0.4,
-                    delay: 0.8,
-                    scale: { type: "spring", visualDuration: 0.4, bounce: 0.4 }
-                  }}
-                >
-                  <UserCheck className="h-8 w-8 text-white" />
-                </motion.div>
-                <div>
-                  <h1 className="text-3xl font-bold text-white">Welcome Back</h1>
-                  <p className="text-white/90">Secure Team Access</p>
-                </div>
-              </div>
-              
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-white">Safety Management Platform</h2>
-                <p className="text-white/80 leading-relaxed">
-                  Access your bi-weekly safety metrics, coach management tools, and comprehensive 
-                  reporting dashboard for Freedom Forever&apos;s regional safety program.
-                </p>
-              </div>
-            </motion.div>
-            
-            {/* Info Cards */}
-            <div className="grid gap-4">
-              {[
-                {
-                  icon: Shield,
-                  title: "Secure Access",
-                  description: "Enterprise-grade security",
-                  delay: 1.0
-                },
-                {
-                  icon: BarChart3,
-                  title: "Real-time Analytics",
-                  description: "Live safety metrics tracking",
-                  delay: 1.2
-                },
-                {
-                  icon: Users,
-                  title: "Team Management",
-                  description: "Coach oversight and development",
-                  delay: 1.4
-                }
-              ].map((feature) => (
-                <motion.div
-                  key={feature.title}
-                  className="flex items-center gap-4 p-4 bg-white/20 rounded-lg border border-white/30 hover-lift"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{
-                    duration: 0.5,
-                    delay: feature.delay,
-                    x: { type: "spring", stiffness: 100, damping: 15 }
-                  }}
-                  whileHover={{ 
-                    scale: 1.02,
-                    transition: { duration: 0.2 }
-                  }}
-                >
-                  <motion.div 
-                    className="p-2 bg-white/20 rounded-lg"
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      duration: 0.3,
-                      delay: feature.delay + 0.1,
-                      scale: { type: "spring", visualDuration: 0.3, bounce: 0.3 }
-                    }}
-                  >
-                    <feature.icon className="h-5 w-5 text-white" />
-                  </motion.div>
-                  <div>
-                    <h3 className="font-medium text-white">{feature.title}</h3>
-                    <p className="text-sm text-white/80">{feature.description}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-            
-            {/* Call to Action Card */}
-            <motion.div
-              className="bg-white/98 rounded-2xl p-8 shadow-2xl border border-white/50"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                duration: 0.5,
-                delay: 1.6,
-                scale: { type: "spring", visualDuration: 0.5, bounce: 0.2 }
-              }}
-            >
-              <div className="text-center space-y-4">
-                <h3 className="text-xl font-bold text-brand-olive">Ready to Get Started?</h3>
-                <p className="text-medium-contrast">
-                  Join your team in maintaining the highest safety standards across all Freedom Forever operations.
-                </p>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Link 
-                    href="/auth/sign-up"
-                    className="inline-block bg-brand-olive text-white px-6 py-3 rounded-lg hover:bg-brand-olive/90 font-medium hover-lift hover-glow"
-                  >
-                    Request Access
-                  </Link>
-                </motion.div>
-                <p className="text-xs text-white font-medium bg-black/30 rounded-full px-4 py-2 inline-block shadow-lg">
-                  ✓ Authorized Personnel Only
-                </p>
-              </div>
             </motion.div>
           </motion.div>
           
