@@ -39,6 +39,7 @@ import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/u
 import type { BiWeeklyPeriod, Coach } from "@/lib/types";
 import { BranchVisits } from "./branch-visits";
 import { CprFirstAid } from "./cpr-first-aid";
+import { MeetingView } from "./meeting-view";
 
 const navigationItems = [
   {
@@ -46,6 +47,12 @@ const navigationItems = [
     label: "Master View",
     icon: TrendingUp,
     description: "Complete overview of all metrics"
+  },
+  {
+    id: "meeting",
+    label: "Meeting View",
+    icon: Users,
+    description: "Side-by-side coach view for meetings"
   },
   {
     id: "metrics",
@@ -301,6 +308,13 @@ export function BiWeeklyDashboard() {
           <CprFirstAid 
             coaches={coaches}
             onDataChange={fetchData}
+          />
+        );
+      case "meeting":
+        return (
+          <MeetingView 
+            coaches={coaches}
+            selectedPeriod={selectedPeriod}
           />
         );
       default:

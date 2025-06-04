@@ -56,7 +56,8 @@ export function CprFirstAid({ coaches, onDataChange }: CprFirstAidProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     coach_id: "",
-    office_id: "",
+    region: "",
+    office: "",
     cpr_certification_date: "",
     cpr_expiration_date: "",
     first_aid_certification_date: "",
@@ -195,7 +196,8 @@ export function CprFirstAid({ coaches, onDataChange }: CprFirstAidProps) {
   const resetForm = () => {
     setFormData({
       coach_id: "",
-      office_id: "",
+      region: "",
+      office: "",
       cpr_certification_date: "",
       cpr_expiration_date: "",
       first_aid_certification_date: "",
@@ -215,7 +217,8 @@ export function CprFirstAid({ coaches, onDataChange }: CprFirstAidProps) {
   const handleEditRecord = (record: CprFirstAidRecord) => {
     setFormData({
       coach_id: record.coach_id,
-      office_id: record.office_id,
+      region: record.office?.region || "",
+      office: record.office?.name || "",
       cpr_certification_date: record.cpr_certification_date || "",
       cpr_expiration_date: record.cpr_expiration_date || "",
       first_aid_certification_date: record.first_aid_certification_date || "",
@@ -232,13 +235,42 @@ export function CprFirstAid({ coaches, onDataChange }: CprFirstAidProps) {
     try {
       setLoading(true);
       
+      // First, find or create the office
+      let officeId: string;
+      
+      // Check if office already exists
+      const { data: existingOffice } = await supabase
+        .from("offices")
+        .select("id")
+        .eq("name", formData.office)
+        .eq("region", formData.region)
+        .single();
+      
+      if (existingOffice) {
+        officeId = existingOffice.id;
+      } else {
+        // Create new office
+        const { data: newOffice, error: officeError } = await supabase
+          .from("offices")
+          .insert({
+            name: formData.office,
+            location: formData.office, // Use office name as location for simplicity
+            region: formData.region
+          })
+          .select("id")
+          .single();
+        
+        if (officeError) throw officeError;
+        officeId = newOffice.id;
+      }
+      
       if (editingRecord) {
         // Update existing record
         const { error } = await supabase
           .from("cpr_first_aid_records")
           .update({
             coach_id: formData.coach_id,
-            office_id: formData.office_id,
+            office_id: officeId,
             cpr_certification_date: formData.cpr_certification_date || null,
             cpr_expiration_date: formData.cpr_expiration_date || null,
             first_aid_certification_date: formData.first_aid_certification_date || null,
@@ -256,7 +288,7 @@ export function CprFirstAid({ coaches, onDataChange }: CprFirstAidProps) {
           .from("cpr_first_aid_records")
           .insert({
             coach_id: formData.coach_id,
-            office_id: formData.office_id,
+            office_id: officeId,
             cpr_certification_date: formData.cpr_certification_date || null,
             cpr_expiration_date: formData.cpr_expiration_date || null,
             first_aid_certification_date: formData.first_aid_certification_date || null,
@@ -588,19 +620,25 @@ export function CprFirstAid({ coaches, onDataChange }: CprFirstAidProps) {
               </div>
 
               <div className="space-y-2">
+                <Label htmlFor="region">Region</Label>
+                <Input
+                  id="region"
+                  value={formData.region}
+                  onChange={(e) => setFormData(prev => ({ ...prev, region: e.target.value }))}
+                  placeholder="Enter region"
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
                 <Label htmlFor="office">Office</Label>
-                <Select value={formData.office_id} onValueChange={(value) => setFormData(prev => ({ ...prev, office_id: value }))}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select office" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {offices.map((office) => (
-                      <SelectItem key={office.id} value={office.id}>
-                        {office.name} - {office.location}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Input
+                  id="office"
+                  value={formData.office}
+                  onChange={(e) => setFormData(prev => ({ ...prev, office: e.target.value }))}
+                  placeholder="Enter office"
+                />
               </div>
             </div>
 
@@ -688,7 +726,7 @@ export function CprFirstAid({ coaches, onDataChange }: CprFirstAidProps) {
             </Button>
             <Button 
               onClick={handleSaveRecord}
-              disabled={!formData.coach_id || !formData.office_id}
+              disabled={!formData.coach_id || !formData.region || !formData.office}
               className="bg-brand-olive hover:bg-brand-olive/90"
             >
               {editingRecord ? "Update Record" : "Add Record"}
