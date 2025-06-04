@@ -197,217 +197,82 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
 
       {/* Stats Cards */}
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 0.4, 
-            delay: 0.1,
-            type: "spring",
-            stiffness: 100,
-            damping: 15
-          }}
-          whileHover={{ 
-            scale: 1.02,
-            transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
-          }}
-        >
-          <Card className="border-brand-olive/20 hover:border-brand-olive/40 hover:shadow-lg transition-all duration-300 hover-lift">
-            <CardContent className="pt-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-medium-contrast">Total Coaches</p>
-                  <motion.p 
-                    className="text-2xl font-bold text-brand-olive"
-                    initial={{ opacity: 0, scale: 0.8 }}
+        {[
+          {
+            title: "Total Coaches",
+            value: coaches.length,
+            icon: Users,
+            color: "brand-olive"
+          },
+          {
+            title: "Total Certs", 
+            value: certifications.length,
+            icon: Award,
+            color: "blue-600",
+            borderColor: "blue-200",
+            hoverBorderColor: "blue-300"
+          },
+          {
+            title: "Required Certs",
+            value: certifications.filter(c => c.is_required).length,
+            icon: Star,
+            color: "amber-600",
+            borderColor: "amber-200", 
+            hoverBorderColor: "amber-300"
+          },
+          {
+            title: "Avg Completion",
+            value: `${Math.round(coaches.reduce((acc, coach) => acc + getCoachProgress(coach.id), 0) / coaches.length)}%`,
+            icon: CheckCircle,
+            color: "green-600",
+            borderColor: "green-200",
+            hoverBorderColor: "green-300"
+          }
+        ].map((card, index) => (
+          <motion.div
+            key={card.title}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.1 + (index * 0.1),
+              ease: [0, 0.71, 0.2, 1.01],
+            }}
+          >
+            <Card className={`${card.borderColor ? `border-${card.borderColor} hover:border-${card.hoverBorderColor}` : `border-${card.color}/20 hover:border-${card.color}/40`} hover:shadow-lg transition-all duration-300 hover-lift`}>
+              <CardContent className="pt-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-medium-contrast">{card.title}</p>
+                    <motion.p 
+                      className={`text-2xl font-bold text-${card.color}`}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.6,
+                        delay: 0.4 + (index * 0.1),
+                        ease: [0, 0.71, 0.2, 1.01],
+                      }}
+                    >
+                      {card.value}
+                    </motion.p>
+                  </div>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ 
-                      duration: 0.4, 
-                      delay: 0.4,
-                      type: "spring",
-                      stiffness: 150,
-                      damping: 12
+                    transition={{
+                      duration: 0.6,
+                      delay: 0.3 + (index * 0.1),
+                      ease: [0, 0.71, 0.2, 1.01],
                     }}
                   >
-                    {coaches.length}
-                  </motion.p>
+                    <card.icon className={`h-8 w-8 text-${card.color}/30`} />
+                  </motion.div>
                 </div>
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ 
-                    duration: 0.3, 
-                    delay: 0.3,
-                    type: "spring",
-                    stiffness: 200,
-                    damping: 15
-                  }}
-                >
-                  <Users className="h-8 w-8 text-brand-olive/30" />
-                </motion.div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 0.4, 
-            delay: 0.2,
-            type: "spring",
-            stiffness: 100,
-            damping: 15
-          }}
-          whileHover={{ 
-            scale: 1.02,
-            transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
-          }}
-        >
-          <Card className="border-blue-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300 hover-lift">
-            <CardContent className="pt-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-medium-contrast">Total Certs</p>
-                  <motion.p 
-                    className="text-2xl font-bold text-blue-600"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ 
-                      duration: 0.4, 
-                      delay: 0.5,
-                      type: "spring",
-                      stiffness: 150,
-                      damping: 12
-                    }}
-                  >
-                    {certifications.length}
-                  </motion.p>
-                </div>
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ 
-                    duration: 0.3, 
-                    delay: 0.4,
-                    type: "spring",
-                    stiffness: 200,
-                    damping: 15
-                  }}
-                >
-                  <Award className="h-8 w-8 text-blue-600/30" />
-                </motion.div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 0.4, 
-            delay: 0.3,
-            type: "spring",
-            stiffness: 100,
-            damping: 15
-          }}
-          whileHover={{ 
-            scale: 1.02,
-            transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
-          }}
-        >
-          <Card className="border-amber-200 hover:border-amber-300 hover:shadow-lg transition-all duration-300 hover-lift">
-            <CardContent className="pt-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-medium-contrast">Required Certs</p>
-                  <motion.p 
-                    className="text-2xl font-bold text-amber-600"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ 
-                      duration: 0.4, 
-                      delay: 0.6,
-                      type: "spring",
-                      stiffness: 150,
-                      damping: 12
-                    }}
-                  >
-                    {certifications.filter(c => c.is_required).length}
-                  </motion.p>
-                </div>
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ 
-                    duration: 0.3, 
-                    delay: 0.5,
-                    type: "spring",
-                    stiffness: 200,
-                    damping: 15
-                  }}
-                >
-                  <Star className="h-8 w-8 text-amber-600/30" />
-                </motion.div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 0.4, 
-            delay: 0.4,
-            type: "spring",
-            stiffness: 100,
-            damping: 15
-          }}
-          whileHover={{ 
-            scale: 1.02,
-            transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
-          }}
-        >
-          <Card className="border-green-200 hover:border-green-300 hover:shadow-lg transition-all duration-300 hover-lift">
-            <CardContent className="pt-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-medium-contrast">Avg Completion</p>
-                  <motion.p 
-                    className="text-2xl font-bold text-green-600"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ 
-                      duration: 0.4, 
-                      delay: 0.7,
-                      type: "spring",
-                      stiffness: 150,
-                      damping: 12
-                    }}
-                  >
-                    {Math.round(coaches.reduce((acc, coach) => acc + getCoachProgress(coach.id), 0) / coaches.length)}%
-                  </motion.p>
-                </div>
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ 
-                    duration: 0.3, 
-                    delay: 0.6,
-                    type: "spring",
-                    stiffness: 200,
-                    damping: 15
-                  }}
-                >
-                  <CheckCircle className="h-8 w-8 text-green-600/30" />
-                </motion.div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
       </div>
 
       {/* Filters */}

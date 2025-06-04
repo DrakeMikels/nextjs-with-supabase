@@ -1,8 +1,38 @@
+"use client";
+
 import { LoginForm } from "@/components/login-form";
 import { Shield, Users, BarChart3 } from "lucide-react";
 import * as motion from "motion/react-client";
+import { useAnimate } from "motion/react";
+import { useEffect } from "react";
 
 export default function Page() {
+  const [gradientRef, animate] = useAnimate();
+
+  useEffect(() => {
+    const gradientAnimation = animate(
+      gradientRef.current,
+      {
+        background: [
+          "linear-gradient(135deg, #2C5134 0%, #3D6B47 50%, #4E855A 100%)",
+          "linear-gradient(225deg, #3D6B47 0%, #4E855A 50%, #5F9F6D 100%)",
+          "linear-gradient(315deg, #4E855A 0%, #5F9F6D 50%, #70B980 100%)",
+          "linear-gradient(45deg, #5F9F6D 0%, #70B980 50%, #3D6B47 100%)",
+          "linear-gradient(135deg, #2C5134 0%, #3D6B47 50%, #4E855A 100%)"
+        ]
+      },
+      {
+        duration: 20,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    );
+
+    return () => {
+      gradientAnimation.cancel();
+    };
+  }, [animate, gradientRef]);
+
   return (
     <motion.div 
       className="min-h-screen w-full relative overflow-hidden"
@@ -10,19 +40,12 @@ export default function Page() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      {/* Animated Gradient Background - Using Dark Mode Colors for Both Themes */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-b from-brand-olive via-brand-olive-light to-brand-olive-medium"
-        animate={{
-          backgroundPosition: ["0% 0%", "0% 100%", "0% 0%"]
-        }}
-        transition={{
-          duration: 15,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
+      {/* Smooth Motion-Powered Gradient Background */}
+      <div
+        ref={gradientRef}
+        className="absolute inset-0"
         style={{
-          backgroundSize: "100% 200%"
+          background: "linear-gradient(135deg, #2C5134 0%, #3D6B47 50%, #4E855A 100%)"
         }}
       />
       

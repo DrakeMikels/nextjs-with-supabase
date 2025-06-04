@@ -230,233 +230,89 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod }: MetricsDa
       </AnimatedItem>
 
       {/* Overall Statistics Cards */}
-      <AnimatedItem className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 0.4, 
-            delay: 0.1,
-            type: "spring",
-            stiffness: 100,
-            damping: 15
-          }}
-          whileHover={{ 
-            scale: 1.02,
-            transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
-          }}
-        >
-          <Card className="border-brand-olive/20 hover:border-brand-olive/40 hover:shadow-lg transition-all duration-300 hover-lift">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-high-contrast">
-                {selectedPeriod ? "Period" : "Total"} Evaluations
-              </CardTitle>
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ 
-                  duration: 0.3, 
-                  delay: 0.3,
-                  type: "spring",
-                  stiffness: 200,
-                  damping: 15
-                }}
-              >
-                <Target className="h-4 w-4 text-brand-olive" />
-              </motion.div>
-            </CardHeader>
-            <CardContent>
-              <motion.div 
-                className="text-2xl font-bold text-brand-olive"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ 
-                  duration: 0.4, 
-                  delay: 0.4,
-                  type: "spring",
-                  stiffness: 150,
-                  damping: 12
-                }}
-              >
-                {overallStats.totalEvaluations}
-              </motion.div>
-              <p className="text-xs text-medium-contrast">
-                {selectedPeriod 
-                  ? `Goal: 6 per period` 
-                  : `Avg: ${overallStats.avgEvaluationsPerPeriod} per period`
-                }
-              </p>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 0.4, 
-            delay: 0.2,
-            type: "spring",
-            stiffness: 100,
-            damping: 15
-          }}
-          whileHover={{ 
-            scale: 1.02,
-            transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
-          }}
-        >
-          <Card className="border-brand-olive-light/20 hover:border-brand-olive-light/40 hover:shadow-lg transition-all duration-300 hover-lift">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-high-contrast">
-                {selectedPeriod ? "Period" : "Total"} Audits
-              </CardTitle>
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ 
-                  duration: 0.3, 
-                  delay: 0.4,
-                  type: "spring",
-                  stiffness: 200,
-                  damping: 15
-                }}
-              >
-                <BarChart3 className="h-4 w-4 text-brand-olive-light" />
-              </motion.div>
-            </CardHeader>
-            <CardContent>
-              <motion.div 
-                className="text-2xl font-bold text-brand-olive-light"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ 
-                  duration: 0.4, 
-                  delay: 0.5,
-                  type: "spring",
-                  stiffness: 150,
-                  damping: 12
-                }}
-              >
-                {overallStats.totalAudits}
-              </motion.div>
-              <p className="text-xs text-medium-contrast">
-                {selectedPeriod 
-                  ? `Goal: 6 per period` 
-                  : `Avg: ${overallStats.avgAuditsPerPeriod} per period`
-                }
-              </p>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 0.4, 
-            delay: 0.3,
-            type: "spring",
-            stiffness: 100,
-            damping: 15
-          }}
-          whileHover={{ 
-            scale: 1.02,
-            transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
-          }}
-        >
-          <Card className="border-brand-olive-medium/20 hover:border-brand-olive-medium/40 hover:shadow-lg transition-all duration-300 hover-lift">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-high-contrast">Warehouse Audits</CardTitle>
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ 
-                  duration: 0.3, 
-                  delay: 0.5,
-                  type: "spring",
-                  stiffness: 200,
-                  damping: 15
-                }}
-              >
-                <Target className="h-4 w-4 text-brand-olive-medium" />
-              </motion.div>
-            </CardHeader>
-            <CardContent>
-              <motion.div 
-                className="text-2xl font-bold text-brand-olive-medium"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ 
-                  duration: 0.4, 
-                  delay: 0.6,
-                  type: "spring",
-                  stiffness: 150,
-                  damping: 12
-                }}
-              >
-                {overallStats.totalWarehouseAudits}
-              </motion.div>
-              <p className="text-xs text-medium-contrast">
-                {selectedPeriod ? "Goal: 1 per period" : "Goal: 2 per month"}
-              </p>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 0.4, 
-            delay: 0.4,
-            type: "spring",
-            stiffness: 100,
-            damping: 15
-          }}
-          whileHover={{ 
-            scale: 1.02,
-            transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
-          }}
-        >
-          <Card className="border-brand-olive-soft/20 hover:border-brand-olive-soft/40 hover:shadow-lg transition-all duration-300 hover-lift">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-high-contrast">Open Investigations</CardTitle>
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ 
-                  duration: 0.3, 
-                  delay: 0.6,
-                  type: "spring",
-                  stiffness: 200,
-                  damping: 15
-                }}
-              >
-                <AlertTriangle className="h-4 w-4 text-brand-olive-soft" />
-              </motion.div>
-            </CardHeader>
-            <CardContent>
-              <motion.div 
-                className="text-2xl font-bold text-brand-olive-soft"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ 
-                  duration: 0.4, 
-                  delay: 0.7,
-                  type: "spring",
-                  stiffness: 150,
-                  damping: 12
-                }}
-              >
-                {overallStats.totalInvestigations}
-              </motion.div>
-              <p className="text-xs text-medium-contrast">
-                {selectedPeriod ? "Current period" : "All types combined"}
-              </p>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </AnimatedItem>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {[
+          {
+            title: selectedPeriod ? "Period" : "Total",
+            subtitle: "Evaluations",
+            value: overallStats.totalEvaluations,
+            description: selectedPeriod ? "Goal: 6 per period" : `Avg: ${overallStats.avgEvaluationsPerPeriod} per period`,
+            icon: Target,
+            color: "brand-olive"
+          },
+          {
+            title: selectedPeriod ? "Period" : "Total", 
+            subtitle: "Audits",
+            value: overallStats.totalAudits,
+            description: selectedPeriod ? "Goal: 6 per period" : `Avg: ${overallStats.avgAuditsPerPeriod} per period`,
+            icon: BarChart3,
+            color: "brand-olive-light"
+          },
+          {
+            title: "Warehouse",
+            subtitle: "Audits", 
+            value: overallStats.totalWarehouseAudits,
+            description: selectedPeriod ? "Goal: 1 per period" : "Goal: 2 per month",
+            icon: Target,
+            color: "brand-olive-medium"
+          },
+          {
+            title: "Open",
+            subtitle: "Investigations",
+            value: overallStats.totalInvestigations,
+            description: selectedPeriod ? "Current period" : "All types combined",
+            icon: AlertTriangle,
+            color: "brand-olive-soft"
+          }
+        ].map((card, index) => (
+          <motion.div
+            key={card.title + card.subtitle}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.1 + (index * 0.1),
+              ease: [0, 0.71, 0.2, 1.01],
+            }}
+          >
+            <Card className={`border-${card.color}/20 hover:border-${card.color}/40 hover:shadow-lg transition-all duration-300 hover-lift`}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-high-contrast">
+                  {card.title} {card.subtitle}
+                </CardTitle>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.3 + (index * 0.1),
+                    ease: [0, 0.71, 0.2, 1.01],
+                  }}
+                >
+                  <card.icon className={`h-4 w-4 text-${card.color}`} />
+                </motion.div>
+              </CardHeader>
+              <CardContent>
+                <motion.div 
+                  className={`text-2xl font-bold text-${card.color}`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.4 + (index * 0.1),
+                    ease: [0, 0.71, 0.2, 1.01],
+                  }}
+                >
+                  {card.value}
+                </motion.div>
+                <p className="text-xs text-medium-contrast">
+                  {card.description}
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
+      </div>
 
       {/* Charts Section */}
       <AnimatedItem className="grid gap-6 lg:grid-cols-2">

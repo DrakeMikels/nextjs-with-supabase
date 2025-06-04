@@ -400,231 +400,87 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
       </AnimatedItem>
 
       {/* Summary Cards */}
-      <AnimatedContainer variant="stagger" className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        <AnimatedItem>
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          {
+            title: "Total Entries",
+            value: metrics.length,
+            description: `Across ${periods.length} periods`,
+            icon: Calendar,
+            color: "brand-olive"
+          },
+          {
+            title: "Active Coaches", 
+            value: coaches.length,
+            description: "Regional safety coaches",
+            icon: Users,
+            color: "brand-olive-light"
+          },
+          {
+            title: "Completion Rate",
+            value: `${calculateCompletionRate()}%`,
+            description: "Of filtered entries",
+            icon: TrendingUp,
+            color: "green-600",
+            borderColor: "green-200",
+            hoverBorderColor: "green-300"
+          },
+          {
+            title: "Recent Activity",
+            value: getRecentActivity().length,
+            description: "Updates in last 3 days", 
+            icon: AlertTriangle,
+            color: "orange-600",
+            borderColor: "orange-200",
+            hoverBorderColor: "orange-300"
+          }
+        ].map((card, index) => (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ 
-              duration: 0.4, 
-              delay: 0.1,
-              type: "spring",
-              stiffness: 100,
-              damping: 15
-            }}
-            whileHover={{ 
-              scale: 1.02,
-              transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
+            key={card.title}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.1 + (index * 0.1),
+              ease: [0, 0.71, 0.2, 1.01],
             }}
           >
-            <Card className="border-brand-olive/20 hover:border-brand-olive/40 hover:shadow-lg transition-all duration-300 hover-lift">
+            <Card className={`${card.borderColor ? `border-${card.borderColor} hover:border-${card.hoverBorderColor}` : `border-${card.color}/20 hover:border-${card.color}/40`} hover:shadow-lg transition-all duration-300 hover-lift`}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-high-contrast">Total Entries</CardTitle>
+                <CardTitle className="text-sm font-medium text-high-contrast">{card.title}</CardTitle>
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ 
-                    duration: 0.3, 
-                    delay: 0.3,
-                    type: "spring",
-                    stiffness: 200,
-                    damping: 15
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.3 + (index * 0.1),
+                    ease: [0, 0.71, 0.2, 1.01],
                   }}
                 >
-                  <Calendar className="h-4 w-4 text-brand-olive" />
+                  <card.icon className={`h-4 w-4 text-${card.color}`} />
                 </motion.div>
               </CardHeader>
               <CardContent>
                 <motion.div 
-                  className="text-2xl font-bold text-brand-olive"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ 
-                    duration: 0.4, 
-                    delay: 0.4,
-                    type: "spring",
-                    stiffness: 150,
-                    damping: 12
+                  className={`text-2xl font-bold text-${card.color}`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.4 + (index * 0.1),
+                    ease: [0, 0.71, 0.2, 1.01],
                   }}
                 >
-                  {metrics.length}
+                  {card.value}
                 </motion.div>
                 <p className="text-xs text-medium-contrast">
-                  Across {periods.length} periods
+                  {card.description}
                 </p>
               </CardContent>
             </Card>
           </motion.div>
-        </AnimatedItem>
-
-        <AnimatedItem>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ 
-              duration: 0.4, 
-              delay: 0.2,
-              type: "spring",
-              stiffness: 100,
-              damping: 15
-            }}
-            whileHover={{ 
-              scale: 1.02,
-              transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
-            }}
-          >
-            <Card className="border-brand-olive-light/20 hover:border-brand-olive-light/40 hover:shadow-lg transition-all duration-300 hover-lift">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-high-contrast">Active Coaches</CardTitle>
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ 
-                    duration: 0.3, 
-                    delay: 0.4,
-                    type: "spring",
-                    stiffness: 200,
-                    damping: 15
-                  }}
-                >
-                  <Users className="h-4 w-4 text-brand-olive-light" />
-                </motion.div>
-              </CardHeader>
-              <CardContent>
-                <motion.div 
-                  className="text-2xl font-bold text-brand-olive-light"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ 
-                    duration: 0.4, 
-                    delay: 0.5,
-                    type: "spring",
-                    stiffness: 150,
-                    damping: 12
-                  }}
-                >
-                  {coaches.length}
-                </motion.div>
-                <p className="text-xs text-medium-contrast">
-                  Regional safety coaches
-                </p>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </AnimatedItem>
-
-        <AnimatedItem>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ 
-              duration: 0.4, 
-              delay: 0.3,
-              type: "spring",
-              stiffness: 100,
-              damping: 15
-            }}
-            whileHover={{ 
-              scale: 1.02,
-              transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
-            }}
-          >
-            <Card className="border-green-200 hover:border-green-300 hover:shadow-lg transition-all duration-300 hover-lift">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-high-contrast">Completion Rate</CardTitle>
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ 
-                    duration: 0.3, 
-                    delay: 0.5,
-                    type: "spring",
-                    stiffness: 200,
-                    damping: 15
-                  }}
-                >
-                  <TrendingUp className="h-4 w-4 text-green-600" />
-                </motion.div>
-              </CardHeader>
-              <CardContent>
-                <motion.div 
-                  className="text-2xl font-bold text-green-600"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ 
-                    duration: 0.4, 
-                    delay: 0.6,
-                    type: "spring",
-                    stiffness: 150,
-                    damping: 12
-                  }}
-                >
-                  {calculateCompletionRate()}%
-                </motion.div>
-                <p className="text-xs text-medium-contrast">
-                  Of filtered entries
-                </p>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </AnimatedItem>
-
-        <AnimatedItem>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ 
-              duration: 0.4, 
-              delay: 0.4,
-              type: "spring",
-              stiffness: 100,
-              damping: 15
-            }}
-            whileHover={{ 
-              scale: 1.02,
-              transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
-            }}
-          >
-            <Card className="border-orange-200 hover:border-orange-300 hover:shadow-lg transition-all duration-300 hover-lift">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-high-contrast">Recent Activity</CardTitle>
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ 
-                    duration: 0.3, 
-                    delay: 0.6,
-                    type: "spring",
-                    stiffness: 200,
-                    damping: 15
-                  }}
-                >
-                  <AlertTriangle className="h-4 w-4 text-orange-600" />
-                </motion.div>
-              </CardHeader>
-              <CardContent>
-                <motion.div 
-                  className="text-2xl font-bold text-orange-600"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ 
-                    duration: 0.4, 
-                    delay: 0.7,
-                    type: "spring",
-                    stiffness: 150,
-                    damping: 12
-                  }}
-                >
-                  {getRecentActivity().length}
-                </motion.div>
-                <p className="text-xs text-medium-contrast">
-                  Updates in last 3 days
-                </p>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </AnimatedItem>
-      </AnimatedContainer>
+        ))}
+      </div>
 
       {/* Coach Filter Tabs */}
       <AnimatedItem>
