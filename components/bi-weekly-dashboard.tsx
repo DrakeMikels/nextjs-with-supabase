@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,7 +25,8 @@ import {
   GraduationCap,
   ClipboardList,
   MapPin,
-  Heart
+  Heart,
+  Shield
 } from "lucide-react";
 import * as motion from "motion/react-client";
 import { BiWeeklyPeriodList } from "./bi-weekly-period-list";
@@ -104,120 +105,70 @@ const navigationItems = [
   }
 ];
 
-// Animation variants for the circular reveal sidebar
+// Animation variants for accordion-style sidebar
 const sidebarVariants = {
-  open: (height = 1000) => ({
-    clipPath: `circle(${height * 2 + 200}px at 40px 40px)`,
+  open: {
+    width: "16rem", // 64 * 0.25rem = 16rem
     transition: {
       type: "spring",
-      stiffness: 20,
-      restDelta: 2,
+      stiffness: 300,
+      damping: 30,
     },
-  }),
+  },
   closed: {
-    clipPath: "circle(30px at 40px 40px)",
+    width: "4rem", // 16 * 0.25rem = 4rem
     transition: {
-      delay: 0.2,
       type: "spring",
-      stiffness: 400,
-      damping: 40,
+      stiffness: 300,
+      damping: 30,
     },
   },
 };
 
 const navVariants = {
   open: {
-    transition: { staggerChildren: 0.07, delayChildren: 0.2 },
+    transition: { staggerChildren: 0.05, delayChildren: 0.1 },
   },
   closed: {
-    transition: { staggerChildren: 0.05, staggerDirection: -1 },
+    transition: { staggerChildren: 0.03, staggerDirection: -1 },
   },
 };
 
 const itemVariants = {
   open: {
     opacity: 1,
-    scale: 1,
-    y: 0,
+    x: 0,
     transition: {
-      duration: 0.4,
-      scale: { type: "spring", visualDuration: 0.4, bounce: 0.3 },
-      opacity: { duration: 0.3 },
-      y: { type: "spring", stiffness: 1000, velocity: -100 },
+      duration: 0.3,
+      x: { type: "spring", stiffness: 300, damping: 25 },
     },
   },
   closed: {
     opacity: 0,
-    scale: 0.8,
-    y: 50,
+    x: -20,
     transition: {
-      duration: 0.3,
-      scale: { type: "spring", visualDuration: 0.3 },
-      opacity: { duration: 0.2 },
-      y: { stiffness: 1000 },
+      duration: 0.2,
+      x: { type: "spring", stiffness: 300, damping: 25 },
     },
   },
 };
 
-// Custom hook for dimensions
-const useDimensions = (ref: React.RefObject<HTMLDivElement | null>) => {
-  const dimensions = useRef({ width: 0, height: 0 });
-
-  useEffect(() => {
-    if (ref.current) {
-      dimensions.current.width = ref.current.offsetWidth;
-      dimensions.current.height = ref.current.offsetHeight;
-    }
-  }, [ref]);
-
-  return dimensions.current;
+const iconVariants = {
+  open: {
+    scale: 1,
+    transition: {
+      duration: 0.2,
+      scale: { type: "spring", stiffness: 400, damping: 25 },
+    },
+  },
+  closed: {
+    scale: 1.1,
+    transition: {
+      duration: 0.2,
+      scale: { type: "spring", stiffness: 400, damping: 25 },
+    },
+  },
 };
-
-// Animated hamburger menu
-const Path = (props: React.ComponentProps<typeof motion.path>) => (
-  <motion.path
-    fill="transparent"
-    strokeWidth="3"
-    stroke="currentColor"
-    strokeLinecap="round"
-    {...props}
-  />
-);
-
-const MenuToggle = ({ toggle, isOpen }: { toggle: () => void; isOpen: boolean }) => (
-  <motion.button
-    onClick={toggle}
-    className="outline-none border-none cursor-pointer absolute top-4 left-4 w-12 h-12 rounded-full bg-transparent z-50 text-white"
-    whileHover={{ scale: 1.1 }}
-    whileTap={{ scale: 0.9 }}
-  >
-    <svg width="23" height="23" viewBox="0 0 23 23" className="w-full h-full">
-      <Path
-        variants={{
-          closed: { d: "M 2 2.5 L 20 2.5" },
-          open: { d: "M 3 16.5 L 17 2.5" },
-        }}
-        animate={isOpen ? "open" : "closed"}
-      />
-      <Path
-        d="M 2 9.423 L 20 9.423"
-        variants={{
-          closed: { opacity: 1 },
-          open: { opacity: 0 },
-        }}
-        transition={{ duration: 0.1 }}
-        animate={isOpen ? "open" : "closed"}
-      />
-      <Path
-        variants={{
-          closed: { d: "M 2 16.346 L 20 16.346" },
-          open: { d: "M 3 2.5 L 17 16.346" },
-        }}
-        animate={isOpen ? "open" : "closed"}
-      />
-    </svg>
-  </motion.button>
-);
 
 export function BiWeeklyDashboard() {
   const [periods, setPeriods] = useState<BiWeeklyPeriod[]>([]);
@@ -226,13 +177,11 @@ export function BiWeeklyDashboard() {
   const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState("master"); // Default to Master View
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true); // Default to open on desktop
   const [customDateRange, setCustomDateRange] = useState<{start: string, end: string}>({
     start: "",
     end: ""
   });
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { height } = useDimensions(containerRef);
   const supabase = createClient();
 
   const fetchData = useCallback(async () => {
@@ -534,35 +483,41 @@ export function BiWeeklyDashboard() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
-      {/* Animated Sidebar with Circular Reveal */}
+      {/* Animated Sidebar with Accordion Style */}
       <motion.nav
         initial={false}
         animate={sidebarOpen ? "open" : "closed"}
-        custom={height}
-        ref={containerRef}
-        className="fixed lg:static inset-y-0 left-0 z-40 w-64"
+        variants={sidebarVariants}
+        className="fixed lg:static inset-y-0 left-0 z-40 bg-gradient-to-b from-brand-olive via-brand-olive-light to-brand-olive-medium border-r border-white/20 overflow-hidden"
       >
-        {/* Circular reveal background */}
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-b from-brand-olive via-brand-olive-light to-brand-olive-medium"
-          variants={sidebarVariants}
-          custom={height}
-        />
-        
         {/* Navigation content */}
-        <div className="relative z-10 flex flex-col h-full">
+        <div className="flex flex-col h-full relative">
           {/* Enhanced background pattern for better texture */}
           <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
           {/* Subtle overlay for better text contrast */}
           <div className="absolute inset-0 bg-black/10"></div>
           
-          <div className="p-6 border-b border-white/30 relative z-10 pt-16 lg:pt-6">
-            <h2 className="text-lg font-semibold text-white drop-shadow-md">Navigation</h2>
-            <p className="text-sm text-white/90 drop-shadow-sm">Regional Safety Coaches</p>
+          <div className="p-4 border-b border-white/30 relative z-10">
+            <div className="flex items-center gap-3">
+              <motion.div
+                className="p-2 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30 flex-shrink-0"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Shield className="h-6 w-6 text-white" />
+              </motion.div>
+              <motion.div
+                variants={itemVariants}
+                className="min-w-0"
+              >
+                <h2 className="text-sm font-semibold text-white drop-shadow-md truncate">Navigation</h2>
+                <p className="text-xs text-white/90 drop-shadow-sm truncate">Regional Safety Coaches</p>
+              </motion.div>
+            </div>
           </div>
           
           <motion.div 
-            className="flex-1 p-4 space-y-2 relative z-10"
+            className="flex-1 p-2 space-y-1 relative z-10"
             variants={navVariants}
           >
             {navigationItems.map((item) => {
@@ -573,38 +528,71 @@ export function BiWeeklyDashboard() {
                 <motion.button
                   key={item.id}
                   variants={itemVariants}
-                  whileHover={{ scale: 1.05, x: 5 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02, x: 2 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => {
                     setActiveView(item.id);
-                    setSidebarOpen(false); // Close mobile sidebar on selection
+                    // Don't close sidebar on desktop, only on mobile
+                    if (window.innerWidth < 1024) {
+                      setSidebarOpen(false);
+                    }
                   }}
                   className={`
-                    w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200
+                    w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all duration-200 group
                     ${isActive 
                       ? 'bg-white/25 text-white shadow-lg border border-white/40 drop-shadow-sm' 
                       : 'text-white/90 hover:bg-white/15 hover:text-white hover:drop-shadow-sm'
                     }
                   `}
                 >
-                  <Icon className={`h-5 w-5 flex-shrink-0 ${isActive ? 'drop-shadow-sm' : ''}`} />
-                  <div className="flex-1 min-w-0">
-                    <div className={`font-medium text-sm ${isActive ? 'drop-shadow-sm' : ''}`}>{item.label}</div>
+                  <motion.div
+                    variants={iconVariants}
+                    className="flex-shrink-0"
+                  >
+                    <Icon className={`h-5 w-5 ${isActive ? 'drop-shadow-sm' : ''}`} />
+                  </motion.div>
+                  <motion.div 
+                    variants={itemVariants}
+                    className="flex-1 min-w-0"
+                  >
+                    <div className={`font-medium text-sm truncate ${isActive ? 'drop-shadow-sm' : ''}`}>
+                      {item.label}
+                    </div>
                     <div className={`text-xs truncate ${isActive ? 'text-white/95 drop-shadow-sm' : 'text-white/75'}`}>
                       {item.description}
                     </div>
-                  </div>
+                  </motion.div>
                 </motion.button>
               );
             })}
           </motion.div>
+          
+          {/* Toggle Button */}
+          <div className="p-4 border-t border-white/30 relative z-10">
+            <motion.button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="w-full flex items-center justify-center lg:justify-start gap-3 px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <motion.div
+                animate={{ rotate: sidebarOpen ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ChevronDown className="h-4 w-4 rotate-90" />
+              </motion.div>
+              <motion.span
+                variants={itemVariants}
+                className="text-sm font-medium"
+              >
+                {sidebarOpen ? 'Collapse' : 'Expand'}
+              </motion.span>
+            </motion.button>
+          </div>
         </div>
-        
-        {/* Animated Menu Toggle */}
-        <MenuToggle toggle={() => setSidebarOpen(!sidebarOpen)} isOpen={sidebarOpen} />
       </motion.nav>
 
-      {/* Mobile overlay */}
+      {/* Mobile overlay - Only show on mobile when sidebar is open */}
       {sidebarOpen && (
         <motion.div 
           initial={{ opacity: 0 }}
@@ -619,14 +607,31 @@ export function BiWeeklyDashboard() {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
         <div className="bg-background border-b border-brand-olive/20 p-4 lg:p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 ml-12 lg:ml-0">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-brand-olive">
-                {currentNavItem?.label || "Dashboard"}
-              </h1>
-              <p className="text-medium-contrast text-sm sm:text-base">
-                {currentNavItem?.description || "Regional Safety Coaches Dashboard"}
-              </p>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              {/* Mobile menu button */}
+              <motion.button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="lg:hidden p-2 rounded-lg bg-brand-olive/10 hover:bg-brand-olive/20 text-brand-olive transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <motion.div
+                  animate={{ rotate: sidebarOpen ? 90 : 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ChevronDown className="h-5 w-5 rotate-90" />
+                </motion.div>
+              </motion.button>
+              
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-brand-olive">
+                  {currentNavItem?.label || "Dashboard"}
+                </h1>
+                <p className="text-medium-contrast text-sm sm:text-base">
+                  {currentNavItem?.description || "Regional Safety Coaches Dashboard"}
+                </p>
+              </div>
             </div>
             <Button 
               onClick={createNewPeriod} 
