@@ -19,6 +19,7 @@ import {
   Users, 
   BarChart3, 
   ChevronDown, 
+  ChevronUp,
   TrendingUp,
   Edit3,
   CalendarDays,
@@ -267,6 +268,7 @@ export function BiWeeklyDashboard() {
     end: ""
   });
   const [isMobile, setIsMobile] = useState(false);
+  const [statsCollapsed, setStatsCollapsed] = useState(false);
   const supabase = createClient();
 
   // Check if we're on mobile
@@ -697,7 +699,7 @@ export function BiWeeklyDashboard() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/20 z-30 lg:hidden"
+          className="fixed inset-0 bg-black/60 z-30 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -765,145 +767,166 @@ export function BiWeeklyDashboard() {
               </p>
             </div>
             </div>
-            <Button 
-              onClick={createNewPeriod} 
-              className="gap-2 bg-brand-olive hover:bg-brand-olive/90 text-white w-full sm:w-auto hover-lift hover-glow text-sm sm:text-base"
-            >
-              <PlusCircle className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">New Period</span>
-              <span className="sm:hidden">New</span>
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button 
+                onClick={() => setStatsCollapsed(!statsCollapsed)}
+                variant="outline"
+                size="sm"
+                className="gap-2 hover-scale"
+              >
+                {statsCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+                {statsCollapsed ? "Show Stats" : "Hide Stats"}
+              </Button>
+              <Button 
+                onClick={createNewPeriod} 
+                className="gap-2 bg-brand-olive hover:bg-brand-olive/90 text-white w-full sm:w-auto hover-lift hover-glow text-sm sm:text-base"
+              >
+                <PlusCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">New Period</span>
+                <span className="sm:hidden">New</span>
+              </Button>
+            </div>
           </div>
         </div>
 
         {/* Stats Cards */}
-        <div className="p-2 sm:p-4 lg:p-6 border-b border-brand-olive/10">
-          <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { title: "Total Periods", value: periods.length, icon: Calendar, color: "brand-olive" },
-              { title: "Active Coaches", value: coaches.length, icon: Users, color: "brand-olive-light" },
-              { title: "Current Period", value: selectedPeriod?.period_name || "None", icon: BarChart3, color: "brand-olive-medium", isDropdown: true },
-              { title: "Custom Date Range", value: "", icon: Calendar, color: "brand-olive-soft", isCustomRange: true }
-            ].map((card, index) => (
-              <motion.div
-                key={card.title}
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  duration: 0.8,
-                  delay: 0.1 + (index * 0.1),
-                  ease: [0, 0.71, 0.2, 1.01],
-                }}
-              >
-                <Card className={`border-${card.color}/20 hover:border-${card.color}/40 hover:shadow-lg transition-all duration-300 hover-lift`}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 sm:pb-2 p-3 sm:p-4 lg:p-6">
-                    <CardTitle className="text-xs sm:text-sm font-medium text-high-contrast">{card.title}</CardTitle>
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{
-                        duration: 0.6,
-                        delay: 0.3 + (index * 0.1),
-                        ease: [0, 0.71, 0.2, 1.01],
-                      }}
-                    >
-                      <card.icon className={`h-3 w-3 sm:h-4 sm:w-4 text-${card.color}`} />
-                    </motion.div>
-                </CardHeader>
-                <CardContent className="p-3 sm:p-4 lg:p-6 pt-0">
-                    {card.isDropdown ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        className="h-auto p-0 text-left justify-start hover:bg-transparent w-full hover-scale"
-                      >
-                        <div className="flex items-center gap-2 w-full">
-                              <motion.div 
-                                className={`text-lg sm:text-xl lg:text-2xl font-bold text-${card.color} truncate`}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{
-                                  duration: 0.6,
-                                  delay: 0.4 + (index * 0.1),
-                                  ease: [0, 0.71, 0.2, 1.01],
-                                }}
-                              >
-                            {selectedPeriod?.period_name || "None"}
-                              </motion.div>
-                              <ChevronDown className={`h-3 w-3 sm:h-4 sm:w-4 text-${card.color} flex-shrink-0`} />
-                        </div>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-56">
-                      <DropdownMenuLabel>Select Period</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => setSelectedPeriod(null)}>
-                        All Periods
-                      </DropdownMenuItem>
-                      {periods.map((period) => (
-                        <DropdownMenuItem 
-                          key={period.id} 
-                          onClick={() => setSelectedPeriod(period)}
-                        >
-                          {period.period_name}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                    ) : card.isCustomRange ? (
-                      <div className="space-y-1 sm:space-y-2">
-                        <div className="flex gap-1 sm:gap-2">
-                          <Input
-                            type="date"
-                            value={customDateRange.start}
-                            onChange={(e) => setCustomDateRange(prev => ({...prev, start: e.target.value}))}
-                            className="text-xs h-6 sm:h-8"
-                            placeholder="Start date"
-                          />
-                          <Input
-                            type="date"
-                            value={customDateRange.end}
-                            onChange={(e) => setCustomDateRange(prev => ({...prev, end: e.target.value}))}
-                            className="text-xs h-6 sm:h-8"
-                            placeholder="End date"
-                          />
-                        </div>
-                        {customDateRange.start && customDateRange.end && (
-                          <motion.div 
-                            className={`text-xs text-${card.color} font-medium`}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                              duration: 0.6,
-                              delay: 0.4 + (index * 0.1),
-                              ease: [0, 0.71, 0.2, 1.01],
-                            }}
-                          >
-                            {new Date(customDateRange.start).toLocaleDateString()} - {new Date(customDateRange.end).toLocaleDateString()}
-                          </motion.div>
-                        )}
-                          </div>
-                    ) : (
-                      <motion.div 
-                        className={`text-lg sm:text-xl lg:text-2xl font-bold text-${card.color}`}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
+        {!statsCollapsed && (
+          <motion.div 
+            className="p-2 sm:p-4 lg:p-6 border-b border-brand-olive/10"
+            initial={{ opacity: 1, height: "auto" }}
+            animate={{ 
+              opacity: statsCollapsed ? 0 : 1,
+              height: statsCollapsed ? 0 : "auto"
+            }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                { title: "Total Periods", value: periods.length, icon: Calendar, color: "brand-olive" },
+                { title: "Active Coaches", value: coaches.length, icon: Users, color: "brand-olive-light" },
+                { title: "Current Period", value: selectedPeriod?.period_name || "None", icon: BarChart3, color: "brand-olive-medium", isDropdown: true },
+                { title: "Custom Date Range", value: "", icon: Calendar, color: "brand-olive-soft", isCustomRange: true }
+              ].map((card, index) => (
+                <motion.div
+                  key={card.title}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    duration: 0.8,
+                    delay: 0.1 + (index * 0.1),
+                    ease: [0, 0.71, 0.2, 1.01],
+                  }}
+                >
+                  <Card className={`border-${card.color}/20 hover:border-${card.color}/40 hover:shadow-lg transition-all duration-300 hover-lift`}>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 sm:pb-2 p-3 sm:p-4 lg:p-6">
+                      <CardTitle className="text-xs sm:text-sm font-medium text-high-contrast">{card.title}</CardTitle>
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
                         transition={{
                           duration: 0.6,
-                          delay: 0.4 + (index * 0.1),
+                          delay: 0.3 + (index * 0.1),
                           ease: [0, 0.71, 0.2, 1.01],
                         }}
                       >
-                        {card.value}
+                        <card.icon className={`h-3 w-3 sm:h-4 sm:w-4 text-${card.color}`} />
                       </motion.div>
-                    )}
-                </CardContent>
-              </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+                  </CardHeader>
+                  <CardContent className="p-3 sm:p-4 lg:p-6 pt-0">
+                      {card.isDropdown ? (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          className="h-auto p-0 text-left justify-start hover:bg-transparent w-full hover-scale"
+                        >
+                          <div className="flex items-center gap-2 w-full">
+                                <motion.div 
+                                  className={`text-lg sm:text-xl lg:text-2xl font-bold text-${card.color} truncate`}
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{
+                                    duration: 0.6,
+                                    delay: 0.4 + (index * 0.1),
+                                    ease: [0, 0.71, 0.2, 1.01],
+                                  }}
+                                >
+                              {selectedPeriod?.period_name || "None"}
+                                </motion.div>
+                                <ChevronDown className={`h-3 w-3 sm:h-4 sm:w-4 text-${card.color} flex-shrink-0`} />
+                          </div>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="w-56">
+                        <DropdownMenuLabel>Select Period</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => setSelectedPeriod(null)}>
+                          All Periods
+                        </DropdownMenuItem>
+                        {periods.map((period) => (
+                          <DropdownMenuItem
+                            key={period.id}
+                            onClick={() => setSelectedPeriod(period)}
+                          >
+                            {period.period_name}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                      ) : card.isCustomRange ? (
+                        <div className="space-y-1 sm:space-y-2">
+                          <div className="flex gap-1 sm:gap-2">
+                            <Input
+                              type="date"
+                              value={customDateRange.start}
+                              onChange={(e) => setCustomDateRange(prev => ({...prev, start: e.target.value}))}
+                              className="text-xs h-6 sm:h-8"
+                              placeholder="Start date"
+                            />
+                            <Input
+                              type="date"
+                              value={customDateRange.end}
+                              onChange={(e) => setCustomDateRange(prev => ({...prev, end: e.target.value}))}
+                              className="text-xs h-6 sm:h-8"
+                              placeholder="End date"
+                            />
+                          </div>
+                          {customDateRange.start && customDateRange.end && (
+                            <motion.div 
+                              className={`text-xs text-${card.color} font-medium`}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{
+                                duration: 0.6,
+                                delay: 0.4 + (index * 0.1),
+                                ease: [0, 0.71, 0.2, 1.01],
+                              }}
+                            >
+                              {new Date(customDateRange.start).toLocaleDateString()} - {new Date(customDateRange.end).toLocaleDateString()}
+                            </motion.div>
+                          )}
+                            </div>
+                      ) : (
+                        <motion.div 
+                          className={`text-lg sm:text-xl lg:text-2xl font-bold text-${card.color}`}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            duration: 0.6,
+                            delay: 0.4 + (index * 0.1),
+                            ease: [0, 0.71, 0.2, 1.01],
+                          }}
+                        >
+                          {card.value}
+                        </motion.div>
+                      )}
+                  </CardContent>
+                </Card>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         {/* Content Area */}
         <div className="flex-1 p-2 sm:p-4 lg:p-6 overflow-auto">

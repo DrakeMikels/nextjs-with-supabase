@@ -17,31 +17,31 @@ export default function Page() {
       {
         backgroundPosition: [
           "0% 0%",
-          "0% 25%", 
-          "0% 50%",
-          "0% 75%",
-          "0% 100%",
-          "0% 75%",
-          "0% 50%",
-          "0% 25%",
+          "25% 25%", 
+          "50% 50%",
+          "75% 75%",
+          "100% 100%",
+          "75% 75%",
+          "50% 50%",
+          "25% 25%",
           "0% 0%"
         ],
         background: [
-          "linear-gradient(180deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
-          "linear-gradient(180deg, #2C5134 0%, #4E855A 50%, #1a1a1a 100%)",
-          "linear-gradient(180deg, #4E855A 0%, #1a1a1a 50%, #2C5134 100%)",
-          "linear-gradient(180deg, #1a1a1a 0%, #4E855A 50%, #2C5134 100%)",
-          "linear-gradient(180deg, #2C5134 0%, #1a1a1a 50%, #4E855A 100%)",
-          "linear-gradient(180deg, #4E855A 0%, #2C5134 50%, #1a1a1a 100%)",
-          "linear-gradient(180deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
-          "linear-gradient(180deg, #2C5134 0%, #4E855A 50%, #1a1a1a 100%)",
-          "linear-gradient(180deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)"
+          "linear-gradient(135deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
+          "linear-gradient(135deg, #2C5134 0%, #4E855A 50%, #1a1a1a 100%)",
+          "linear-gradient(135deg, #4E855A 0%, #1a1a1a 50%, #2C5134 100%)",
+          "linear-gradient(135deg, #1a1a1a 0%, #4E855A 50%, #2C5134 100%)",
+          "linear-gradient(135deg, #2C5134 0%, #1a1a1a 50%, #4E855A 100%)",
+          "linear-gradient(135deg, #4E855A 0%, #2C5134 50%, #1a1a1a 100%)",
+          "linear-gradient(135deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
+          "linear-gradient(135deg, #2C5134 0%, #4E855A 50%, #1a1a1a 100%)",
+          "linear-gradient(135deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)"
         ]
       },
       {
-        duration: 12.75,
+        duration: 20,
         repeat: Infinity,
-        ease: "easeInOut"
+        ease: "linear"
       }
     );
 
@@ -89,8 +89,8 @@ export default function Page() {
         ref={gradientRef}
         className="absolute inset-0"
         style={{
-          background: "linear-gradient(180deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
-          backgroundSize: "100% 200%",
+          background: "linear-gradient(135deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
+          backgroundSize: "200% 200%",
           backgroundPosition: "0% 0%"
         }}
       />
