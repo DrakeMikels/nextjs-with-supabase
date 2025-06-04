@@ -14,15 +14,21 @@ export default function Page() {
       gradientRef.current,
       {
         background: [
-          "linear-gradient(135deg, #2C5134 0%, #3D6B47 50%, #4E855A 100%)",
-          "linear-gradient(225deg, #3D6B47 0%, #4E855A 50%, #5F9F6D 100%)",
-          "linear-gradient(315deg, #4E855A 0%, #5F9F6D 50%, #70B980 100%)",
-          "linear-gradient(45deg, #5F9F6D 0%, #70B980 50%, #3D6B47 100%)",
-          "linear-gradient(135deg, #2C5134 0%, #3D6B47 50%, #4E855A 100%)"
+          "linear-gradient(180deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
+          "linear-gradient(200deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
+          "linear-gradient(220deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
+          "linear-gradient(240deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
+          "linear-gradient(260deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
+          "linear-gradient(280deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
+          "linear-gradient(300deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
+          "linear-gradient(320deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
+          "linear-gradient(340deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
+          "linear-gradient(360deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
+          "linear-gradient(180deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)"
         ]
       },
       {
-        duration: 20,
+        duration: 15,
         repeat: Infinity,
         ease: "easeInOut"
       }
@@ -45,7 +51,7 @@ export default function Page() {
         ref={gradientRef}
         className="absolute inset-0"
         style={{
-          background: "linear-gradient(135deg, #2C5134 0%, #3D6B47 50%, #4E855A 100%)"
+          background: "linear-gradient(180deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)"
         }}
       />
       
@@ -132,8 +138,9 @@ export default function Page() {
               x: { type: "spring", stiffness: 100, damping: 15 }
             }}
           >
+            {/* Header Section with Dark Background */}
             <motion.div 
-              className="space-y-6"
+              className="space-y-6 p-6 bg-black/40 backdrop-blur-md rounded-2xl border border-white/20 shadow-2xl"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
@@ -144,7 +151,7 @@ export default function Page() {
             >
               <div className="flex items-center gap-3">
                 <motion.div 
-                  className="p-3 bg-white/20 rounded-xl border border-white/30"
+                  className="p-3 bg-white/20 rounded-xl border border-white/30 shadow-lg"
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
@@ -156,20 +163,20 @@ export default function Page() {
                   <Shield className="h-8 w-8 text-white" />
                 </motion.div>
                 <div>
-                  <h1 className="text-3xl font-bold text-white drop-shadow-sm">Regional Safety Coaches</h1>
+                  <h1 className="text-3xl font-bold text-white drop-shadow-lg">Regional Safety Coaches</h1>
                   <p className="text-white/90 font-medium">Professional Safety Management Platform</p>
                 </div>
               </div>
               
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold text-white">Streamline Your Safety Operations</h2>
-                <p className="text-white/80 leading-relaxed">
+                <p className="text-white/90 leading-relaxed">
                   Comprehensive bi-weekly tracking, coach management, and safety metrics in one powerful platform.
                 </p>
               </div>
             </motion.div>
             
-            {/* Feature Cards */}
+            {/* Feature Cards with Dark Backgrounds */}
             <div className="grid gap-4">
               {[
                 {
@@ -193,7 +200,7 @@ export default function Page() {
               ].map((feature) => (
                 <motion.div
                   key={feature.title}
-                  className="flex items-center gap-4 p-4 bg-white/20 rounded-lg border border-white/30 hover-lift"
+                  className="flex items-center gap-4 p-4 bg-black/40 backdrop-blur-md rounded-xl border border-white/20 shadow-xl hover-lift"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{
@@ -203,23 +210,23 @@ export default function Page() {
                   }}
                   whileHover={{ 
                     scale: 1.02,
-                    transition: { duration: 0.2 }
+                    transition: { duration: 0.2, type: "spring", stiffness: 300, damping: 20 }
                   }}
                 >
                   <motion.div 
-                    className="p-2 bg-white/20 rounded-lg"
+                    className="p-3 bg-white/20 rounded-lg shadow-lg"
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{
                       duration: 0.3,
-                      delay: feature.delay + 0.1,
-                      scale: { type: "spring", visualDuration: 0.3, bounce: 0.3 }
+                      delay: feature.delay + 0.2,
+                      scale: { type: "spring", visualDuration: 0.3, bounce: 0.4 }
                     }}
                   >
-                    <feature.icon className="h-5 w-5 text-white" />
+                    <feature.icon className="h-6 w-6 text-white" />
                   </motion.div>
                   <div>
-                    <h3 className="font-medium text-white">{feature.title}</h3>
+                    <h3 className="font-semibold text-white text-lg">{feature.title}</h3>
                     <p className="text-sm text-white/80">{feature.description}</p>
                   </div>
                 </motion.div>
@@ -238,8 +245,9 @@ export default function Page() {
               x: { type: "spring", stiffness: 100, damping: 15 }
             }}
           >
+            {/* Mobile Header with Dark Background */}
             <motion.div 
-              className="text-center lg:hidden mb-8"
+              className="text-center lg:hidden mb-8 p-6 bg-black/40 backdrop-blur-md rounded-2xl border border-white/20 shadow-2xl"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
@@ -250,7 +258,7 @@ export default function Page() {
             >
               <div className="flex items-center justify-center gap-3 mb-4">
                 <motion.div 
-                  className="p-3 bg-white/20 rounded-xl border border-white/30"
+                  className="p-3 bg-white/20 rounded-xl border border-white/30 shadow-lg"
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
@@ -261,14 +269,16 @@ export default function Page() {
                 >
                   <Shield className="h-6 w-6 text-white" />
                 </motion.div>
-                <h1 className="text-2xl font-bold text-white">RSC Platform</h1>
+                <h1 className="text-2xl font-bold text-white drop-shadow-lg">RSC Platform</h1>
               </div>
-              <p className="text-white/90">
+              <p className="text-white/90 font-medium">
                 Regional Safety Coaches Dashboard
               </p>
             </motion.div>
             
+            {/* Login Form Container with Dark Background */}
             <motion.div
+              className="bg-black/40 backdrop-blur-md rounded-2xl border border-white/20 shadow-2xl p-1"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{
@@ -280,8 +290,9 @@ export default function Page() {
               <LoginForm />
             </motion.div>
             
+            {/* Footer Text with Dark Background */}
             <motion.div 
-              className="mt-8 text-center"
+              className="mt-6 text-center p-4 bg-black/30 backdrop-blur-md rounded-xl border border-white/20 shadow-lg"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
@@ -290,7 +301,7 @@ export default function Page() {
                 y: { type: "spring", stiffness: 100, damping: 15 }
               }}
             >
-              <p className="text-xs text-white/80">
+              <p className="text-sm text-white/90 font-medium">
                 Only authorized Freedom Forever team members can access this system
               </p>
             </motion.div>

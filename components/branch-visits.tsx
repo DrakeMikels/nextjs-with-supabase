@@ -18,6 +18,7 @@ import {
   Building2
 } from "lucide-react";
 import { AnimatedContainer, AnimatedItem } from "@/components/ui/animated-container";
+import * as motion from "motion/react-client";
 import type { Coach } from "@/lib/types";
 
 interface BranchVisit {
@@ -200,161 +201,321 @@ export function BranchVisits({ coaches, onDataChange }: BranchVisitsProps) {
           <h2 className="text-2xl font-bold text-high-contrast">Branch Assignments</h2>
           <p className="text-medium-contrast">Track coach responsibilities and visit schedules</p>
         </div>
-        <Button onClick={() => setShowAddDialog(true)} className="gap-2 hover-lift">
-          <PlusCircle className="h-4 w-4" />
-          Assign Branch
-        </Button>
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{
+            duration: 0.4,
+            delay: 0.2,
+            x: { type: "spring", stiffness: 100, damping: 15 }
+          }}
+        >
+          <Button onClick={() => setShowAddDialog(true)} className="gap-2 hover-lift">
+            <PlusCircle className="h-4 w-4" />
+            Assign Branch
+          </Button>
+        </motion.div>
       </AnimatedItem>
 
       {/* Summary Cards */}
       <AnimatedItem>
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          <Card className="hover-lift">
-            <CardContent className="pt-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-medium-contrast">Total Assignments</p>
-                  <p className="text-2xl font-bold text-high-contrast">{totalBranches}</p>
-                </div>
-                <Building2 className="h-8 w-8 text-brand-olive" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="hover-lift">
-            <CardContent className="pt-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-medium-contrast">Recent Visits</p>
-                  <p className="text-2xl font-bold text-high-contrast">{recentVisits}</p>
-                </div>
-                <Calendar className="h-8 w-8 text-green-500" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="hover-lift">
-            <CardContent className="pt-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-medium-contrast">Overdue Visits</p>
-                  <p className="text-2xl font-bold text-high-contrast">{overdueVisits}</p>
-                </div>
-                <Calendar className="h-8 w-8 text-red-500" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="hover-lift">
-            <CardContent className="pt-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-medium-contrast">Active Coaches</p>
-                  <p className="text-2xl font-bold text-high-contrast">{Object.keys(visitsByCoach).length}</p>
-                </div>
-                <MapPin className="h-8 w-8 text-blue-500" />
-              </div>
-            </CardContent>
-          </Card>
+          {[
+            {
+              title: "Total Assignments",
+              value: totalBranches,
+              icon: Building2,
+              color: "brand-olive",
+              delay: 0.1
+            },
+            {
+              title: "Recent Visits",
+              value: recentVisits,
+              icon: Calendar,
+              color: "green-500",
+              delay: 0.2
+            },
+            {
+              title: "Overdue Visits",
+              value: overdueVisits,
+              icon: Calendar,
+              color: "red-500",
+              delay: 0.3
+            },
+            {
+              title: "Active Coaches",
+              value: Object.keys(visitsByCoach).length,
+              icon: MapPin,
+              color: "blue-500",
+              delay: 0.4
+            }
+          ].map((stat) => (
+            <motion.div
+              key={stat.title}
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{
+                duration: 0.6,
+                delay: stat.delay,
+                scale: { type: "spring", visualDuration: 0.6, bounce: 0.3 }
+              }}
+              whileHover={{ 
+                scale: 1.02,
+                transition: { duration: 0.2, type: "spring", stiffness: 300, damping: 20 }
+              }}
+            >
+              <Card className="hover-lift border-brand-olive/20 hover:border-brand-olive/40 hover:shadow-lg transition-all duration-300">
+                <CardContent className="pt-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-medium-contrast">{stat.title}</p>
+                      <motion.p 
+                        className={`text-2xl font-bold text-${stat.color}`}
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{
+                          duration: 0.4,
+                          delay: stat.delay + 0.2,
+                          scale: { type: "spring", visualDuration: 0.4, bounce: 0.4 }
+                        }}
+                      >
+                        {stat.value}
+                      </motion.p>
+                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, rotate: -180, scale: 0 }}
+                      animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                      transition={{
+                        duration: 0.5,
+                        delay: stat.delay + 0.1,
+                        rotate: { type: "spring", stiffness: 200, damping: 15 },
+                        scale: { type: "spring", visualDuration: 0.5, bounce: 0.4 }
+                      }}
+                    >
+                      <stat.icon className={`h-8 w-8 text-${stat.color}`} />
+                    </motion.div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
         </div>
       </AnimatedItem>
 
       {/* Filter */}
       <AnimatedItem>
-        <Card className="hover-lift">
-          <CardHeader>
-            <CardTitle className="text-lg">Filter by Coach</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Select value={filterCoach} onValueChange={setFilterCoach}>
-              <SelectTrigger className="w-64">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Coaches</SelectItem>
-                {coaches.map((coach) => (
-                  <SelectItem key={coach.id} value={coach.id}>{coach.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </CardContent>
-        </Card>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.4,
+            delay: 0.6,
+            y: { type: "spring", stiffness: 100, damping: 15 }
+          }}
+        >
+          <Card className="hover-lift border-brand-olive/20 hover:border-brand-olive/30">
+            <CardHeader>
+              <CardTitle className="text-lg">Filter by Coach</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Select value={filterCoach} onValueChange={setFilterCoach}>
+                <SelectTrigger className="w-64">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Coaches</SelectItem>
+                  {coaches.map((coach) => (
+                    <SelectItem key={coach.id} value={coach.id}>{coach.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </CardContent>
+          </Card>
+        </motion.div>
       </AnimatedItem>
 
       {/* Branch Assignments by Coach */}
       <AnimatedItem>
         <div className="space-y-6">
-          {Object.entries(visitsByCoach).map(([coachId, visits]) => {
+          {Object.entries(visitsByCoach).map(([coachId, visits], coachIndex) => {
             const coach = coaches.find(c => c.id === coachId);
             if (!coach) return null;
 
             return (
-              <Card key={coachId} className="hover-lift">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5 text-brand-olive" />
-                    {coach.name}
-                    <Badge variant="outline" className="ml-auto">
-                      {visits.length} branches
-                    </Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    {visits.map((visit) => (
-                      <div
-                        key={visit.id}
-                        className="flex items-center justify-between p-3 border rounded hover:bg-muted/30 transition-colors"
+              <motion.div
+                key={coachId}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  duration: 0.5,
+                  delay: 0.1 + (coachIndex * 0.1),
+                  scale: { type: "spring", visualDuration: 0.5, bounce: 0.2 }
+                }}
+                whileHover={{ 
+                  scale: 1.01,
+                  transition: { duration: 0.2, type: "spring", stiffness: 300, damping: 20 }
+                }}
+              >
+                <Card className="hover-lift border-brand-olive/20 hover:border-brand-olive/40 hover:shadow-lg transition-all duration-300">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <motion.div
+                        initial={{ opacity: 0, rotate: -180 }}
+                        animate={{ opacity: 1, rotate: 0 }}
+                        transition={{
+                          duration: 0.4,
+                          delay: 0.2 + (coachIndex * 0.1),
+                          rotate: { type: "spring", stiffness: 200, damping: 15 }
+                        }}
                       >
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-high-contrast truncate">{visit.branch_name}</h4>
-                          <p className="text-sm text-medium-contrast">
-                            Last visit: {formatDate(visit.last_visit_date)}
-                          </p>
-                          {visit.last_visit_date && (
-                            <p className="text-xs text-medium-contrast">
-                              {getDaysSinceVisit(visit.last_visit_date)} days ago
-                            </p>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2 ml-3">
-                          <Badge className={`text-xs ${getVisitStatusColor(visit.last_visit_date)}`}>
-                            {visit.last_visit_date ? 'Visited' : 'Pending'}
-                          </Badge>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setEditingVisit(visit)}
-                            className="h-8 w-8 p-0"
+                        <MapPin className="h-5 w-5 text-brand-olive" />
+                      </motion.div>
+                      <motion.span
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{
+                          duration: 0.3,
+                          delay: 0.3 + (coachIndex * 0.1)
+                        }}
+                      >
+                        {coach.name}
+                      </motion.span>
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{
+                          duration: 0.3,
+                          delay: 0.4 + (coachIndex * 0.1),
+                          scale: { type: "spring", visualDuration: 0.3, bounce: 0.4 }
+                        }}
+                        className="ml-auto"
+                      >
+                        <Badge variant="outline">
+                          {visits.length} branches
+                        </Badge>
+                      </motion.div>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      {visits.map((visit, visitIndex) => (
+                        <motion.div
+                          key={visit.id}
+                          className="flex items-center justify-between p-3 border rounded hover:bg-muted/30 transition-colors"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            duration: 0.3,
+                            delay: 0.5 + (coachIndex * 0.1) + (visitIndex * 0.05)
+                          }}
+                          whileHover={{ 
+                            scale: 1.02,
+                            transition: { duration: 0.2, type: "spring", stiffness: 300, damping: 20 }
+                          }}
+                        >
+                          <div className="flex-1 min-w-0">
+                            <motion.h4 
+                              className="font-medium text-high-contrast truncate"
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{
+                                duration: 0.3,
+                                delay: 0.6 + (coachIndex * 0.1) + (visitIndex * 0.05)
+                              }}
+                            >
+                              {visit.branch_name}
+                            </motion.h4>
+                            <motion.p 
+                              className="text-sm text-medium-contrast"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{
+                                duration: 0.3,
+                                delay: 0.7 + (coachIndex * 0.1) + (visitIndex * 0.05)
+                              }}
+                            >
+                              Last visit: {formatDate(visit.last_visit_date)}
+                            </motion.p>
+                            {visit.last_visit_date && (
+                              <motion.p 
+                                className="text-xs text-medium-contrast"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{
+                                  duration: 0.3,
+                                  delay: 0.8 + (coachIndex * 0.1) + (visitIndex * 0.05)
+                                }}
+                              >
+                                {getDaysSinceVisit(visit.last_visit_date)} days ago
+                              </motion.p>
+                            )}
+                          </div>
+                          <motion.div 
+                            className="flex items-center gap-2 ml-3"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{
+                              duration: 0.3,
+                              delay: 0.9 + (coachIndex * 0.1) + (visitIndex * 0.05)
+                            }}
                           >
-                            <Edit3 className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => deleteBranchVisit(visit.id)}
-                            className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.5 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{
+                                duration: 0.3,
+                                delay: 1.0 + (coachIndex * 0.1) + (visitIndex * 0.05),
+                                scale: { type: "spring", visualDuration: 0.3, bounce: 0.4 }
+                              }}
+                            >
+                              <Badge className={`text-xs ${getVisitStatusColor(visit.last_visit_date)}`}>
+                                {visit.last_visit_date ? 'Visited' : 'Pending'}
+                              </Badge>
+                            </motion.div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setEditingVisit(visit)}
+                              className="h-8 w-8 p-0 hover-scale"
+                            >
+                              <Edit3 className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => deleteBranchVisit(visit.id)}
+                              className="h-8 w-8 p-0 text-destructive hover:text-destructive hover-scale"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </motion.div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             );
           })}
 
           {Object.keys(visitsByCoach).length === 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-high-contrast">No Branch Assignments Found</CardTitle>
-                <CardDescription className="text-medium-contrast">
-                  {branchVisits.length === 0 
-                    ? "Create your first branch assignment to get started."
-                    : "No assignments match the current filter."
-                  }
-                </CardDescription>
-              </CardHeader>
-            </Card>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+            >
+              <Card className="hover-lift">
+                <CardHeader>
+                  <CardTitle className="text-high-contrast">No Branch Assignments Found</CardTitle>
+                  <CardDescription className="text-medium-contrast">
+                    {branchVisits.length === 0 
+                      ? "Create your first branch assignment to get started."
+                      : "No assignments match the current filter."
+                    }
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </motion.div>
           )}
         </div>
       </AnimatedItem>
@@ -362,53 +523,73 @@ export function BranchVisits({ coaches, onDataChange }: BranchVisitsProps) {
       {/* Add Branch Assignment Dialog */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Assign Branch to Coach</DialogTitle>
-            <DialogDescription>
-              Create a new branch assignment for a coach.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="assign-coach">Coach</Label>
-              <Select value={newVisit.coach_id} onValueChange={(value) => setNewVisit(prev => ({ ...prev, coach_id: value }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select coach" />
-                </SelectTrigger>
-                <SelectContent>
-                  {coaches.map((coach) => (
-                    <SelectItem key={coach.id} value={coach.id}>{coach.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="branch-name">Branch Name</Label>
-              <Input
-                id="branch-name"
-                value={newVisit.branch_name}
-                onChange={(e) => setNewVisit(prev => ({ ...prev, branch_name: e.target.value }))}
-                placeholder="e.g., Houston Branch"
-              />
-            </div>
-            <div>
-              <Label htmlFor="last-visit">Last Visit Date (Optional)</Label>
-              <Input
-                id="last-visit"
-                type="date"
-                value={newVisit.last_visit_date}
-                onChange={(e) => setNewVisit(prev => ({ ...prev, last_visit_date: e.target.value }))}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAddDialog(false)}>
-              Cancel
-            </Button>
-            <Button onClick={addBranchVisit} disabled={!newVisit.coach_id || !newVisit.branch_name.trim()}>
-              Assign Branch
-            </Button>
-          </DialogFooter>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.3,
+              scale: { type: "spring", visualDuration: 0.3, bounce: 0.2 }
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>Assign Branch to Coach</DialogTitle>
+              <DialogDescription>
+                Create a new branch assignment for a coach.
+              </DialogDescription>
+            </DialogHeader>
+            <motion.div 
+              className="space-y-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+            >
+              <div>
+                <Label htmlFor="assign-coach">Coach</Label>
+                <Select value={newVisit.coach_id} onValueChange={(value) => setNewVisit(prev => ({ ...prev, coach_id: value }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select coach" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {coaches.map((coach) => (
+                      <SelectItem key={coach.id} value={coach.id}>{coach.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="branch-name">Branch Name</Label>
+                <Input
+                  id="branch-name"
+                  value={newVisit.branch_name}
+                  onChange={(e) => setNewVisit(prev => ({ ...prev, branch_name: e.target.value }))}
+                  placeholder="e.g., Houston Branch"
+                />
+              </div>
+              <div>
+                <Label htmlFor="last-visit">Last Visit Date (Optional)</Label>
+                <Input
+                  id="last-visit"
+                  type="date"
+                  value={newVisit.last_visit_date}
+                  onChange={(e) => setNewVisit(prev => ({ ...prev, last_visit_date: e.target.value }))}
+                />
+              </div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+            >
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setShowAddDialog(false)} className="hover-lift">
+                  Cancel
+                </Button>
+                <Button onClick={addBranchVisit} disabled={!newVisit.coach_id || !newVisit.branch_name.trim()} className="hover-lift">
+                  Assign Branch
+                </Button>
+              </DialogFooter>
+            </motion.div>
+          </motion.div>
         </DialogContent>
       </Dialog>
 
@@ -416,39 +597,59 @@ export function BranchVisits({ coaches, onDataChange }: BranchVisitsProps) {
       {editingVisit && (
         <Dialog open={!!editingVisit} onOpenChange={() => setEditingVisit(null)}>
           <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Edit Branch Assignment</DialogTitle>
-              <DialogDescription>
-                Update the branch assignment details.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="edit-branch-name">Branch Name</Label>
-                <Input
-                  id="edit-branch-name"
-                  value={editingVisit.branch_name}
-                  onChange={(e) => setEditingVisit(prev => prev ? { ...prev, branch_name: e.target.value } : null)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="edit-last-visit">Last Visit Date</Label>
-                <Input
-                  id="edit-last-visit"
-                  type="date"
-                  value={editingVisit.last_visit_date || ''}
-                  onChange={(e) => setEditingVisit(prev => prev ? { ...prev, last_visit_date: e.target.value || null } : null)}
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setEditingVisit(null)}>
-                Cancel
-              </Button>
-              <Button onClick={() => updateBranchVisit(editingVisit)}>
-                Update Assignment
-              </Button>
-            </DialogFooter>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{
+                duration: 0.3,
+                scale: { type: "spring", visualDuration: 0.3, bounce: 0.2 }
+              }}
+            >
+              <DialogHeader>
+                <DialogTitle>Edit Branch Assignment</DialogTitle>
+                <DialogDescription>
+                  Update the branch assignment details.
+                </DialogDescription>
+              </DialogHeader>
+              <motion.div 
+                className="space-y-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+              >
+                <div>
+                  <Label htmlFor="edit-branch-name">Branch Name</Label>
+                  <Input
+                    id="edit-branch-name"
+                    value={editingVisit.branch_name}
+                    onChange={(e) => setEditingVisit(prev => prev ? { ...prev, branch_name: e.target.value } : null)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-last-visit">Last Visit Date</Label>
+                  <Input
+                    id="edit-last-visit"
+                    type="date"
+                    value={editingVisit.last_visit_date || ''}
+                    onChange={(e) => setEditingVisit(prev => prev ? { ...prev, last_visit_date: e.target.value || null } : null)}
+                  />
+                </div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+              >
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setEditingVisit(null)} className="hover-lift">
+                    Cancel
+                  </Button>
+                  <Button onClick={() => updateBranchVisit(editingVisit)} className="hover-lift">
+                    Update Assignment
+                  </Button>
+                </DialogFooter>
+              </motion.div>
+            </motion.div>
           </DialogContent>
         </Dialog>
       )}

@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Trash2 } from "lucide-react";
 import { AnimatedContainer, AnimatedItem } from "@/components/ui/animated-container";
+import * as motion from "motion/react-client";
 
 interface BiWeeklyPeriod {
   id: string;
@@ -78,14 +79,44 @@ export function BiWeeklyPeriodList({
     <AnimatedContainer variant="stagger" className="space-y-4">
       <AnimatedItem className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-high-contrast">Bi-Weekly Periods</h2>
-        <div className="text-sm text-medium-contrast">
-          {periods.length} period{periods.length !== 1 ? 's' : ''} total
-        </div>
+        <motion.div 
+          className="text-sm text-medium-contrast"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            duration: 0.4,
+            delay: 0.2,
+            scale: { type: "spring", stiffness: 200, damping: 15 }
+          }}
+        >
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.4 }}
+            className="font-bold text-lg text-brand-olive"
+          >
+            {periods.length}
+          </motion.span> period{periods.length !== 1 ? 's' : ''} total
+        </motion.div>
       </AnimatedItem>
 
       <AnimatedContainer variant="stagger" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {periods.map((period) => (
-          <AnimatedItem key={period.id}>
+        {periods.map((period, index) => (
+          <motion.div
+            key={period.id}
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{
+              duration: 0.4,
+              delay: 0.1 + (index * 0.1),
+              scale: { type: "spring", stiffness: 200, damping: 15 }
+            }}
+            whileHover={{ 
+              scale: 1.02,
+              transition: { duration: 0.2, type: "spring", stiffness: 300, damping: 20 }
+            }}
+            whileTap={{ scale: 0.98 }}
+          >
             <Card 
               className={`cursor-pointer transition-all hover:shadow-md hover-lift ${
                 selectedPeriod?.id === period.id 
@@ -94,12 +125,22 @@ export function BiWeeklyPeriodList({
               }`}
               onClick={() => onSelectPeriod(period)}
             >
-              <CardHeader className="pb-3">
+              <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg text-high-contrast">{period.period_name}</CardTitle>
                   <div className="flex items-center gap-2">
                     {isCurrentPeriod(period.start_date, period.end_date) && (
-                      <Badge variant="default">Current</Badge>
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{
+                          duration: 0.3,
+                          delay: 0.2 + (index * 0.1),
+                          scale: { type: "spring", stiffness: 300, damping: 20 }
+                        }}
+                      >
+                        <Badge variant="default">Current</Badge>
+                      </motion.div>
                     )}
                     <Button
                       variant="ghost"
@@ -116,32 +157,61 @@ export function BiWeeklyPeriodList({
                   </div>
                 </div>
                 <CardDescription className="flex items-center gap-2 text-medium-contrast">
-                  <Calendar className="h-4 w-4" />
+                  <motion.div
+                    initial={{ opacity: 0, rotate: -90 }}
+                    animate={{ opacity: 1, rotate: 0 }}
+                    transition={{
+                      duration: 0.3,
+                      delay: 0.3 + (index * 0.1),
+                      rotate: { type: "spring", stiffness: 200, damping: 15 }
+                    }}
+                  >
+                    <Calendar className="h-4 w-4" />
+                  </motion.div>
                   {formatDateRange(period.start_date, period.end_date)}
                 </CardDescription>
               </CardHeader>
+              
               <CardContent>
                 <div className="flex items-center justify-between">
-                  <div className="text-sm text-medium-contrast">
+                  <motion.div 
+                    className="text-sm text-medium-contrast"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      duration: 0.3,
+                      delay: 0.4 + (index * 0.1)
+                    }}
+                  >
                     Created: {new Date(period.created_at).toLocaleDateString()}
-                  </div>
+                  </motion.div>
                   {onOpenPeriod && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onOpenPeriod(period);
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{
+                        duration: 0.3,
+                        delay: 0.5 + (index * 0.1),
+                        scale: { type: "spring", stiffness: 200, damping: 15 }
                       }}
-                      className="text-xs"
                     >
-                      Open Period
-                    </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onOpenPeriod(period);
+                        }}
+                        className="text-xs hover-scale"
+                      >
+                        Open Period
+                      </Button>
+                    </motion.div>
                   )}
                 </div>
               </CardContent>
             </Card>
-          </AnimatedItem>
+          </motion.div>
         ))}
       </AnimatedContainer>
 

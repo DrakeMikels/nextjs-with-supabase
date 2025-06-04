@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { AnimatedContainer, AnimatedItem } from "@/components/ui/animated-container";
 import type { Coach } from "@/lib/types";
+import * as motion from "motion/react-client";
 
 interface ActionItem {
   id: string;
@@ -219,50 +220,95 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
       {/* Summary Cards */}
       <AnimatedItem>
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          <Card className="hover-lift">
-            <CardContent className="pt-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-medium-contrast">Open</p>
-                  <p className="text-2xl font-bold text-high-contrast">{openItems}</p>
-                </div>
-                <AlertTriangle className="h-8 w-8 text-yellow-500" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="hover-lift">
-            <CardContent className="pt-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-medium-contrast">In Progress</p>
-                  <p className="text-2xl font-bold text-high-contrast">{inProgressItems}</p>
-                </div>
-                <Clock className="h-8 w-8 text-blue-500" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="hover-lift">
-            <CardContent className="pt-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-medium-contrast">Completed</p>
-                  <p className="text-2xl font-bold text-high-contrast">{completedItems}</p>
-                </div>
-                <CheckCircle className="h-8 w-8 text-green-500" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="hover-lift">
-            <CardContent className="pt-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-medium-contrast">Total</p>
-                  <p className="text-2xl font-bold text-high-contrast">{actionItems.length}</p>
-                </div>
-                <Calendar className="h-8 w-8 text-brand-olive" />
-              </div>
-            </CardContent>
-          </Card>
+          {[
+            {
+              title: "Open",
+              value: openItems,
+              icon: AlertTriangle,
+              color: "yellow-500",
+              delay: 0.1
+            },
+            {
+              title: "In Progress", 
+              value: inProgressItems,
+              icon: Clock,
+              color: "blue-500",
+              delay: 0.2
+            },
+            {
+              title: "Completed",
+              value: completedItems,
+              icon: CheckCircle,
+              color: "green-500",
+              delay: 0.3
+            },
+            {
+              title: "Total",
+              value: actionItems.length,
+              icon: Calendar,
+              color: "brand-olive",
+              delay: 0.4
+            }
+          ].map((card) => {
+            const Icon = card.icon;
+            return (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{
+                  duration: 0.4,
+                  delay: card.delay,
+                  scale: { type: "spring", stiffness: 200, damping: 15 }
+                }}
+                whileHover={{ 
+                  scale: 1.02,
+                  transition: { duration: 0.2, type: "spring", stiffness: 300, damping: 20 }
+                }}
+              >
+                <Card className="hover-lift">
+                  <CardContent className="pt-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <motion.p 
+                          className="text-sm font-medium text-medium-contrast"
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.3, delay: card.delay + 0.1 }}
+                        >
+                          {card.title}
+                        </motion.p>
+                        <motion.p 
+                          className="text-2xl font-bold text-high-contrast"
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{
+                            duration: 0.4,
+                            delay: card.delay + 0.2,
+                            scale: { type: "spring", stiffness: 300, damping: 20 }
+                          }}
+                        >
+                          {card.value}
+                        </motion.p>
+                      </div>
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0, rotate: -180 }}
+                        animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                        transition={{
+                          duration: 0.5,
+                          delay: card.delay + 0.3,
+                          scale: { type: "spring", stiffness: 200, damping: 15 },
+                          rotate: { type: "spring", stiffness: 200, damping: 15 }
+                        }}
+                      >
+                        <Icon className={`h-8 w-8 text-${card.color}`} />
+                      </motion.div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
         </div>
       </AnimatedItem>
 
@@ -312,60 +358,81 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
       {/* Action Items List */}
       <AnimatedItem>
         <div className="space-y-4">
-          {filteredItems.map((item) => (
-            <Card key={item.id} className="hover-lift">
-              <CardContent className="pt-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2">
-                      {getStatusIcon(item.status)}
-                      <h3 className="font-semibold text-high-contrast truncate">{item.title}</h3>
-                      <Badge className={`text-xs ${getPriorityColor(item.priority)}`}>
-                        {item.priority}
-                      </Badge>
-                      <Badge className={`text-xs ${getStatusColor(item.status)}`}>
-                        {item.status.replace('_', ' ')}
-                      </Badge>
+          {filteredItems.map((item, index) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.3,
+                delay: 0.05 * index
+              }}
+              whileHover={{ scale: 1.01 }}
+            >
+              <Card className="hover-lift">
+                <CardContent className="pt-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2">
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{
+                            duration: 0.3,
+                            delay: 0.05 * index + 0.1,
+                            scale: { type: "spring", stiffness: 300, damping: 20 }
+                          }}
+                        >
+                          {getStatusIcon(item.status)}
+                        </motion.div>
+                        <h3 className="font-semibold text-high-contrast truncate">{item.title}</h3>
+                        <Badge className={`text-xs ${getPriorityColor(item.priority)}`}>
+                          {item.priority}
+                        </Badge>
+                        <Badge className={`text-xs ${getStatusColor(item.status)}`}>
+                          {item.status.replace('_', ' ')}
+                        </Badge>
+                      </div>
+                      {item.description && (
+                        <p className="text-sm text-medium-contrast mb-2">{item.description}</p>
+                      )}
+                      <div className="flex items-center gap-4 text-xs text-medium-contrast">
+                        {item.coach && (
+                          <div className="flex items-center gap-1">
+                            <User className="h-3 w-3" />
+                            {item.coach.name}
+                          </div>
+                        )}
+                        {item.due_date && (
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            Due: {formatDate(item.due_date)}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    {item.description && (
-                      <p className="text-sm text-medium-contrast mb-2">{item.description}</p>
-                    )}
-                    <div className="flex items-center gap-4 text-xs text-medium-contrast">
-                      {item.coach && (
-                        <div className="flex items-center gap-1">
-                          <User className="h-3 w-3" />
-                          {item.coach.name}
-                        </div>
-                      )}
-                      {item.due_date && (
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          Due: {formatDate(item.due_date)}
-                        </div>
-                      )}
+                    <div className="flex items-center gap-1 ml-4">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setEditingItem(item)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Edit3 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => deleteActionItem(item.id)}
+                        className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 ml-4">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setEditingItem(item)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Edit3 className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => deleteActionItem(item.id)}
-                      className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
 
           {filteredItems.length === 0 && (

@@ -25,7 +25,7 @@ import type {
   CertificationCategory, 
   CoachCertification
 } from "@/lib/types";
-import { motion } from "framer-motion";
+import * as motion from "motion/react-client";
 
 interface IdpOverviewProps {
   coaches: Coach[];
@@ -179,24 +179,38 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <motion.div 
+        className="flex items-center justify-between"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.4,
+          delay: 0.1,
+          y: { type: "spring", stiffness: 100, damping: 15 }
+        }}
+      >
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2 text-brand-olive">
-            <GraduationCap className="h-6 w-6" />
-            Team Certification Overview
-          </h2>
-          <p className="text-medium-contrast">Complete view of all coaches and their certification progress</p>
+          <h2 className="text-2xl font-bold text-high-contrast">Individual Development Plans</h2>
+          <p className="text-medium-contrast">Track coach certifications and professional development</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="gap-1">
-            <Download className="h-4 w-4" />
-            Export
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{
+            duration: 0.4,
+            delay: 0.2,
+            x: { type: "spring", stiffness: 100, damping: 15 }
+          }}
+        >
+          <Button className="gap-2 hover-lift">
+            <GraduationCap className="h-4 w-4" />
+            Manage Certifications
           </Button>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+      {/* Stats Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           {
             title: "Total Coaches",
@@ -234,9 +248,13 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{
-              duration: 0.8,
+              duration: 0.6,
               delay: 0.1 + (index * 0.1),
-              ease: [0, 0.71, 0.2, 1.01],
+              scale: { type: "spring", visualDuration: 0.6, bounce: 0.3 }
+            }}
+            whileHover={{ 
+              scale: 1.02,
+              transition: { duration: 0.2, type: "spring", stiffness: 300, damping: 20 }
             }}
           >
             <Card className={`${card.borderColor ? `border-${card.borderColor} hover:border-${card.hoverBorderColor}` : `border-${card.color}/20 hover:border-${card.color}/40`} hover:shadow-lg transition-all duration-300 hover-lift`}>
@@ -246,24 +264,25 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                     <p className="text-sm text-medium-contrast">{card.title}</p>
                     <motion.p 
                       className={`text-2xl font-bold text-${card.color}`}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ opacity: 1, scale: 1 }}
                       transition={{
-                        duration: 0.6,
-                        delay: 0.4 + (index * 0.1),
-                        ease: [0, 0.71, 0.2, 1.01],
+                        duration: 0.4,
+                        delay: 0.3 + (index * 0.1),
+                        scale: { type: "spring", visualDuration: 0.4, bounce: 0.4 }
                       }}
                     >
                       {card.value}
                     </motion.p>
                   </div>
                   <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, rotate: -180, scale: 0 }}
+                    animate={{ opacity: 1, rotate: 0, scale: 1 }}
                     transition={{
-                      duration: 0.6,
-                      delay: 0.3 + (index * 0.1),
-                      ease: [0, 0.71, 0.2, 1.01],
+                      duration: 0.5,
+                      delay: 0.2 + (index * 0.1),
+                      rotate: { type: "spring", stiffness: 200, damping: 15 },
+                      scale: { type: "spring", visualDuration: 0.5, bounce: 0.4 }
                     }}
                   >
                     <card.icon className={`h-8 w-8 text-${card.color}/30`} />
@@ -276,303 +295,468 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
       </div>
 
       {/* Filters */}
-      <Card>
-        <CardContent className="pt-4">
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Search className="h-4 w-4 text-medium-contrast" />
-              <Input
-                placeholder="Search certifications..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-64"
-              />
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-medium-contrast" />
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-3 py-2 border rounded-md text-sm"
-              >
-                <option value="all">All Categories</option>
-                {categories.map(category => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.4,
+          delay: 0.6,
+          y: { type: "spring", stiffness: 100, damping: 15 }
+        }}
+      >
+        <Card className="hover-lift border-brand-olive/20 hover:border-brand-olive/30">
+          <CardContent className="pt-4">
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex items-center gap-2">
+                <motion.div
+                  initial={{ opacity: 0, rotate: -90 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  transition={{
+                    duration: 0.3,
+                    delay: 0.7,
+                    rotate: { type: "spring", stiffness: 200, damping: 15 }
+                  }}
+                >
+                  <Search className="h-4 w-4 text-medium-contrast" />
+                </motion.div>
+                <Input
+                  placeholder="Search certifications..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-64"
+                />
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <motion.div
+                  initial={{ opacity: 0, rotate: -90 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  transition={{
+                    duration: 0.3,
+                    delay: 0.8,
+                    rotate: { type: "spring", stiffness: 200, damping: 15 }
+                  }}
+                >
+                  <Filter className="h-4 w-4 text-medium-contrast" />
+                </motion.div>
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="px-3 py-2 border rounded-md text-sm"
+                >
+                  <option value="all">All Categories</option>
+                  {categories.map(category => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={showRequiredOnly}
-                onChange={(e) => setShowRequiredOnly(e.target.checked)}
-                className="rounded"
-              />
-              Required Only
-            </label>
-          </div>
-        </CardContent>
-      </Card>
+              <motion.label 
+                className="flex items-center gap-2 text-sm"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{
+                  duration: 0.3,
+                  delay: 0.9
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={showRequiredOnly}
+                  onChange={(e) => setShowRequiredOnly(e.target.checked)}
+                  className="rounded"
+                />
+                Required Only
+              </motion.label>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
 
       {/* Main Overview Table */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg text-high-contrast">Team Certification Status</CardTitle>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="gap-1">
-                <Download className="h-4 w-4" />
-                Export
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-brand-olive/5 dark:bg-brand-olive/10 rounded-lg">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                  {coachCertifications.filter(cc => cc.status === 'completed').length}
-                </div>
-                <div className="text-sm text-medium-contrast">Total Completed</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                  {coachCertifications.filter(cc => cc.status === 'in_progress').length}
-                </div>
-                <div className="text-sm text-medium-contrast">In Progress</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
-                  {coachCertifications.filter(cc => cc.status === 'scheduled').length}
-                </div>
-                <div className="text-sm text-medium-contrast">Scheduled</div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.4,
+          delay: 1.0,
+          y: { type: "spring", stiffness: 100, damping: 15 }
+        }}
+      >
+        <Card className="hover-lift border-brand-olive/20 hover:border-brand-olive/30">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg text-high-contrast">Team Certification Status</CardTitle>
+              <div className="flex items-center gap-2">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    duration: 0.3,
+                    delay: 1.1,
+                    scale: { type: "spring", visualDuration: 0.3, bounce: 0.4 }
+                  }}
+                >
+                  <Button variant="outline" size="sm" className="gap-1 hover-lift">
+                    <Download className="h-4 w-4" />
+                    Export
+                  </Button>
+                </motion.div>
               </div>
             </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {/* Quick Stats */}
+              <motion.div 
+                className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-brand-olive/5 dark:bg-brand-olive/10 rounded-lg"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  duration: 0.4,
+                  delay: 1.2,
+                  scale: { type: "spring", visualDuration: 0.4, bounce: 0.2 }
+                }}
+              >
+                {[
+                  {
+                    value: coachCertifications.filter(cc => cc.status === 'completed').length,
+                    label: "Total Completed",
+                    color: "green-600",
+                    delay: 1.3
+                  },
+                  {
+                    value: coachCertifications.filter(cc => cc.status === 'in_progress').length,
+                    label: "In Progress",
+                    color: "blue-600",
+                    delay: 1.4
+                  },
+                  {
+                    value: coachCertifications.filter(cc => cc.status === 'scheduled').length,
+                    label: "Scheduled",
+                    color: "amber-600",
+                    delay: 1.5
+                  }
+                ].map((stat) => (
+                  <motion.div 
+                    key={stat.label}
+                    className="text-center"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.3,
+                      delay: stat.delay
+                    }}
+                  >
+                    <motion.div 
+                      className={`text-2xl font-bold text-${stat.color} dark:text-${stat.color.replace('600', '400')}`}
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{
+                        duration: 0.4,
+                        delay: stat.delay + 0.1,
+                        scale: { type: "spring", visualDuration: 0.4, bounce: 0.4 }
+                      }}
+                    >
+                      {stat.value}
+                    </motion.div>
+                    <div className="text-sm text-medium-contrast">{stat.label}</div>
+                  </motion.div>
+                ))}
+              </motion.div>
 
-            {/* Certification List */}
-            <div className="space-y-4">
-              {filteredCertifications.map(cert => {
-                const coachesWithCert = coaches.map(coach => {
-                  const coachCert = coachCertifications.find(
-                    cc => cc.coach_id === coach.id && cc.certification_id === cert.id
-                  );
-                  return {
-                    coach,
-                    status: coachCert?.status || 'not_started',
-                    completion_date: coachCert?.completion_date,
-                    start_date: coachCert?.start_date,
-                    notes: coachCert?.notes
-                  };
-                });
+              {/* Certification List */}
+              <div className="space-y-4">
+                {filteredCertifications.map((cert, certIndex) => {
+                  const coachesWithCert = coaches.map(coach => {
+                    const coachCert = coachCertifications.find(
+                      cc => cc.coach_id === coach.id && cc.certification_id === cert.id
+                    );
+                    return {
+                      coach,
+                      status: coachCert?.status || 'not_started',
+                      completion_date: coachCert?.completion_date,
+                      start_date: coachCert?.start_date,
+                      notes: coachCert?.notes
+                    };
+                  });
 
-                const completedCount = coachesWithCert.filter(c => c.status === 'completed').length;
-                const inProgressCount = coachesWithCert.filter(c => c.status === 'in_progress').length;
-                const scheduledCount = coachesWithCert.filter(c => c.status === 'scheduled').length;
+                  const completedCount = coachesWithCert.filter(c => c.status === 'completed').length;
+                  const inProgressCount = coachesWithCert.filter(c => c.status === 'in_progress').length;
+                  const scheduledCount = coachesWithCert.filter(c => c.status === 'scheduled').length;
 
-                return (
-                  <Card key={cert.id} className="border-l-4 border-l-brand-olive/30">
-                    <CardContent className="pt-4">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          {cert.is_required && <Star className="h-4 w-4 text-amber-500 fill-amber-500" />}
-                          <div>
-                            <h3 className="font-semibold text-high-contrast">{cert.name}</h3>
-                            <p className="text-sm text-medium-contrast">
-                              {cert.description || 'Professional certification requirement'}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-4 text-sm">
-                          <div className="text-center">
-                            <div className="font-semibold text-green-600 dark:text-green-400">{completedCount}</div>
-                            <div className="text-xs text-medium-contrast">Complete</div>
-                          </div>
-                          <div className="text-center">
-                            <div className="font-semibold text-blue-600 dark:text-blue-400">{inProgressCount}</div>
-                            <div className="text-xs text-medium-contrast">In Progress</div>
-                          </div>
-                          <div className="text-center">
-                            <div className="font-semibold text-amber-600 dark:text-amber-400">{scheduledCount}</div>
-                            <div className="text-xs text-medium-contrast">Scheduled</div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Coach Status Grid */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {coachesWithCert.map(({ coach, status, completion_date, start_date, notes }) => (
-                          <div 
-                            key={coach.id} 
-                            className={`p-3 rounded-lg border-2 transition-all ${
-                              status === 'completed' 
-                                ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30' 
-                                : status === 'in_progress'
-                                ? 'border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30'
-                                : status === 'scheduled'
-                                ? 'border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30'
-                                : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30 hover:border-brand-olive/30'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="font-medium text-high-contrast text-sm">{coach.name}</span>
-                              <div className="flex items-center gap-1">
-                                {status === 'completed' && (
-                                  <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
-                                )}
-                                {status === 'in_progress' && (
-                                  <div className="w-4 h-4 rounded-full bg-blue-500 dark:bg-blue-400 flex items-center justify-center">
-                                    <span className="text-white text-xs">⏳</span>
-                                  </div>
-                                )}
-                                {status === 'scheduled' && (
-                                  <div className="w-4 h-4 rounded-full bg-amber-500 dark:bg-amber-400 flex items-center justify-center">
-                                    <span className="text-white dark:text-black text-xs">📅</span>
-                                  </div>
-                                )}
-                                {status === 'not_started' && (
-                                  <Button 
-                                    size="sm" 
-                                    variant="outline" 
-                                    className="h-6 px-2 text-xs"
-                                    onClick={() => openQuickUpdateDialog(coach, cert)}
-                                  >
-                                    Add
-                                  </Button>
-                                )}
-                              </div>
+                  return (
+                    <motion.div
+                      key={cert.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.4,
+                        delay: 1.6 + (certIndex * 0.1)
+                      }}
+                      whileHover={{ 
+                        scale: 1.01,
+                        transition: { duration: 0.2, type: "spring", stiffness: 300, damping: 20 }
+                      }}
+                    >
+                      <Card className="border-l-4 border-l-brand-olive/30 hover-lift hover:border-l-brand-olive/50 transition-all duration-300">
+                        <CardContent className="pt-4">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-3">
+                              {cert.is_required && (
+                                <motion.div
+                                  initial={{ opacity: 0, scale: 0 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  transition={{
+                                    duration: 0.3,
+                                    delay: 1.7 + (certIndex * 0.1),
+                                    scale: { type: "spring", visualDuration: 0.3, bounce: 0.4 }
+                                  }}
+                                >
+                                  <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                                </motion.div>
+                              )}
+                              <motion.div
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{
+                                  duration: 0.3,
+                                  delay: 1.8 + (certIndex * 0.1)
+                                }}
+                              >
+                                <h3 className="font-semibold text-high-contrast">{cert.name}</h3>
+                                <p className="text-sm text-medium-contrast">
+                                  {cert.description || 'Professional certification requirement'}
+                                </p>
+                              </motion.div>
                             </div>
-                            
-                            {completion_date && (
-                              <div className="text-xs text-medium-contrast">
-                                Completed: {new Date(completion_date).toLocaleDateString()}
-                              </div>
-                            )}
-                            {start_date && status === 'in_progress' && (
-                              <div className="text-xs text-medium-contrast">
-                                Started: {new Date(start_date).toLocaleDateString()}
-                              </div>
-                            )}
-                            {start_date && status === 'scheduled' && (
-                              <div className="text-xs text-medium-contrast">
-                                Scheduled: {new Date(start_date).toLocaleDateString()}
-                              </div>
-                            )}
-                            {notes && (
-                              <div className="text-xs text-medium-contrast mt-1 italic">
-                                {notes.length > 50 ? `${notes.substring(0, 50)}...` : notes}
-                              </div>
-                            )}
-                            
-                            {status !== 'not_started' && (
-                              <Button 
-                                size="sm" 
-                                variant="ghost" 
-                                className="h-6 px-2 text-xs mt-1 w-full"
+                            <motion.div 
+                              className="flex items-center gap-4 text-sm"
+                              initial={{ opacity: 0, x: 20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{
+                                duration: 0.3,
+                                delay: 1.9 + (certIndex * 0.1)
+                              }}
+                            >
+                              {[
+                                { count: completedCount, label: "Complete", color: "green-600" },
+                                { count: inProgressCount, label: "In Progress", color: "blue-600" },
+                                { count: scheduledCount, label: "Scheduled", color: "amber-600" }
+                              ].map((stat, statIndex) => (
+                                <motion.div 
+                                  key={stat.label}
+                                  className="text-center"
+                                  initial={{ opacity: 0, scale: 0.5 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  transition={{
+                                    duration: 0.3,
+                                    delay: 2.0 + (certIndex * 0.1) + (statIndex * 0.05),
+                                    scale: { type: "spring", visualDuration: 0.3, bounce: 0.4 }
+                                  }}
+                                >
+                                  <div className={`font-semibold text-${stat.color} dark:text-${stat.color.replace('600', '400')}`}>
+                                    {stat.count}
+                                  </div>
+                                  <div className="text-xs text-medium-contrast">{stat.label}</div>
+                                </motion.div>
+                              ))}
+                            </motion.div>
+                          </div>
+
+                          {/* Coach Progress Grid */}
+                          <motion.div 
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{
+                              duration: 0.4,
+                              delay: 2.1 + (certIndex * 0.1)
+                            }}
+                          >
+                            {coachesWithCert.map(({ coach, status, completion_date, start_date }, coachIndex) => (
+                              <motion.div 
+                                key={coach.id} 
+                                className={`p-3 rounded-lg border-2 transition-all cursor-pointer ${
+                                  status === 'completed' 
+                                    ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30' 
+                                    : status === 'in_progress'
+                                    ? 'border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30'
+                                    : status === 'scheduled'
+                                    ? 'border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30'
+                                    : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30 hover:border-brand-olive/30'
+                                }`}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{
+                                  duration: 0.3,
+                                  delay: 2.2 + (certIndex * 0.1) + (coachIndex * 0.02),
+                                  scale: { type: "spring", visualDuration: 0.3, bounce: 0.3 }
+                                }}
+                                whileHover={{ 
+                                  scale: 1.02,
+                                  transition: { duration: 0.2, type: "spring", stiffness: 300, damping: 20 }
+                                }}
                                 onClick={() => openQuickUpdateDialog(coach, cert)}
                               >
-                                Update
-                              </Button>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="font-medium text-sm">{coach.name}</span>
+                                  <motion.span 
+                                    className={`text-xs px-2 py-1 rounded-full ${
+                                      status === 'completed' ? 'bg-green-100 text-green-800' :
+                                      status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
+                                      status === 'scheduled' ? 'bg-amber-100 text-amber-800' :
+                                      'bg-gray-100 text-gray-800'
+                                    }`}
+                                    initial={{ opacity: 0, scale: 0.5 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{
+                                      duration: 0.2,
+                                      delay: 2.3 + (certIndex * 0.1) + (coachIndex * 0.02),
+                                      scale: { type: "spring", visualDuration: 0.2, bounce: 0.4 }
+                                    }}
+                                  >
+                                    {status.replace('_', ' ')}
+                                  </motion.span>
+                                </div>
+                                {completion_date && (
+                                  <motion.div 
+                                    className="text-xs text-medium-contrast"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{
+                                      duration: 0.3,
+                                      delay: 2.4 + (certIndex * 0.1) + (coachIndex * 0.02)
+                                    }}
+                                  >
+                                    Completed: {new Date(completion_date).toLocaleDateString()}
+                                  </motion.div>
+                                )}
+                                {start_date && !completion_date && (
+                                  <motion.div 
+                                    className="text-xs text-medium-contrast"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{
+                                      duration: 0.3,
+                                      delay: 2.4 + (certIndex * 0.1) + (coachIndex * 0.02)
+                                    }}
+                                  >
+                                    Started: {new Date(start_date).toLocaleDateString()}
+                                  </motion.div>
+                                )}
+                              </motion.div>
+                            ))}
+                          </motion.div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </motion.div>
 
       {/* Quick Update Dialog */}
       <Dialog open={showCertificationDialog} onOpenChange={setShowCertificationDialog}>
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Update Certification Status</DialogTitle>
-            <DialogDescription>
-              Update {selectedCertification?.name} for {selectedCoach?.name}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="cert-status" className="text-high-contrast">Status</Label>
-              <Select value={certificationUpdate.status} onValueChange={(value: 'not_started' | 'scheduled' | 'in_progress' | 'completed' | 'expired') => setCertificationUpdate(prev => ({ ...prev, status: value }))}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="not_started">Not Started</SelectItem>
-                  <SelectItem value="scheduled">Scheduled</SelectItem>
-                  <SelectItem value="in_progress">In Progress</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="expired">Expired</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.3,
+              scale: { type: "spring", visualDuration: 0.3, bounce: 0.2 }
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>Update Certification Status</DialogTitle>
+              <DialogDescription>
+                Update {selectedCertification?.name} for {selectedCoach?.name}
+              </DialogDescription>
+            </DialogHeader>
             
-            {(certificationUpdate.status === 'scheduled' || certificationUpdate.status === 'in_progress' || certificationUpdate.status === 'completed') && (
+            <motion.div 
+              className="space-y-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+            >
               <div>
-                <Label htmlFor="cert-start-date" className="text-high-contrast">
-                  {certificationUpdate.status === 'scheduled' ? 'Scheduled Date' : 
-                   certificationUpdate.status === 'completed' ? 'Start Date' : 'Start Date'}
-                </Label>
-                <Input
-                  id="cert-start-date"
-                  type="date"
-                  value={certificationUpdate.start_date}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCertificationUpdate(prev => ({ ...prev, start_date: e.target.value }))}
-                />
+                <Label>Status</Label>
+                <Select value={certificationUpdate.status} onValueChange={(value: 'not_started' | 'scheduled' | 'in_progress' | 'completed' | 'expired') => setCertificationUpdate(prev => ({ ...prev, status: value }))}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="not_started">Not Started</SelectItem>
+                    <SelectItem value="scheduled">Scheduled</SelectItem>
+                    <SelectItem value="in_progress">In Progress</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-            )}
-            
-            {certificationUpdate.status === 'completed' && (
-              <>
+
+              {(certificationUpdate.status === 'in_progress' || certificationUpdate.status === 'scheduled') && (
                 <div>
-                  <Label htmlFor="cert-completion-date" className="text-high-contrast">Completion Date</Label>
+                  <Label>Start Date</Label>
                   <Input
-                    id="cert-completion-date"
+                    type="date"
+                    value={certificationUpdate.start_date}
+                    onChange={(e) => setCertificationUpdate(prev => ({ ...prev, start_date: e.target.value }))}
+                  />
+                </div>
+              )}
+
+              {certificationUpdate.status === 'completed' && (
+                <div>
+                  <Label>Completion Date</Label>
+                  <Input
                     type="date"
                     value={certificationUpdate.completion_date}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCertificationUpdate(prev => ({ ...prev, completion_date: e.target.value }))}
+                    onChange={(e) => setCertificationUpdate(prev => ({ ...prev, completion_date: e.target.value }))}
                   />
                 </div>
-                <div>
-                  <Label htmlFor="cert-number" className="text-high-contrast">Certificate Number</Label>
-                  <Input
-                    id="cert-number"
-                    value={certificationUpdate.certificate_number}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCertificationUpdate(prev => ({ ...prev, certificate_number: e.target.value }))}
-                    placeholder="Certificate or ID number"
-                  />
-                </div>
-              </>
-            )}
-            
-            <div>
-              <Label htmlFor="cert-notes" className="text-high-contrast">Notes</Label>
-              <Textarea
-                id="cert-notes"
-                value={certificationUpdate.notes}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCertificationUpdate(prev => ({ ...prev, notes: e.target.value }))}
-                placeholder="Additional notes or comments..."
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowCertificationDialog(false)}>
-              Cancel
-            </Button>
-            <Button onClick={updateCertificationStatus}>
-              Update Status
-            </Button>
-          </DialogFooter>
+              )}
+
+              <div>
+                <Label>Certificate Number</Label>
+                <Input
+                  value={certificationUpdate.certificate_number}
+                  onChange={(e) => setCertificationUpdate(prev => ({ ...prev, certificate_number: e.target.value }))}
+                  placeholder="Certificate or ID number"
+                />
+              </div>
+
+              <div>
+                <Label>Notes (Optional)</Label>
+                <Textarea
+                  value={certificationUpdate.notes}
+                  onChange={(e) => setCertificationUpdate(prev => ({ ...prev, notes: e.target.value }))}
+                  placeholder="Add any notes about this certification..."
+                  rows={3}
+                />
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+            >
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setShowCertificationDialog(false)} className="hover-lift">
+                  Cancel
+                </Button>
+                <Button onClick={updateCertificationStatus} className="hover-lift">
+                  Update Status
+                </Button>
+              </DialogFooter>
+            </motion.div>
+          </motion.div>
         </DialogContent>
       </Dialog>
     </div>
