@@ -60,7 +60,8 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
     start_date: '',
     completion_date: '',
     certificate_number: '',
-    notes: ''
+    notes: '',
+    expiration_date: ''
   });
 
   const fetchData = useCallback(async () => {
@@ -200,6 +201,7 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
         completion_date: certificationUpdate.completion_date || null,
         certificate_number: certificationUpdate.certificate_number || null,
         notes: certificationUpdate.notes || null,
+        expiration_date: certificationUpdate.expiration_date || null,
         ...(certificationUpdate.status === 'completed' && certificationUpdate.completion_date && selectedCertification.expiration_months ? {
           expiration_date: new Date(new Date(certificationUpdate.completion_date).getTime() + (selectedCertification.expiration_months * 30 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0]
         } : {})
@@ -220,7 +222,8 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
         start_date: '',
         completion_date: '',
         certificate_number: '',
-        notes: ''
+        notes: '',
+        expiration_date: ''
       });
       await fetchData();
       onDataChange();
@@ -240,7 +243,8 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
         start_date: existing.start_date || '',
         completion_date: existing.completion_date || '',
         certificate_number: existing.certificate_number || '',
-        notes: existing.notes || ''
+        notes: existing.notes || '',
+        expiration_date: existing.expiration_date || ''
       });
     } else {
       setCertificationUpdate({
@@ -248,7 +252,8 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
         start_date: '',
         completion_date: '',
         certificate_number: '',
-        notes: ''
+        notes: '',
+        expiration_date: ''
       });
     }
     setShowCertificationDialog(true);
@@ -377,7 +382,12 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
                                 <h4 className="font-medium text-sm text-high-contrast truncate">{certification.name}</h4>
                                 {coachCert?.completion_date && (
                                   <p className="text-xs text-medium-contrast">
-                                    Completed: {new Date(coachCert.completion_date).toLocaleDateString()}
+                                    Completed: {new Date(coachCert.completion_date + 'T00:00:00').toLocaleDateString()}
+                                  </p>
+                                )}
+                                {coachCert?.expiration_date && (
+                                  <p className="text-xs text-medium-contrast">
+                                    Expires: {new Date(coachCert.expiration_date + 'T00:00:00').toLocaleDateString()}
                                   </p>
                                 )}
                               </div>
@@ -420,7 +430,7 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
                       {goal.target_completion_date && (
                         <p className="text-xs text-medium-contrast flex items-center gap-1 mt-1">
                           <Calendar className="h-3 w-3" />
-                          Target: {new Date(goal.target_completion_date).toLocaleDateString()}
+                          Target: {new Date(goal.target_completion_date + 'T00:00:00').toLocaleDateString()}
                         </p>
                       )}
                     </div>
@@ -559,6 +569,18 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
                     value={certificationUpdate.completion_date}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCertificationUpdate(prev => ({ ...prev, completion_date: e.target.value }))}
                   />
+                </div>
+                <div>
+                  <Label htmlFor="cert-expiration-date" className="text-high-contrast">Expiration Date</Label>
+                  <Input
+                    id="cert-expiration-date"
+                    type="date"
+                    value={certificationUpdate.expiration_date || ''}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCertificationUpdate(prev => ({ ...prev, expiration_date: e.target.value }))}
+                  />
+                  <p className="text-xs text-medium-contrast mt-1">
+                    Enter the actual expiration date for this certification
+                  </p>
                 </div>
                 <div>
                   <Label htmlFor="cert-number" className="text-high-contrast">Certificate Number</Label>

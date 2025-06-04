@@ -23,7 +23,8 @@ import {
   PieChart,
   GraduationCap,
   Menu,
-  X
+  X,
+  ClipboardList
 } from "lucide-react";
 import { BiWeeklyPeriodList } from "./bi-weekly-period-list";
 import { SafetyMetricsForm } from "./safety-metrics-form";
@@ -31,6 +32,7 @@ import { CoachManagement } from "./coach-management";
 import { MetricsDashboard } from "./metrics-dashboard";
 import { MasterDashboard } from "./master-dashboard";
 import { IdpDashboard } from "./idp-dashboard";
+import { ActionItems } from "./action-items";
 import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/ui/animated-container";
 import type { BiWeeklyPeriod, Coach } from "@/lib/types";
 
@@ -70,6 +72,12 @@ const navigationItems = [
     label: "IDP",
     icon: GraduationCap,
     description: "Individual development plans"
+  },
+  {
+    id: "action-items",
+    label: "Action Items",
+    icon: ClipboardList,
+    description: "Manage action items"
   }
 ];
 
@@ -256,6 +264,13 @@ export function BiWeeklyDashboard() {
               </AnimatedContainer>
             )}
           </div>
+        );
+      case "action-items":
+        return (
+          <ActionItems 
+            coaches={coaches}
+            onDataChange={fetchData}
+          />
         );
       default:
         return null;

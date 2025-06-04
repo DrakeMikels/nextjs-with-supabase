@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle, Save, Trash2, User, Calendar } from "lucide-react";
+import { PlusCircle, Save, Trash2, User, Calendar, Edit3 } from "lucide-react";
 import { AnimatedContainer, AnimatedItem } from "@/components/ui/animated-container";
 
 interface Coach {
@@ -140,7 +140,8 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "Not set";
-    return new Date(dateString).toLocaleDateString();
+    const date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString();
   };
 
   const calculateTenure = (dateString: string | null) => {
@@ -260,7 +261,7 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
                     onClick={() => setEditingCoach(editingCoach?.id === coach.id ? null : coach)}
                     className="h-8 w-8 p-0"
                   >
-                    <Save className="h-4 w-4" />
+                    <Edit3 className="h-4 w-4" />
                   </Button>
                   <Button
                     variant="ghost"
