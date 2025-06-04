@@ -61,26 +61,55 @@
 }
 
 @layer base {
-  /* Smooth theme transitions */
-  *,
-  *::before,
-  *::after {
-    transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 300ms cubic-bezier(0.4, 0, 0.2, 1),
-                color 300ms cubic-bezier(0.4, 0, 0.2, 1),
-                fill 300ms cubic-bezier(0.4, 0, 0.2, 1),
-                stroke 300ms cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  /* Smooth theme transitions - More specific and refined */
+  html {
+    transition: background-color 400ms cubic-bezier(0.23, 1, 0.32, 1),
+                color 400ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  body {
+    transition: background-color 400ms cubic-bezier(0.23, 1, 0.32, 1),
+                color 400ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  /* Theme-sensitive elements */
+  [class*="bg-background"],
+  [class*="text-foreground"],
+  [class*="bg-card"],
+  [class*="text-card"],
+  [class*="bg-popover"],
+  [class*="text-popover"],
+  [class*="border-border"],
+  [class*="bg-muted"],
+  [class*="text-muted"],
+  .bg-background,
+  .text-foreground,
+  .bg-card,
+  .text-card-foreground,
+  .bg-popover,
+  .text-popover-foreground,
+  .border-border,
+  .bg-muted,
+  .text-muted-foreground {
+    transition: background-color 400ms cubic-bezier(0.23, 1, 0.32, 1),
+                border-color 400ms cubic-bezier(0.23, 1, 0.32, 1),
+                color 400ms cubic-bezier(0.23, 1, 0.32, 1);
   }
 
   /* Respect user motion preferences */
   @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
+    html,
+    body,
+    [class*="bg-background"],
+    [class*="text-foreground"],
+    [class*="bg-card"],
+    [class*="text-card"],
+    [class*="bg-popover"],
+    [class*="text-popover"],
+    [class*="border-border"],
+    [class*="bg-muted"],
+    [class*="text-muted"] {
+      transition: none !important;
     }
   }
 

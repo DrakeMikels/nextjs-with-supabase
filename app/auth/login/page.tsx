@@ -10,20 +10,19 @@ export default function Page() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      {/* Animated Gradient Background */}
+      {/* Animated Gradient Background - Matching Dashboard Sidebar */}
       <motion.div
-        className="absolute inset-0"
-        style={{
-          background: "linear-gradient(45deg, #2C5134, #4A7C59, #5F9F6D, #4A7C59, #2C5134)",
-          backgroundSize: "400% 400%"
-        }}
+        className="absolute inset-0 bg-gradient-to-b from-brand-olive via-brand-olive-light to-brand-olive-medium"
         animate={{
-          backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
+          backgroundPosition: ["0% 0%", "0% 100%", "0% 0%"]
         }}
         transition={{
           duration: 15,
           repeat: Infinity,
-          ease: "linear"
+          ease: "easeInOut"
+        }}
+        style={{
+          backgroundSize: "100% 200%"
         }}
       />
       
