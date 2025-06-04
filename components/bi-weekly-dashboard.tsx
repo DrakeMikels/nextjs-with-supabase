@@ -105,7 +105,7 @@ const navigationItems = [
   }
 ];
 
-// Animation variants for accordion-style sidebar
+// Animation variants for accordion-style sidebar with welcome sequence
 const sidebarVariants = {
   open: {
     width: "16rem", // 64 * 0.25rem = 16rem
@@ -123,6 +123,15 @@ const sidebarVariants = {
       damping: 30,
     },
   },
+  welcome: {
+    width: "16rem",
+    transition: {
+      type: "spring",
+      stiffness: 200,
+      damping: 25,
+      delay: 0.5, // Slight delay for dramatic effect
+    },
+  },
 };
 
 const navVariants = {
@@ -131,6 +140,9 @@ const navVariants = {
   },
   closed: {
     transition: { staggerChildren: 0.03, staggerDirection: -1 },
+  },
+  welcome: {
+    transition: { staggerChildren: 0.08, delayChildren: 0.8 }, // Slower, more dramatic stagger
   },
 };
 
@@ -151,6 +163,14 @@ const itemVariants = {
       x: { type: "spring", stiffness: 300, damping: 25 },
     },
   },
+  welcome: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.4,
+      x: { type: "spring", stiffness: 250, damping: 20 },
+    },
+  },
 };
 
 const iconVariants = {
@@ -168,6 +188,13 @@ const iconVariants = {
       scale: { type: "spring", stiffness: 400, damping: 25 },
     },
   },
+  welcome: {
+    scale: [1, 1.05, 1], // Subtle pulse effect
+    transition: {
+      duration: 0.6,
+      scale: { type: "spring", stiffness: 300, damping: 20 },
+    },
+  },
 };
 
 export function BiWeeklyDashboard() {
@@ -177,7 +204,8 @@ export function BiWeeklyDashboard() {
   const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState("master"); // Default to Master View
-  const [sidebarOpen, setSidebarOpen] = useState(true); // Default to open on desktop
+  const [sidebarOpen, setSidebarOpen] = useState(true); // Always start expanded for welcoming experience
+  const [isFirstLoad, setIsFirstLoad] = useState(true); // Track first load for welcome animation
   const [customDateRange, setCustomDateRange] = useState<{start: string, end: string}>({
     start: "",
     end: ""
@@ -211,6 +239,8 @@ export function BiWeeklyDashboard() {
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
+      // After data loads, mark first load as complete
+      setTimeout(() => setIsFirstLoad(false), 2000);
     }
   }, [supabase, selectedPeriod]);
 
@@ -483,10 +513,16 @@ export function BiWeeklyDashboard() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
-      {/* Animated Sidebar with Accordion Style */}
+      {/* Animated Sidebar with Accordion Style and Welcome Sequence */}
       <motion.nav
         initial={false}
-        animate={sidebarOpen ? "open" : "closed"}
+        animate={
+          isFirstLoad && sidebarOpen 
+            ? "welcome" 
+            : sidebarOpen 
+              ? "open" 
+              : "closed"
+        }
         variants={sidebarVariants}
         className="fixed lg:static inset-y-0 left-0 z-40 bg-gradient-to-b from-brand-olive via-brand-olive-light to-brand-olive-medium border-r border-white/20 overflow-hidden"
       >
@@ -497,12 +533,28 @@ export function BiWeeklyDashboard() {
           {/* Subtle overlay for better text contrast */}
           <div className="absolute inset-0 bg-black/10"></div>
           
+          {/* Welcome pulse effect for first load */}
+          {isFirstLoad && (
+            <motion.div
+              className="absolute inset-0 bg-white/5 rounded-r-lg"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 0.3, 0] }}
+              transition={{ 
+                duration: 2,
+                delay: 1.2,
+                ease: "easeInOut"
+              }}
+            />
+          )}
+          
           <div className="p-4 border-b border-white/30 relative z-10">
             <div className="flex items-center gap-3">
               <motion.div
-                className="p-2 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30 flex-shrink-0"
+                className="p-2 bg-white/20 rounded-lg border border-white/30 flex-shrink-0"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                animate={isFirstLoad ? { scale: [1, 1.1, 1] } : {}}
+                transition={isFirstLoad ? { duration: 1, delay: 1.5 } : {}}
               >
                 <Shield className="h-6 w-6 text-white" />
               </motion.div>
@@ -519,7 +571,41 @@ export function BiWeeklyDashboard() {
           <motion.div 
             className="flex-1 p-2 space-y-1 relative z-10"
             variants={navVariants}
+            animate={
+              isFirstLoad && sidebarOpen 
+                ? "welcome" 
+                : sidebarOpen 
+                  ? "open" 
+                  : "closed"
+            }
           >
+            {/* Welcome tooltip for first-time users */}
+            {isFirstLoad && (
+              <motion.div
+                className="absolute -right-4 top-4 bg-white text-brand-olive px-3 py-2 rounded-lg shadow-lg text-sm font-medium z-50"
+                initial={{ opacity: 0, x: -20, scale: 0.8 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: -20, scale: 0.8 }}
+                transition={{ 
+                  duration: 0.4,
+                  delay: 2.5,
+                }}
+                style={{ 
+                  clipPath: "polygon(0 50%, 12px 0, 100% 0, 100% 100%, 12px 100%)"
+                }}
+              >
+                <div className="ml-3">
+                  Welcome! Explore your dashboard
+                </div>
+                <motion.div
+                  initial={{ opacity: 1 }}
+                  animate={{ opacity: 0 }}
+                  transition={{ delay: 4, duration: 0.5 }}
+                  className="absolute inset-0 bg-white rounded-lg"
+                />
+              </motion.div>
+            )}
+            
             {navigationItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeView === item.id;
@@ -538,11 +624,12 @@ export function BiWeeklyDashboard() {
                     }
                   }}
                   className={`
-                    w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all duration-200 group
+                    w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all duration-200 group relative
                     ${isActive 
                       ? 'bg-white/25 text-white shadow-lg border border-white/40 drop-shadow-sm' 
                       : 'text-white/90 hover:bg-white/15 hover:text-white hover:drop-shadow-sm'
                     }
+                    ${isFirstLoad ? 'animate-pulse-subtle' : ''}
                   `}
                 >
                   <motion.div

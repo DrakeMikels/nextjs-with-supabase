@@ -107,7 +107,7 @@ export default async function ProtectedPage() {
           </div>
           
           <motion.div 
-            className="w-full bg-white/50 backdrop-blur-sm rounded-lg border border-brand-olive/10 p-4 hover-lift"
+            className="w-full bg-white/50 rounded-lg border border-brand-olive/10 p-4 hover-lift"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{

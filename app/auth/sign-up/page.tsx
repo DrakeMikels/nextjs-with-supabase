@@ -187,7 +187,7 @@ export default function Page() {
               ].map((feature) => (
                 <motion.div
                   key={feature.title}
-                  className="flex items-center gap-4 p-4 bg-white/50 backdrop-blur-sm rounded-lg border border-brand-olive/10 hover-lift"
+                  className="flex items-center gap-4 p-4 bg-white/50 rounded-lg border border-brand-olive/10 hover-lift"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{

@@ -206,7 +206,23 @@
     background-size: 200% 100%;
   }
   
-  /* Mobile utilities */
+  /* Welcome animation for first-time users */
+  .animate-pulse-subtle {
+    animation: pulse-subtle 3s ease-in-out infinite;
+  }
+  
+  @keyframes pulse-subtle {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.95;
+      transform: scale(1.005);
+    }
+  }
+  
+  /* Mobile optimizations */
   .mobile-touch-target {
     @apply min-h-[44px] min-w-[44px];
   }
