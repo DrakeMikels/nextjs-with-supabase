@@ -12,6 +12,10 @@ export interface Coach {
   date_of_hire: string | null;
   vacation_days_remaining: number;
   vacation_days_total: number;
+  cpr_trainer_license_date: string | null;
+  cpr_trainer_expiration_date: string | null;
+  cpr_trainer_provider: string | null;
+  cpr_trainer_license_number: string | null;
 }
 
 export interface SafetyMetric {

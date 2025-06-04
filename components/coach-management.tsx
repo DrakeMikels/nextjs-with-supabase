@@ -16,6 +16,10 @@ interface Coach {
   date_of_hire: string | null;
   vacation_days_remaining: number;
   vacation_days_total: number;
+  cpr_trainer_license_date: string | null;
+  cpr_trainer_expiration_date: string | null;
+  cpr_trainer_provider: string | null;
+  cpr_trainer_license_number: string | null;
 }
 
 interface CoachManagementProps {
@@ -29,7 +33,11 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
     name: "",
     date_of_hire: "",
     vacation_days_remaining: 0,
-    vacation_days_total: 2
+    vacation_days_total: 2,
+    cpr_trainer_license_date: "",
+    cpr_trainer_expiration_date: "",
+    cpr_trainer_provider: "",
+    cpr_trainer_license_number: ""
   });
   const [loading, setLoading] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -45,7 +53,11 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
           name: coach.name,
           date_of_hire: coach.date_of_hire || null,
           vacation_days_remaining: coach.vacation_days_remaining,
-          vacation_days_total: coach.vacation_days_total
+          vacation_days_total: coach.vacation_days_total,
+          cpr_trainer_license_date: coach.cpr_trainer_license_date || null,
+          cpr_trainer_expiration_date: coach.cpr_trainer_expiration_date || null,
+          cpr_trainer_provider: coach.cpr_trainer_provider || null,
+          cpr_trainer_license_number: coach.cpr_trainer_license_number || null
         })
         .eq("id", coach.id);
 
@@ -83,7 +95,11 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
           name: newCoach.name,
           date_of_hire: newCoach.date_of_hire || null,
           vacation_days_remaining: newCoach.vacation_days_remaining,
-          vacation_days_total: newCoach.vacation_days_total
+          vacation_days_total: newCoach.vacation_days_total,
+          cpr_trainer_license_date: newCoach.cpr_trainer_license_date || null,
+          cpr_trainer_expiration_date: newCoach.cpr_trainer_expiration_date || null,
+          cpr_trainer_provider: newCoach.cpr_trainer_provider || null,
+          cpr_trainer_license_number: newCoach.cpr_trainer_license_number || null
         })
         .select()
         .single();
@@ -102,7 +118,11 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
           name: "",
           date_of_hire: "",
           vacation_days_remaining: 0,
-          vacation_days_total: 2
+          vacation_days_total: 2,
+          cpr_trainer_license_date: "",
+          cpr_trainer_expiration_date: "",
+          cpr_trainer_provider: "",
+          cpr_trainer_license_number: ""
         });
         setShowAddForm(false);
         console.log("Coach added successfully:", data);
@@ -222,6 +242,52 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
                   />
                 </div>
               </div>
+              
+              {/* CPR Trainer License Section */}
+              <div className="space-y-4">
+                <h4 className="text-sm font-medium text-high-contrast border-b pb-2">CPR Trainer License</h4>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="new_cpr_cert_date" className="text-high-contrast">CPR Trainer License Date</Label>
+                    <Input
+                      id="new_cpr_cert_date"
+                      type="date"
+                      value={newCoach.cpr_trainer_license_date}
+                      onChange={(e) => setNewCoach(prev => ({ ...prev, cpr_trainer_license_date: e.target.value }))}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="new_cpr_exp_date" className="text-high-contrast">CPR Trainer Expiration Date</Label>
+                    <Input
+                      id="new_cpr_exp_date"
+                      type="date"
+                      value={newCoach.cpr_trainer_expiration_date}
+                      onChange={(e) => setNewCoach(prev => ({ ...prev, cpr_trainer_expiration_date: e.target.value }))}
+                    />
+                  </div>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="new_cpr_provider" className="text-high-contrast">Training Provider</Label>
+                    <Input
+                      id="new_cpr_provider"
+                      value={newCoach.cpr_trainer_provider}
+                      onChange={(e) => setNewCoach(prev => ({ ...prev, cpr_trainer_provider: e.target.value }))}
+                      placeholder="e.g., American Red Cross"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="new_cpr_cert_number" className="text-high-contrast">License Number</Label>
+                    <Input
+                      id="new_cpr_cert_number"
+                      value={newCoach.cpr_trainer_license_number}
+                      onChange={(e) => setNewCoach(prev => ({ ...prev, cpr_trainer_license_number: e.target.value }))}
+                      placeholder="License number"
+                    />
+                  </div>
+                </div>
+              </div>
+              
               <div className="flex gap-2">
                 <Button onClick={addCoach} disabled={loading || !newCoach.name.trim()} className="gap-2">
                   <Save className="h-4 w-4" />
@@ -329,6 +395,90 @@ export function CoachManagement({ coaches, onCoachesChange }: CoachManagementPro
                     }}
                   />
                 </div>
+              </div>
+
+              {/* CPR Trainer License Status */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-high-contrast">CPR Trainer License</span>
+                  {coach.cpr_trainer_expiration_date && (
+                    <Badge 
+                      variant={
+                        new Date(coach.cpr_trainer_expiration_date) < new Date() 
+                          ? "destructive" 
+                          : new Date(coach.cpr_trainer_expiration_date) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+                          ? "secondary"
+                          : "default"
+                      }
+                    >
+                      {new Date(coach.cpr_trainer_expiration_date) < new Date() 
+                        ? "Expired" 
+                        : new Date(coach.cpr_trainer_expiration_date) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+                        ? "Expiring Soon"
+                        : "Current"
+                      }
+                    </Badge>
+                  )}
+                </div>
+                {editingCoach?.id === coach.id ? (
+                  <div className="space-y-2">
+                    <div className="grid gap-2 md:grid-cols-2">
+                      <div>
+                        <Label className="text-xs">License Date</Label>
+                        <Input
+                          type="date"
+                          value={editingCoach.cpr_trainer_license_date || ""}
+                          onChange={(e) => setEditingCoach(prev => prev ? { ...prev, cpr_trainer_license_date: e.target.value } : null)}
+                          className="h-7 text-xs"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Expiration Date</Label>
+                        <Input
+                          type="date"
+                          value={editingCoach.cpr_trainer_expiration_date || ""}
+                          onChange={(e) => setEditingCoach(prev => prev ? { ...prev, cpr_trainer_expiration_date: e.target.value } : null)}
+                          className="h-7 text-xs"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid gap-2 md:grid-cols-2">
+                      <div>
+                        <Label className="text-xs">Training Provider</Label>
+                        <Input
+                          value={editingCoach.cpr_trainer_provider || ""}
+                          onChange={(e) => setEditingCoach(prev => prev ? { ...prev, cpr_trainer_provider: e.target.value } : null)}
+                          className="h-7 text-xs"
+                          placeholder="Provider"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs">License Number</Label>
+                        <Input
+                          value={editingCoach.cpr_trainer_license_number || ""}
+                          onChange={(e) => setEditingCoach(prev => prev ? { ...prev, cpr_trainer_license_number: e.target.value } : null)}
+                          className="h-7 text-xs"
+                          placeholder="License #"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-sm space-y-1">
+                    {coach.cpr_trainer_expiration_date ? (
+                      <div className="text-medium-contrast">
+                        Expires: {formatDate(coach.cpr_trainer_expiration_date)}
+                      </div>
+                    ) : (
+                      <div className="text-medium-contrast">No CPR trainer license on file</div>
+                    )}
+                    {coach.cpr_trainer_provider && (
+                      <div className="text-xs text-medium-contrast">
+                        Provider: {coach.cpr_trainer_provider}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {editingCoach?.id === coach.id && (
