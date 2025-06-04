@@ -22,7 +22,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { 
   Heart, 
@@ -42,8 +41,7 @@ import type {
   Office, 
   CoachOfficeAssignment, 
   CprFirstAidRecord, 
-  CprFirstAidProps,
-  Coach
+  CprFirstAidProps
 } from "@/lib/types";
 
 export function CprFirstAid({ coaches, onDataChange }: CprFirstAidProps) {
