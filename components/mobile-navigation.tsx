@@ -305,7 +305,7 @@ const toggleContainer: React.CSSProperties = {
   MozUserSelect: "none",
   cursor: "pointer",
   position: "absolute",
-  top: 18,
+  top: 80,
   left: 15,
   width: 50,
   height: 50,
