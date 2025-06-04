@@ -415,12 +415,12 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
             <div className="grid gap-4 grid-cols-2">
               <div>
                 <Label htmlFor="item-assigned">Assigned To</Label>
-                <Select value={newItem.assigned_to || ""} onValueChange={(value) => setNewItem(prev => ({ ...prev, assigned_to: value || undefined }))}>
+                <Select value={newItem.assigned_to || "unassigned"} onValueChange={(value) => setNewItem(prev => ({ ...prev, assigned_to: value === "unassigned" ? undefined : value }))}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select coach" />
                   </SelectTrigger>
                   <SelectContent className="professional-dropdown">
-                    <SelectItem value="">Unassigned</SelectItem>
+                    <SelectItem value="unassigned">Unassigned</SelectItem>
                     {coaches.map((coach) => (
                       <SelectItem key={coach.id} value={coach.id}>{coach.name}</SelectItem>
                     ))}
@@ -493,12 +493,12 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
               <div className="grid gap-4 grid-cols-2">
                 <div>
                   <Label htmlFor="edit-assigned">Assigned To</Label>
-                  <Select value={editingItem.assigned_to || ""} onValueChange={(value) => setEditingItem(prev => prev ? { ...prev, assigned_to: value || null } : null)}>
+                  <Select value={editingItem.assigned_to || "unassigned"} onValueChange={(value) => setEditingItem(prev => prev ? { ...prev, assigned_to: value === "unassigned" ? null : value } : null)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select coach" />
                     </SelectTrigger>
                     <SelectContent className="professional-dropdown">
-                      <SelectItem value="">Unassigned</SelectItem>
+                      <SelectItem value="unassigned">Unassigned</SelectItem>
                       {coaches.map((coach) => (
                         <SelectItem key={coach.id} value={coach.id}>{coach.name}</SelectItem>
                       ))}
