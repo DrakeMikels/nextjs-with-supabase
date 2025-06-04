@@ -52,7 +52,7 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
   const [newItem, setNewItem] = useState({
     title: '',
     description: '',
-    assigned_to: '',
+    assigned_to: undefined as string | undefined,
     priority: 'medium' as 'low' | 'medium' | 'high' | 'critical',
     due_date: '',
     status: 'open' as 'open' | 'in_progress' | 'completed' | 'cancelled'
@@ -99,7 +99,7 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
       setNewItem({
         title: '',
         description: '',
-        assigned_to: '',
+        assigned_to: undefined,
         priority: 'medium',
         due_date: '',
         status: 'open'
@@ -415,7 +415,7 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
             <div className="grid gap-4 grid-cols-2">
               <div>
                 <Label htmlFor="item-assigned">Assigned To</Label>
-                <Select value={newItem.assigned_to} onValueChange={(value) => setNewItem(prev => ({ ...prev, assigned_to: value }))}>
+                <Select value={newItem.assigned_to || ""} onValueChange={(value) => setNewItem(prev => ({ ...prev, assigned_to: value || undefined }))}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select coach" />
                   </SelectTrigger>
@@ -493,7 +493,7 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
               <div className="grid gap-4 grid-cols-2">
                 <div>
                   <Label htmlFor="edit-assigned">Assigned To</Label>
-                  <Select value={editingItem.assigned_to || ''} onValueChange={(value) => setEditingItem(prev => prev ? { ...prev, assigned_to: value || null } : null)}>
+                  <Select value={editingItem.assigned_to || ""} onValueChange={(value) => setEditingItem(prev => prev ? { ...prev, assigned_to: value || null } : null)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select coach" />
                     </SelectTrigger>
@@ -540,8 +540,8 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
                   <Input
                     id="edit-due-date"
                     type="date"
-                    value={editingItem.due_date || ''}
-                    onChange={(e) => setEditingItem(prev => prev ? { ...prev, due_date: e.target.value } : null)}
+                    value={editingItem.due_date || ""}
+                    onChange={(e) => setEditingItem(prev => prev ? { ...prev, due_date: e.target.value || null } : null)}
                   />
                 </div>
               </div>
