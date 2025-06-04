@@ -12,7 +12,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { 
   PlusCircle, 
-  Save, 
   Trash2, 
   AlertTriangle, 
   CheckCircle, 
@@ -44,7 +43,6 @@ interface ActionItemsProps {
 
 export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
   const [actionItems, setActionItems] = useState<ActionItem[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [editingItem, setEditingItem] = useState<ActionItem | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -62,7 +60,6 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
 
   const fetchActionItems = useCallback(async () => {
     try {
-      setLoading(true);
       const { data, error } = await supabase
         .from("action_items")
         .select(`
@@ -75,8 +72,6 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
       setActionItems(data || []);
     } catch (error) {
       console.error("Error fetching action items:", error);
-    } finally {
-      setLoading(false);
     }
   }, [supabase]);
 
