@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { PlusCircle, Save, Trash2, User, Calendar } from "lucide-react";
-import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/ui/animated-container";
+import { AnimatedContainer, AnimatedItem } from "@/components/ui/animated-container";
 
 interface Coach {
   id: string;

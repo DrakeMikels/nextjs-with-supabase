@@ -26,7 +26,6 @@ import {
   ChevronRight,
   Star
 } from "lucide-react";
-import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/ui/animated-container";
 import type { 
   Certification, 
   CertificationCategory, 
