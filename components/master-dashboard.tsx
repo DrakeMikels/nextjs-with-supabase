@@ -10,6 +10,7 @@ import { Eye, EyeOff, Calendar, Users, TrendingUp, AlertTriangle } from "lucide-
 import { AnimatedContainer, AnimatedItem, LoadingSpinner } from "@/components/ui/animated-container";
 import type { Coach, SafetyMetric, DashboardProps } from "@/lib/types";
 import * as motion from "motion/react-client";
+import { AnimatePresence } from "motion/react";
 
 export function MasterDashboard({ periods, coaches, onDataChange }: DashboardProps) {
   const [metrics, setMetrics] = useState<SafetyMetric[]>([]);
@@ -501,55 +502,123 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
         }}>
           <div className="overflow-x-auto mobile-scroll">
             <TabsList className="bg-brand-off-white border border-brand-olive/20 min-w-max">
-              <TabsTrigger 
-                value="all" 
-                className="data-[state=active]:bg-brand-olive data-[state=active]:text-white text-medium-contrast hover-scale"
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2 }}
               >
-                All Coaches ({metrics.length})
-              </TabsTrigger>
-              {coaches.map((coach) => {
+                <TabsTrigger 
+                  value="all" 
+                  className="data-[state=active]:bg-brand-olive data-[state=active]:text-white text-medium-contrast hover-scale"
+                >
+                  All Coaches ({metrics.length})
+                </TabsTrigger>
+              </motion.div>
+              {coaches.map((coach, index) => {
                 const coachMetrics = metrics.filter(m => m.coach_id === coach.id);
                 return (
-                  <TabsTrigger 
-                    key={coach.id} 
-                    value={coach.id}
-                    className="data-[state=active]:bg-brand-olive data-[state=active]:text-white text-medium-contrast hover-scale whitespace-nowrap"
+                  <motion.div
+                    key={coach.id}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      duration: 0.3,
+                      delay: index * 0.05,
+                      x: { type: "spring", stiffness: 300, damping: 25 },
+                      scale: { duration: 0.2 }
+                    }}
                   >
-                    {coach.name} ({coachMetrics.length})
-                  </TabsTrigger>
+                    <TabsTrigger 
+                      value={coach.id}
+                      className="data-[state=active]:bg-brand-olive data-[state=active]:text-white text-medium-contrast hover-scale whitespace-nowrap"
+                    >
+                      {coach.name} ({coachMetrics.length})
+                    </TabsTrigger>
+                  </motion.div>
                 );
               })}
             </TabsList>
           </div>
 
-          <TabsContent value="all" className="space-y-4">
-            {coaches.map((coach) => (
-              <Card key={coach.id}>
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-base sm:text-lg text-high-contrast">{coach.name}</CardTitle>
-                </CardHeader>
-                <CardContent className="p-3 sm:p-6">
-                  <CoachView coach={coach} />
-                </CardContent>
-              </Card>
-            ))}
-          </TabsContent>
-
-          {coaches.map((coach) => (
-            <TabsContent key={coach.id} value={coach.id}>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base sm:text-lg text-high-contrast">{coach.name} - Detailed View</CardTitle>
-                  <CardDescription className="text-medium-contrast text-sm">
-                    Complete data view for {coach.name} across all periods
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="p-3 sm:p-6">
-                  <CoachView coach={coach} />
-                </CardContent>
-              </Card>
+          <AnimatePresence mode="wait">
+            <TabsContent key="all" value="all" className="space-y-4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{
+                  duration: 0.4,
+                  ease: "easeInOut"
+                }}
+                className="space-y-4"
+              >
+                {coaches.map((coach, index) => (
+                  <motion.div
+                    key={coach.id}
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      duration: 0.4,
+                      delay: index * 0.1,
+                      x: { type: "spring", stiffness: 200, damping: 20 }
+                    }}
+                  >
+                    <Card className="hover-lift">
+                      <CardHeader className="pb-4">
+                        <CardTitle className="text-base sm:text-lg text-high-contrast">{coach.name}</CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-3 sm:p-6">
+                        <CoachView coach={coach} />
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </motion.div>
             </TabsContent>
-          ))}
+          </AnimatePresence>
+
+          <AnimatePresence mode="wait">
+            {coaches.map((coach) => (
+              <TabsContent key={coach.id} value={coach.id}>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                  transition={{
+                    duration: 0.5,
+                    ease: [0.23, 1, 0.32, 1], // Custom easing for smooth feel
+                    scale: { type: "spring", stiffness: 300, damping: 25 }
+                  }}
+                >
+                  <Card className="hover-lift">
+                    <CardHeader>
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.4, delay: 0.2 }}
+                      >
+                        <CardTitle className="text-base sm:text-lg text-high-contrast">{coach.name} - Detailed View</CardTitle>
+                        <CardDescription className="text-medium-contrast text-sm">
+                          Complete data view for {coach.name} across all periods
+                        </CardDescription>
+                      </motion.div>
+                    </CardHeader>
+                    <CardContent className="p-3 sm:p-6">
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 0.3 }}
+                      >
+                        <CoachView coach={coach} />
+                      </motion.div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </TabsContent>
+            ))}
+          </AnimatePresence>
         </Tabs>
       </AnimatedItem>
     </AnimatedContainer>
