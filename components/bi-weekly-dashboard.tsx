@@ -44,6 +44,7 @@ import type { BiWeeklyPeriod, Coach } from "@/lib/types";
 import { BranchVisits } from "./branch-visits";
 import { CprFirstAid } from "./cpr-first-aid";
 import { MeetingView } from "./meeting-view";
+import MobileNavigation from "./mobile-navigation";
 
 const navigationItems = [
   {
@@ -516,158 +517,151 @@ export function BiWeeklyDashboard() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
-      {/* Animated Sidebar with Accordion Style and Welcome Sequence */}
-      <motion.nav
-        initial={false}
-        animate={
-          isMobile
-            ? sidebarOpen 
-              ? "mobileOpen" 
-              : "mobileClosed"
-            : isFirstLoad && sidebarOpen 
+      {/* Mobile Navigation - Only show on mobile */}
+      {isMobile && (
+        <MobileNavigation 
+          activeView={activeView}
+          onViewChange={setActiveView}
+        />
+      )}
+
+      {/* Desktop Sidebar - Only show on desktop */}
+      {!isMobile && (
+        <motion.nav
+          initial={false}
+          animate={
+            isFirstLoad && sidebarOpen 
               ? "welcome" 
               : sidebarOpen 
                 ? "open" 
                 : "closed"
-        }
-        variants={sidebarVariants}
-        className="fixed lg:static inset-y-0 left-0 z-40 bg-gradient-to-b from-brand-olive via-brand-olive-light to-brand-olive-medium dark:from-brand-olive-medium dark:via-brand-olive-soft dark:to-brand-olive-pale border-r border-white/20 overflow-hidden"
-      >
-        {/* Navigation content */}
-        <div className="flex flex-col h-full relative">
-          {/* Enhanced background pattern for better texture */}
-          <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-          {/* Subtle overlay for better text contrast */}
-          <div className="absolute inset-0 bg-black/10"></div>
-          
-          {/* Welcome pulse effect for first load */}
-          {isFirstLoad && !isMobile && (
-            <motion.div
-              className="absolute inset-0 bg-white/5 rounded-r-lg"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 0.3, 0] }}
-              transition={{ 
-                duration: 2,
-                delay: 1.2,
-                ease: "easeInOut"
-              }}
-            />
-          )}
-          
-          <div className="p-4 border-b border-white/30 relative z-10">
-            <div className="flex items-center gap-3">
+          }
+          variants={sidebarVariants}
+          className="fixed lg:static inset-y-0 left-0 z-40 bg-gradient-to-b from-brand-olive via-brand-olive-light to-brand-olive-medium dark:from-brand-olive-medium dark:via-brand-olive-soft dark:to-brand-olive-pale border-r border-white/20 overflow-hidden"
+        >
+          {/* Navigation content */}
+          <div className="flex flex-col h-full relative">
+            {/* Enhanced background pattern for better texture */}
+            <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+            {/* Subtle overlay for better text contrast */}
+            <div className="absolute inset-0 bg-black/10"></div>
+            
+            {/* Welcome pulse effect for first load */}
+            {isFirstLoad && (
               <motion.div
-                className="p-2 bg-white/20 rounded-lg border border-white/30 flex-shrink-0"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                animate={isFirstLoad && !isMobile ? { scale: [1, 1.1, 1] } : {}}
-                transition={isFirstLoad && !isMobile ? { duration: 1, delay: 1.5 } : {}}
-              >
-                <Shield className="h-6 w-6 text-white" />
-              </motion.div>
-              <motion.div
-                variants={itemVariants}
-                className="min-w-0"
-              >
-                <h2 className="text-sm font-semibold text-white drop-shadow-md truncate">Navigation</h2>
-                <p className="text-xs text-white/90 drop-shadow-sm truncate">Regional Safety Coaches</p>
-              </motion.div>
+                className="absolute inset-0 bg-white/5 rounded-r-lg"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0.3, 0] }}
+                transition={{ 
+                  duration: 2,
+                  delay: 1.2,
+                  ease: "easeInOut"
+                }}
+              />
+            )}
+            
+            <div className="p-4 border-b border-white/30 relative z-10">
+              <div className="flex items-center gap-3">
+                <motion.div
+                  className="p-2 bg-white/20 rounded-lg border border-white/30 flex-shrink-0"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  animate={isFirstLoad ? { scale: [1, 1.1, 1] } : {}}
+                  transition={isFirstLoad ? { duration: 1, delay: 1.5 } : {}}
+                >
+                  <Shield className="h-6 w-6 text-white" />
+                </motion.div>
+                <motion.div
+                  variants={itemVariants}
+                  className="min-w-0"
+                >
+                  <h2 className="text-sm font-semibold text-white drop-shadow-md truncate">Navigation</h2>
+                  <p className="text-xs text-white/90 drop-shadow-sm truncate">Regional Safety Coaches</p>
+                </motion.div>
+              </div>
             </div>
-          </div>
-          
-          <motion.div 
-            className="flex-1 p-2 space-y-1 relative z-10"
-            variants={navVariants}
-            animate={
-              isMobile
-                ? sidebarOpen 
-                  ? "mobileOpen" 
-                  : "mobileClosed"
-                : isFirstLoad && sidebarOpen 
+            
+            <motion.div 
+              className="flex-1 p-2 space-y-1 relative z-10"
+              variants={navVariants}
+              animate={
+                isFirstLoad && sidebarOpen 
                   ? "welcome" 
                   : sidebarOpen 
                     ? "open" 
                     : "closed"
-            }
-          >
-            {/* Welcome tooltip for first-time users - only on desktop */}
-            {isFirstLoad && !isMobile && (
-              <motion.div
-                className="absolute -right-4 top-4 bg-white text-brand-olive px-3 py-2 rounded-lg shadow-lg text-sm font-medium z-50"
-                initial={{ opacity: 0, x: -20, scale: 0.8 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: -20, scale: 0.8 }}
-                transition={{ 
-                  duration: 0.4,
-                  delay: 2.5,
-                }}
-                style={{ 
-                  clipPath: "polygon(0 50%, 12px 0, 100% 0, 100% 100%, 12px 100%)"
-                }}
-              >
-                <div className="ml-3">
-                  Welcome! Explore your dashboard
-                </div>
+              }
+            >
+              {/* Welcome tooltip for first-time users */}
+              {isFirstLoad && (
                 <motion.div
-                  initial={{ opacity: 1 }}
-                  animate={{ opacity: 0 }}
-                  transition={{ delay: 4, duration: 0.5 }}
-                  className="absolute inset-0 bg-white rounded-lg"
-                />
-              </motion.div>
-            )}
-            
-            {navigationItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeView === item.id;
-              
-              return (
-                <motion.button
-                  key={item.id}
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.02, x: 2 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => {
-                    setActiveView(item.id);
-                    // Always close sidebar on mobile after selection
-                    if (isMobile) {
-                      setSidebarOpen(false);
-                    }
+                  className="absolute -right-4 top-4 bg-white text-brand-olive px-3 py-2 rounded-lg shadow-lg text-sm font-medium z-50"
+                  initial={{ opacity: 0, x: -20, scale: 0.8 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: -20, scale: 0.8 }}
+                  transition={{ 
+                    duration: 0.4,
+                    delay: 2.5,
                   }}
-                  className={`
-                    w-full flex items-center gap-3 px-3 rounded-lg text-left transition-all duration-200 group relative mobile-touch-target
-                    ${isMobile ? 'py-4' : 'py-2.5'}
-                    ${isActive 
-                      ? 'bg-white/25 text-white shadow-lg border border-white/40 drop-shadow-sm' 
-                      : 'text-white/90 hover:bg-white/15 hover:text-white hover:drop-shadow-sm'
-                    }
-                    ${isFirstLoad && !isMobile ? 'animate-pulse-subtle' : ''}
-                  `}
+                  style={{ 
+                    clipPath: "polygon(0 50%, 12px 0, 100% 0, 100% 100%, 12px 100%)"
+                  }}
                 >
+                  <div className="ml-3">
+                    Welcome! Explore your dashboard
+                  </div>
                   <motion.div
-                    variants={iconVariants}
-                    className="flex-shrink-0"
-                  >
-                    <Icon className={`${isMobile ? 'h-6 w-6' : 'h-5 w-5'} ${isActive ? 'drop-shadow-sm' : ''}`} />
-                  </motion.div>
-                  <motion.div 
+                    initial={{ opacity: 1 }}
+                    animate={{ opacity: 0 }}
+                    transition={{ delay: 4, duration: 0.5 }}
+                    className="absolute inset-0 bg-white rounded-lg"
+                  />
+                </motion.div>
+              )}
+              
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = activeView === item.id;
+                
+                return (
+                  <motion.button
+                    key={item.id}
                     variants={itemVariants}
-                    className="flex-1 min-w-0"
+                    whileHover={{ scale: 1.02, x: 2 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setActiveView(item.id)}
+                    className={`
+                      w-full flex items-center gap-3 px-3 rounded-lg text-left transition-all duration-200 group relative py-2.5
+                      ${isActive 
+                        ? 'bg-white/25 text-white shadow-lg border border-white/40 drop-shadow-sm' 
+                        : 'text-white/90 hover:bg-white/15 hover:text-white hover:drop-shadow-sm'
+                      }
+                      ${isFirstLoad ? 'animate-pulse-subtle' : ''}
+                    `}
                   >
-                    <div className={`font-medium ${isMobile ? 'text-base' : 'text-sm'} truncate ${isActive ? 'drop-shadow-sm' : ''}`}>
-                      {item.label}
-                    </div>
-                    <div className={`${isMobile ? 'text-sm' : 'text-xs'} truncate ${isActive ? 'text-white/95 drop-shadow-sm' : 'text-white/75'}`}>
-                      {item.description}
-                    </div>
-                  </motion.div>
-                </motion.button>
-              );
-            })}
-          </motion.div>
-          
-          {/* Toggle Button - Hidden on mobile */}
-          {!isMobile && (
+                    <motion.div
+                      variants={iconVariants}
+                      className="flex-shrink-0"
+                    >
+                      <Icon className={`h-5 w-5 ${isActive ? 'drop-shadow-sm' : ''}`} />
+                    </motion.div>
+                    <motion.div 
+                      variants={itemVariants}
+                      className="flex-1 min-w-0"
+                    >
+                      <div className={`font-medium text-sm truncate ${isActive ? 'drop-shadow-sm' : ''}`}>
+                        {item.label}
+                      </div>
+                      <div className={`text-xs truncate ${isActive ? 'text-white/95 drop-shadow-sm' : 'text-white/75'}`}>
+                        {item.description}
+                      </div>
+                    </motion.div>
+                  </motion.button>
+                );
+              })}
+            </motion.div>
+            
+            {/* Toggle Button */}
             <div className="p-4 border-t border-white/30 relative z-10">
               <motion.button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -689,19 +683,8 @@ export function BiWeeklyDashboard() {
                 </motion.span>
               </motion.button>
             </div>
-          )}
-        </div>
-      </motion.nav>
-
-      {/* Mobile overlay - Only show on mobile when sidebar is open */}
-      {sidebarOpen && isMobile && (
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/60 z-30 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
+          </div>
+        </motion.nav>
       )}
 
       {/* Main content */}
@@ -710,53 +693,10 @@ export function BiWeeklyDashboard() {
         <div className="bg-background border-b border-brand-olive/20 p-2 sm:p-4 lg:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
             <div className="flex items-center gap-2 sm:gap-4">
-              {/* Mobile menu button - Improved hamburger style */}
-              <motion.button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden p-2 sm:p-3 rounded-xl bg-brand-olive/10 hover:bg-brand-olive/20 text-brand-olive transition-colors border border-brand-olive/20 mobile-touch-target"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <motion.div
-                  animate={{ 
-                    rotate: sidebarOpen ? 90 : 0,
-                  }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="relative w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center"
-                >
-                  {/* Hamburger menu icon that transforms */}
-                  <motion.div
-                    className="absolute"
-                    animate={{
-                      rotate: sidebarOpen ? 45 : 0,
-                      y: sidebarOpen ? 0 : -6,
-                    }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <div className="w-4 h-0.5 sm:w-5 sm:h-0.5 bg-current rounded-full" />
-                  </motion.div>
-                  <motion.div
-                    className="absolute"
-                    animate={{
-                      opacity: sidebarOpen ? 0 : 1,
-                      scale: sidebarOpen ? 0 : 1,
-                    }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <div className="w-4 h-0.5 sm:w-5 sm:h-0.5 bg-current rounded-full" />
-                  </motion.div>
-                  <motion.div
-                    className="absolute"
-                    animate={{
-                      rotate: sidebarOpen ? -45 : 0,
-                      y: sidebarOpen ? 0 : 6,
-                    }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <div className="w-4 h-0.5 sm:w-5 sm:h-0.5 bg-current rounded-full" />
-                  </motion.div>
-                </motion.div>
-              </motion.button>
+              {/* Mobile menu button - Only show on mobile for the new navigation */}
+              {isMobile && (
+                <div className="w-12 h-12" /> // Spacer for mobile navigation toggle
+              )}
               
             <div>
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-brand-olive">
