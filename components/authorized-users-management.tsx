@@ -200,7 +200,7 @@ export function AuthorizedUsersManagement() {
                   </p>
                 </AnimatedItem>
               ) : (
-                authorizedUsers.map((user, index) => (
+                authorizedUsers.map((user) => (
                   <AnimatedItem
                     key={user.id}
                     className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 border rounded-lg hover:bg-muted/50 hover-lift`}
