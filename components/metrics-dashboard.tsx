@@ -28,9 +28,10 @@ import type { BiWeeklyPeriod, Coach, SafetyMetric } from "@/lib/types";
 interface MetricsDashboardProps {
   periods: BiWeeklyPeriod[];
   coaches: Coach[];
+  selectedPeriod: BiWeeklyPeriod | null;
 }
 
-export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
+export function MetricsDashboard({ periods, coaches, selectedPeriod }: MetricsDashboardProps) {
   const [metrics, setMetrics] = useState<SafetyMetric[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
@@ -40,7 +41,11 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
     try {
       const { data, error } = await supabase
         .from("safety_metrics")
-        .select("*")
+        .select(`
+          *,
+          coach:coaches(name),
+          period:bi_weekly_periods(period_name, start_date, end_date)
+        `)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -54,7 +59,12 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
 
   useEffect(() => {
     fetchMetrics();
-  }, [periods, fetchMetrics]);
+  }, [fetchMetrics]);
+
+  // Filter metrics based on selected period
+  const filteredMetrics = selectedPeriod 
+    ? metrics.filter(m => m.period_id === selectedPeriod.id)
+    : metrics;
 
   // Brand colors for charts - Consistent Olive Variations
   const brandColors = {
@@ -67,26 +77,27 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
   };
 
   const calculateOverallStats = () => {
-    const totalEvaluations = metrics.reduce((sum, m) => sum + (m.site_safety_evaluations || 0), 0);
-    const totalAudits = metrics.reduce((sum, m) => sum + (m.forensic_survey_audits || 0), 0);
-    const totalWarehouseAudits = metrics.reduce((sum, m) => sum + (m.warehouse_safety_audits || 0), 0);
-    const totalInvestigations = metrics.reduce((sum, m) => 
+    const totalEvaluations = filteredMetrics.reduce((sum, m) => sum + (m.site_safety_evaluations || 0), 0);
+    const totalAudits = filteredMetrics.reduce((sum, m) => sum + (m.forensic_survey_audits || 0), 0);
+    const totalWarehouseAudits = filteredMetrics.reduce((sum, m) => sum + (m.warehouse_safety_audits || 0), 0);
+    const totalInvestigations = filteredMetrics.reduce((sum, m) => 
       sum + (m.open_investigations_injuries || 0) + (m.open_investigations_auto || 0) + 
       (m.open_investigations_property_damage || 0) + (m.open_investigations_near_miss || 0), 0);
 
+    // For current period, show totals instead of averages
     return {
       totalEvaluations,
       totalAudits,
       totalWarehouseAudits,
       totalInvestigations,
-      avgEvaluationsPerPeriod: periods.length > 0 ? (totalEvaluations / periods.length).toFixed(1) : "0",
-      avgAuditsPerPeriod: periods.length > 0 ? (totalAudits / periods.length).toFixed(1) : "0"
+      avgEvaluationsPerPeriod: selectedPeriod ? totalEvaluations.toString() : (periods.length > 0 ? (totalEvaluations / periods.length).toFixed(1) : "0"),
+      avgAuditsPerPeriod: selectedPeriod ? totalAudits.toString() : (periods.length > 0 ? (totalAudits / periods.length).toFixed(1) : "0")
     };
   };
 
   const getCoachPerformanceData = () => {
     return coaches.map(coach => {
-      const coachMetrics = metrics.filter(m => m.coach_id === coach.id);
+      const coachMetrics = filteredMetrics.filter(m => m.coach_id === coach.id);
       const totalEvaluations = coachMetrics.reduce((sum, m) => sum + (m.site_safety_evaluations || 0), 0);
       const totalAudits = coachMetrics.reduce((sum, m) => sum + (m.forensic_survey_audits || 0), 0);
       const totalWarehouseAudits = coachMetrics.reduce((sum, m) => sum + (m.warehouse_safety_audits || 0), 0);
@@ -106,7 +117,12 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
   };
 
   const getTrendData = () => {
-    return periods.slice(0, 6).reverse().map(period => {
+    // If a specific period is selected, show comparison with previous periods
+    const periodsToShow = selectedPeriod 
+      ? periods.slice(0, 6).reverse()
+      : periods.slice(0, 6).reverse();
+      
+    return periodsToShow.map(period => {
       const periodMetrics = metrics.filter(m => m.period_id === period.id);
       return {
         period: period.period_name,
@@ -125,25 +141,28 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
     const monthlyEvaluationGoal = 12;
     const monthlyAuditGoal = 12;
     const monthlyWarehouseGoal = 2;
-    const periodsPerMonth = 2;
-    const monthlyPeriods = Math.ceil(periods.length / periodsPerMonth);
+    
+    // For selected period, calculate progress based on bi-weekly goals
+    const biWeeklyEvaluationGoal = selectedPeriod ? 6 : monthlyEvaluationGoal; // 6 per bi-weekly period
+    const biWeeklyAuditGoal = selectedPeriod ? 6 : monthlyAuditGoal; // 6 per bi-weekly period  
+    const biWeeklyWarehouseGoal = selectedPeriod ? 1 : monthlyWarehouseGoal; // 1 per bi-weekly period
 
     return [
       {
         name: "Site Evaluations",
-        value: monthlyPeriods > 0 ? Math.min((stats.totalEvaluations / (monthlyEvaluationGoal * monthlyPeriods)) * 100, 100) : 0,
+        value: Math.min((stats.totalEvaluations / biWeeklyEvaluationGoal) * 100, 100),
         goal: 100,
         fill: brandColors.olive
       },
       {
         name: "Forensic Audits", 
-        value: monthlyPeriods > 0 ? Math.min((stats.totalAudits / (monthlyAuditGoal * monthlyPeriods)) * 100, 100) : 0,
+        value: Math.min((stats.totalAudits / biWeeklyAuditGoal) * 100, 100),
         goal: 100,
         fill: brandColors.oliveLight
       },
       {
         name: "Warehouse Audits",
-        value: monthlyPeriods > 0 ? Math.min((stats.totalWarehouseAudits / (monthlyWarehouseGoal * monthlyPeriods)) * 100, 100) : 0,
+        value: Math.min((stats.totalWarehouseAudits / biWeeklyWarehouseGoal) * 100, 100),
         goal: 100,
         fill: brandColors.oliveMedium
       }
@@ -168,10 +187,10 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
   };
 
   const getInvestigationBreakdown = () => {
-    const injuries = metrics.reduce((sum, m) => sum + (m.open_investigations_injuries || 0), 0);
-    const auto = metrics.reduce((sum, m) => sum + (m.open_investigations_auto || 0), 0);
-    const property = metrics.reduce((sum, m) => sum + (m.open_investigations_property_damage || 0), 0);
-    const nearMiss = metrics.reduce((sum, m) => sum + (m.open_investigations_near_miss || 0), 0);
+    const injuries = filteredMetrics.reduce((sum, m) => sum + (m.open_investigations_injuries || 0), 0);
+    const auto = filteredMetrics.reduce((sum, m) => sum + (m.open_investigations_auto || 0), 0);
+    const property = filteredMetrics.reduce((sum, m) => sum + (m.open_investigations_property_damage || 0), 0);
+    const nearMiss = filteredMetrics.reduce((sum, m) => sum + (m.open_investigations_near_miss || 0), 0);
 
     return [
       { name: "Injuries", value: injuries, fill: brandColors.olive },
@@ -211,7 +230,12 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
       <AnimatedItem className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-brand-olive">Analytics Dashboard</h2>
-          <p className="text-medium-contrast">Comprehensive safety metrics analysis and trends</p>
+          <p className="text-medium-contrast">
+            {selectedPeriod 
+              ? `Current Period: ${selectedPeriod.period_name} (${new Date(selectedPeriod.start_date).toLocaleDateString()} - ${new Date(selectedPeriod.end_date).toLocaleDateString()})`
+              : "Comprehensive safety metrics analysis and trends across all periods"
+            }
+          </p>
         </div>
       </AnimatedItem>
 
@@ -219,25 +243,35 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
       <AnimatedItem className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="border-brand-olive/20 hover:border-brand-olive/40 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-high-contrast">Total Evaluations</CardTitle>
+            <CardTitle className="text-sm font-medium text-high-contrast">
+              {selectedPeriod ? "Period" : "Total"} Evaluations
+            </CardTitle>
             <Target className="h-4 w-4 text-brand-olive" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-brand-olive">{overallStats.totalEvaluations}</div>
             <p className="text-xs text-medium-contrast">
-              Avg: {overallStats.avgEvaluationsPerPeriod} per period
+              {selectedPeriod 
+                ? `Goal: 6 per period` 
+                : `Avg: ${overallStats.avgEvaluationsPerPeriod} per period`
+              }
             </p>
           </CardContent>
         </Card>
         <Card className="border-brand-olive-light/20 hover:border-brand-olive-light/40 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-high-contrast">Total Audits</CardTitle>
+            <CardTitle className="text-sm font-medium text-high-contrast">
+              {selectedPeriod ? "Period" : "Total"} Audits
+            </CardTitle>
             <BarChart3 className="h-4 w-4 text-brand-olive-light" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-brand-olive-light">{overallStats.totalAudits}</div>
             <p className="text-xs text-medium-contrast">
-              Avg: {overallStats.avgAuditsPerPeriod} per period
+              {selectedPeriod 
+                ? `Goal: 6 per period` 
+                : `Avg: ${overallStats.avgAuditsPerPeriod} per period`
+              }
             </p>
           </CardContent>
         </Card>
@@ -249,7 +283,7 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
           <CardContent>
             <div className="text-2xl font-bold text-brand-olive-medium">{overallStats.totalWarehouseAudits}</div>
             <p className="text-xs text-medium-contrast">
-              Goal: 2 per month
+              {selectedPeriod ? "Goal: 1 per period" : "Goal: 2 per month"}
             </p>
           </CardContent>
         </Card>
@@ -261,7 +295,7 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
           <CardContent>
             <div className="text-2xl font-bold text-brand-olive-soft">{overallStats.totalInvestigations}</div>
             <p className="text-xs text-medium-contrast">
-              All types combined
+              {selectedPeriod ? "Current period" : "All types combined"}
             </p>
           </CardContent>
         </Card>
@@ -273,7 +307,9 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
         <Card>
           <CardHeader>
             <CardTitle className="text-brand-olive">🎯 Goal Progress</CardTitle>
-            <CardDescription className="text-medium-contrast">Monthly safety goals achievement</CardDescription>
+            <CardDescription className="text-medium-contrast">
+              {selectedPeriod ? "Current period goal achievement" : "Monthly safety goals achievement"}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -302,7 +338,9 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
         <Card>
           <CardHeader>
             <CardTitle className="text-brand-olive">🔍 Investigation Types</CardTitle>
-            <CardDescription className="text-medium-contrast">Breakdown of open investigations</CardDescription>
+            <CardDescription className="text-medium-contrast">
+              {selectedPeriod ? "Current period investigations" : "Breakdown of open investigations"}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -409,7 +447,12 @@ export function MetricsDashboard({ periods, coaches }: MetricsDashboardProps) {
         <Card>
           <CardHeader>
             <CardTitle className="text-brand-olive">👥 Coach Performance Comparison</CardTitle>
-            <CardDescription className="text-medium-contrast">Total metrics across all periods by coach</CardDescription>
+            <CardDescription className="text-medium-contrast">
+              {selectedPeriod 
+                ? `Performance metrics for ${selectedPeriod.period_name} by coach`
+                : "Total metrics across all periods by coach"
+              }
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={400}>

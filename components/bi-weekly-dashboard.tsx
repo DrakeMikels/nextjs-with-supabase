@@ -219,6 +219,7 @@ export function BiWeeklyDashboard() {
           <MetricsDashboard 
             periods={periods}
             coaches={coaches}
+            selectedPeriod={selectedPeriod}
           />
         );
       case "idp":
