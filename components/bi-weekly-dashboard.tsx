@@ -784,52 +784,81 @@ export function BiWeeklyDashboard() {
             ].map((card, index) => (
               <motion.div
                 key={card.title}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{
                   duration: 0.4,
                   delay: index * 0.1,
-                  scale: { type: "spring", visualDuration: 0.4, bounce: 0.3 },
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 15,
+                }}
+                whileHover={{ 
+                  scale: 1.02,
+                  transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
                 }}
               >
-                <Card className={`border-${card.color}/20 hover:border-${card.color}/40 transition-colors hover-lift`}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Card className={`border-${card.color}/20 hover:border-${card.color}/40 hover:shadow-lg transition-all duration-300 hover-lift`}>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium text-high-contrast">{card.title}</CardTitle>
-                    <card.icon className={`h-4 w-4 text-${card.color}`} />
-                </CardHeader>
-                <CardContent>
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ 
+                        duration: 0.3, 
+                        delay: index * 0.1 + 0.3,
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 15
+                      }}
+                    >
+                      <card.icon className={`h-4 w-4 text-${card.color}`} />
+                    </motion.div>
+                  </CardHeader>
+                  <CardContent>
                     {card.isDropdown ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        className="h-auto p-0 text-left justify-start hover:bg-transparent w-full hover-scale"
-                      >
-                        <div className="flex items-center gap-2 w-full">
-                              <div className={`text-xl sm:text-2xl font-bold text-${card.color} truncate`}>
-                            {selectedPeriod?.period_name || "None"}
-                          </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            className="h-auto p-0 text-left justify-start hover:bg-transparent w-full hover-scale"
+                          >
+                            <div className="flex items-center gap-2 w-full">
+                              <motion.div 
+                                className={`text-xl sm:text-2xl font-bold text-${card.color} truncate`}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ 
+                                  duration: 0.4, 
+                                  delay: index * 0.1 + 0.4,
+                                  type: "spring",
+                                  stiffness: 150,
+                                  damping: 12
+                                }}
+                              >
+                                {selectedPeriod?.period_name || "None"}
+                              </motion.div>
                               <ChevronDown className={`h-4 w-4 text-${card.color} flex-shrink-0`} />
-                        </div>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-56">
-                      {periods.map((period) => (
-                        <DropdownMenuItem
-                          key={period.id}
-                          onClick={() => setSelectedPeriod(period)}
-                          className={selectedPeriod?.id === period.id ? "bg-brand-olive/10" : ""}
-                        >
-                          <div className="flex flex-col">
-                            <span className="font-medium">{period.period_name}</span>
-                            <span className="text-xs text-medium-contrast">
-                              {new Date(period.start_date).toLocaleDateString()} - {new Date(period.end_date).toLocaleDateString()}
-                            </span>
-                          </div>
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                            </div>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="w-56">
+                          {periods.map((period) => (
+                            <DropdownMenuItem
+                              key={period.id}
+                              onClick={() => setSelectedPeriod(period)}
+                              className={selectedPeriod?.id === period.id ? "bg-brand-olive/10" : ""}
+                            >
+                              <div className="flex flex-col">
+                                <span className="font-medium">{period.period_name}</span>
+                                <span className="text-xs text-medium-contrast">
+                                  {new Date(period.start_date).toLocaleDateString()} - {new Date(period.end_date).toLocaleDateString()}
+                                </span>
+                              </div>
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     ) : card.isCustomRange ? (
                       <div className="space-y-2">
                         <div className="flex gap-2">
@@ -849,16 +878,40 @@ export function BiWeeklyDashboard() {
                           />
                         </div>
                         {customDateRange.start && customDateRange.end && (
-                          <div className={`text-xs text-${card.color} font-medium`}>
+                          <motion.div 
+                            className={`text-xs text-${card.color} font-medium`}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ 
+                              duration: 0.4, 
+                              delay: 0.2,
+                              type: "spring",
+                              stiffness: 150,
+                              damping: 12
+                            }}
+                          >
                             {new Date(customDateRange.start).toLocaleDateString()} - {new Date(customDateRange.end).toLocaleDateString()}
-                          </div>
+                          </motion.div>
                         )}
                       </div>
                     ) : (
-                      <div className={`text-2xl font-bold text-${card.color}`}>{card.value}</div>
+                      <motion.div 
+                        className={`text-2xl font-bold text-${card.color}`}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ 
+                          duration: 0.4, 
+                          delay: index * 0.1 + 0.4,
+                          type: "spring",
+                          stiffness: 150,
+                          damping: 12
+                        }}
+                      >
+                        {card.value}
+                      </motion.div>
                     )}
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
               </motion.div>
             ))}
           </div>

@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, Plus, Users, Mail } from "lucide-react";
 import { AnimatedContainer, AnimatedItem, LoadingSpinner } from "@/components/ui/animated-container";
+import { motion } from "framer-motion";
 
 interface AuthorizedUser {
   id: string;
@@ -123,10 +124,50 @@ export function AuthorizedUsersManagement() {
             Manage who can sign up for the application
           </p>
         </div>
-        <Badge variant="outline" className="gap-1 border-brand-olive/30 text-brand-olive text-xs hover-scale">
-          <Mail className="h-3 w-3" />
-          {authorizedUsers.filter(u => u.is_active).length} Active Users
-        </Badge>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ 
+            duration: 0.4, 
+            delay: 0.2,
+            type: "spring",
+            stiffness: 150,
+            damping: 12
+          }}
+          whileHover={{ 
+            scale: 1.05,
+            transition: { duration: 0.3, type: "spring", stiffness: 300, damping: 20 }
+          }}
+        >
+          <Badge variant="outline" className="gap-1 border-brand-olive/30 text-brand-olive text-xs hover-scale">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ 
+                duration: 0.3, 
+                delay: 0.3,
+                type: "spring",
+                stiffness: 200,
+                damping: 15
+              }}
+            >
+              <Mail className="h-3 w-3" />
+            </motion.div>
+            <motion.span
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ 
+                duration: 0.4, 
+                delay: 0.4,
+                type: "spring",
+                stiffness: 150,
+                damping: 12
+              }}
+            >
+              {authorizedUsers.filter(u => u.is_active).length} Active Users
+            </motion.span>
+          </Badge>
+        </motion.div>
       </AnimatedItem>
 
       {/* Add New User */}
