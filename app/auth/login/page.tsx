@@ -5,11 +5,34 @@ import * as motion from "motion/react-client";
 export default function Page() {
   return (
     <motion.div 
-      className="min-h-screen w-full bg-gradient-to-br from-brand-olive via-brand-olive-light to-brand-olive-medium relative overflow-hidden"
+      className="min-h-screen w-full relative overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
+      {/* Animated Gradient Background */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-br from-brand-olive via-brand-olive-light to-brand-olive-medium"
+        animate={{
+          background: [
+            "linear-gradient(45deg, #2C5134, #4A7C59, #2C5134)",
+            "linear-gradient(90deg, #4A7C59, #2C5134, #4A7C59)",
+            "linear-gradient(135deg, #2C5134, #4A7C59, #2C5134)",
+            "linear-gradient(180deg, #4A7C59, #2C5134, #4A7C59)",
+            "linear-gradient(225deg, #2C5134, #4A7C59, #2C5134)",
+            "linear-gradient(270deg, #4A7C59, #2C5134, #4A7C59)",
+            "linear-gradient(315deg, #2C5134, #4A7C59, #2C5134)",
+            "linear-gradient(360deg, #4A7C59, #2C5134, #4A7C59)",
+            "linear-gradient(45deg, #2C5134, #4A7C59, #2C5134)"
+          ]
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "linear"
+        }}
+      />
+      
       {/* Enhanced Background Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
       
@@ -17,41 +40,65 @@ export default function Page() {
       <motion.div 
         className="absolute top-20 left-10 w-24 h-24 bg-white/20 rounded-full blur-xl"
         initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
+        animate={{ 
+          opacity: 1, 
+          scale: 1,
+          x: [0, 20, 0],
+          y: [0, -10, 0]
+        }}
         transition={{
-          duration: 0.8,
-          delay: 0.2,
-          scale: { type: "spring", visualDuration: 0.8, bounce: 0.3 }
+          opacity: { duration: 0.8, delay: 0.2 },
+          scale: { duration: 0.8, delay: 0.2, type: "spring", visualDuration: 0.8, bounce: 0.3 },
+          x: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 6, repeat: Infinity, ease: "easeInOut" }
         }}
       />
       <motion.div 
         className="absolute bottom-32 right-16 w-36 h-36 bg-white/15 rounded-full blur-xl"
         initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
+        animate={{ 
+          opacity: 1, 
+          scale: 1,
+          x: [0, -15, 0],
+          y: [0, 15, 0]
+        }}
         transition={{
-          duration: 0.8,
-          delay: 0.4,
-          scale: { type: "spring", visualDuration: 0.8, bounce: 0.3 }
+          opacity: { duration: 0.8, delay: 0.4 },
+          scale: { duration: 0.8, delay: 0.4, type: "spring", visualDuration: 0.8, bounce: 0.3 },
+          x: { duration: 10, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 7, repeat: Infinity, ease: "easeInOut" }
         }}
       />
       <motion.div 
         className="absolute top-1/2 left-1/4 w-20 h-20 bg-white/25 rounded-full blur-xl"
         initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
+        animate={{ 
+          opacity: 1, 
+          scale: 1,
+          x: [0, 10, 0],
+          y: [0, -20, 0]
+        }}
         transition={{
-          duration: 0.8,
-          delay: 0.6,
-          scale: { type: "spring", visualDuration: 0.8, bounce: 0.3 }
+          opacity: { duration: 0.8, delay: 0.6 },
+          scale: { duration: 0.8, delay: 0.6, type: "spring", visualDuration: 0.8, bounce: 0.3 },
+          x: { duration: 9, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 11, repeat: Infinity, ease: "easeInOut" }
         }}
       />
       <motion.div 
         className="absolute top-1/3 right-1/3 w-28 h-28 bg-white/10 rounded-full blur-xl"
         initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
+        animate={{ 
+          opacity: 1, 
+          scale: 1,
+          x: [0, -25, 0],
+          y: [0, 12, 0]
+        }}
         transition={{
-          duration: 0.8,
-          delay: 0.8,
-          scale: { type: "spring", visualDuration: 0.8, bounce: 0.3 }
+          opacity: { duration: 0.8, delay: 0.8 },
+          scale: { duration: 0.8, delay: 0.8, type: "spring", visualDuration: 0.8, bounce: 0.3 },
+          x: { duration: 12, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 8, repeat: Infinity, ease: "easeInOut" }
         }}
       />
       
