@@ -23,8 +23,8 @@ export default async function Home() {
   return (
     <PageTransition>
       <main className="min-h-screen flex flex-col">
-        <nav className="w-full flex justify-center border-b border-brand-olive/20 h-auto min-h-16 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 animate-fade-in-down">
-          <div className="w-full max-w-7xl flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 px-5 text-sm gap-3 sm:gap-0">
+        <nav className="w-full border-b border-brand-olive/20 h-auto min-h-16 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 animate-fade-in-down">
+          <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 px-5 text-sm gap-3 sm:gap-0">
             <div className="flex gap-5 items-center font-semibold">
               <Link href={"/"} className="text-base sm:text-lg text-brand-olive hover:text-brand-olive/80 transition-colors hover-scale">
                 <span className="hidden sm:inline">RSC Safety Platform</span>
