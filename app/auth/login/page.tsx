@@ -15,17 +15,26 @@ export default function Page() {
     const gradientAnimation = animateGradient(
       gradientRef.current,
       {
+        backgroundPosition: [
+          "0% 0%",
+          "0% 25%", 
+          "0% 50%",
+          "0% 75%",
+          "0% 100%",
+          "0% 75%",
+          "0% 50%",
+          "0% 25%",
+          "0% 0%"
+        ],
         background: [
           "linear-gradient(180deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
-          "linear-gradient(200deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
-          "linear-gradient(220deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
-          "linear-gradient(240deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
-          "linear-gradient(260deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
-          "linear-gradient(280deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
-          "linear-gradient(300deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
-          "linear-gradient(320deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
-          "linear-gradient(340deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
-          "linear-gradient(360deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
+          "linear-gradient(180deg, #2C5134 0%, #4E855A 50%, #1a1a1a 100%)",
+          "linear-gradient(180deg, #4E855A 0%, #1a1a1a 50%, #2C5134 100%)",
+          "linear-gradient(180deg, #1a1a1a 0%, #4E855A 50%, #2C5134 100%)",
+          "linear-gradient(180deg, #2C5134 0%, #1a1a1a 50%, #4E855A 100%)",
+          "linear-gradient(180deg, #4E855A 0%, #2C5134 50%, #1a1a1a 100%)",
+          "linear-gradient(180deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
+          "linear-gradient(180deg, #2C5134 0%, #4E855A 50%, #1a1a1a 100%)",
           "linear-gradient(180deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)"
         ]
       },
@@ -80,7 +89,9 @@ export default function Page() {
         ref={gradientRef}
         className="absolute inset-0"
         style={{
-          background: "linear-gradient(180deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)"
+          background: "linear-gradient(180deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
+          backgroundSize: "100% 200%",
+          backgroundPosition: "0% 0%"
         }}
       />
       
