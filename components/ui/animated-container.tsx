@@ -126,7 +126,7 @@ export const AnimatedContainer = forwardRef<HTMLDivElement, AnimatedContainerPro
         visible: {
           ...(typeof variants.visible === 'object' ? variants.visible : {}),
           transition: {
-            duration,
+            duration: 0.17,
             delay,
             ease: [0.4, 0, 0.2, 1]
           }
@@ -152,7 +152,7 @@ export const AnimatedContainer = forwardRef<HTMLDivElement, AnimatedContainerPro
         initial="hidden"
         animate="visible"
         variants={variants}
-        transition={{ delay }}
+        transition={{ duration: 0.17, ease: [0.4, 0, 0.2, 1] }}
         {...props}
       >
         {children}

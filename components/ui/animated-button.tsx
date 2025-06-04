@@ -20,13 +20,13 @@ export const AnimatedButton = forwardRef<HTMLButtonElement, AnimatedButtonProps>
           return {
             whileHover: { y: -2 },
             whileTap: { y: 0 },
-            transition: { duration: 0.15, ease: [0.4, 0, 0.2, 1] }
+            transition: { duration: 0.13, ease: [0.4, 0, 0.2, 1] }
           };
         case "scale":
           return {
             whileHover: { scale: 1.02 },
             whileTap: { scale: 0.98 },
-            transition: { duration: 0.15, ease: [0.4, 0, 0.2, 1] }
+            transition: { duration: 0.13, ease: [0.4, 0, 0.2, 1] }
           };
         case "glow":
           return {
@@ -35,7 +35,7 @@ export const AnimatedButton = forwardRef<HTMLButtonElement, AnimatedButtonProps>
               y: -1
             },
             whileTap: { y: 0 },
-            transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
+            transition: { duration: 0.17, ease: [0.4, 0, 0.2, 1] }
           };
         case "bounce":
           return {

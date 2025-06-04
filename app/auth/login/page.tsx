@@ -3,14 +3,16 @@
 import { LoginForm } from "@/components/login-form";
 import { Shield, Users, BarChart3 } from "lucide-react";
 import * as motion from "motion/react-client";
-import { useAnimate } from "motion/react";
-import { useEffect } from "react";
+import { useAnimate, animate, stagger } from "motion/react";
+import { splitText } from "motion-plus";
+import { useEffect, useRef } from "react";
 
 export default function Page() {
-  const [gradientRef, animate] = useAnimate();
+  const [gradientRef, animateGradient] = useAnimate();
+  const headerTextRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const gradientAnimation = animate(
+    const gradientAnimation = animateGradient(
       gradientRef.current,
       {
         background: [
@@ -28,7 +30,7 @@ export default function Page() {
         ]
       },
       {
-        duration: 15,
+        duration: 12.75,
         repeat: Infinity,
         ease: "easeInOut"
       }
@@ -37,14 +39,41 @@ export default function Page() {
     return () => {
       gradientAnimation.cancel();
     };
-  }, [animate, gradientRef]);
+  }, [animateGradient, gradientRef]);
+
+  // Split text animation effect
+  useEffect(() => {
+    document.fonts.ready.then(() => {
+      if (!headerTextRef.current) return;
+
+      // Hide the container until the fonts are loaded
+      headerTextRef.current.style.visibility = "visible";
+
+      const h1Element = headerTextRef.current.querySelector("h1");
+      if (!h1Element) return;
+
+      const { words } = splitText(h1Element);
+
+      // Animate the words in the h1
+      animate(
+        words,
+        { opacity: [0, 1], y: [10, 0] },
+        {
+          type: "spring",
+          duration: 1.7, // 15% faster than 2s
+          bounce: 0,
+          delay: stagger(0.043), // 15% faster than 0.05s
+        }
+      );
+    });
+  }, []);
 
   return (
     <motion.div 
       className="min-h-screen w-full relative overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.51 }}
     >
       {/* Smooth Motion-Powered Gradient Background */}
       <div
@@ -69,8 +98,8 @@ export default function Page() {
           y: [0, -10, 0]
         }}
         transition={{
-          opacity: { duration: 0.8, delay: 0.2 },
-          scale: { duration: 0.8, delay: 0.2, type: "spring", visualDuration: 0.8, bounce: 0.3 },
+          opacity: { duration: 0.58, delay: 0.17 },
+          scale: { duration: 0.58, delay: 0.17, type: "spring", visualDuration: 0.58, bounce: 0.3 },
           x: { duration: 8, repeat: Infinity, ease: "easeInOut" },
           y: { duration: 6, repeat: Infinity, ease: "easeInOut" }
         }}
@@ -85,8 +114,8 @@ export default function Page() {
           y: [0, 15, 0]
         }}
         transition={{
-          opacity: { duration: 0.8, delay: 0.4 },
-          scale: { duration: 0.8, delay: 0.4, type: "spring", visualDuration: 0.8, bounce: 0.3 },
+          opacity: { duration: 0.58, delay: 0.34 },
+          scale: { duration: 0.58, delay: 0.34, type: "spring", visualDuration: 0.58, bounce: 0.3 },
           x: { duration: 10, repeat: Infinity, ease: "easeInOut" },
           y: { duration: 7, repeat: Infinity, ease: "easeInOut" }
         }}
@@ -101,8 +130,8 @@ export default function Page() {
           y: [0, -20, 0]
         }}
         transition={{
-          opacity: { duration: 0.8, delay: 0.6 },
-          scale: { duration: 0.8, delay: 0.6, type: "spring", visualDuration: 0.8, bounce: 0.3 },
+          opacity: { duration: 0.58, delay: 0.51 },
+          scale: { duration: 0.58, delay: 0.51, type: "spring", visualDuration: 0.58, bounce: 0.3 },
           x: { duration: 9, repeat: Infinity, ease: "easeInOut" },
           y: { duration: 11, repeat: Infinity, ease: "easeInOut" }
         }}
@@ -117,8 +146,8 @@ export default function Page() {
           y: [0, 12, 0]
         }}
         transition={{
-          opacity: { duration: 0.8, delay: 0.8 },
-          scale: { duration: 0.8, delay: 0.8, type: "spring", visualDuration: 0.8, bounce: 0.3 },
+          opacity: { duration: 0.58, delay: 0.68 },
+          scale: { duration: 0.58, delay: 0.68, type: "spring", visualDuration: 0.58, bounce: 0.3 },
           x: { duration: 12, repeat: Infinity, ease: "easeInOut" },
           y: { duration: 8, repeat: Infinity, ease: "easeInOut" }
         }}
@@ -133,19 +162,19 @@ export default function Page() {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{
-              duration: 0.6,
-              delay: 0.3,
+              duration: 0.43,
+              delay: 0.26,
               x: { type: "spring", stiffness: 100, damping: 15 }
             }}
           >
-            {/* Header Section with Dark Background */}
+            {/* Header Section with Dark Background and Split Text Animation */}
             <motion.div 
               className="space-y-6 p-6 bg-black/40 backdrop-blur-md rounded-2xl border border-white/20 shadow-2xl"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
-                duration: 0.5,
-                delay: 0.5,
+                duration: 0.37,
+                delay: 0.43,
                 y: { type: "spring", stiffness: 100, damping: 15 }
               }}
             >
@@ -155,24 +184,38 @@ export default function Page() {
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
-                    duration: 0.4,
-                    delay: 0.7,
-                    scale: { type: "spring", visualDuration: 0.4, bounce: 0.4 }
+                    duration: 0.29,
+                    delay: 0.6,
+                    scale: { type: "spring", visualDuration: 0.29, bounce: 0.4 }
                   }}
                 >
                   <Shield className="h-8 w-8 text-white" />
                 </motion.div>
-                <div>
-                  <h1 className="text-3xl font-bold text-white drop-shadow-lg">Regional Safety Coaches</h1>
+                <div ref={headerTextRef} style={{ visibility: "hidden" }}>
+                  <h1 className="text-3xl font-bold text-white drop-shadow-lg">
+                    Regional Safety Coaches
+                  </h1>
                   <p className="text-white/90 font-medium">Professional Safety Management Platform</p>
                 </div>
               </div>
               
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-white">Streamline Your Safety Operations</h2>
-                <p className="text-white/90 leading-relaxed">
+                <motion.h2 
+                  className="text-xl font-semibold text-white"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.34, delay: 1.0 }}
+                >
+                  Streamline Your Safety Operations
+                </motion.h2>
+                <motion.p 
+                  className="text-white/90 leading-relaxed"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.34, delay: 1.2 }}
+                >
                   Comprehensive bi-weekly tracking, coach management, and safety metrics in one powerful platform.
-                </p>
+                </motion.p>
               </div>
             </motion.div>
             
@@ -183,19 +226,19 @@ export default function Page() {
                   icon: BarChart3,
                   title: "Analytics Dashboard",
                   description: "Real-time insights and reporting",
-                  delay: 0.8
+                  delay: 0.68
                 },
                 {
                   icon: Users,
                   title: "Coach Management", 
                   description: "Track development and certifications",
-                  delay: 1.0
+                  delay: 0.85
                 },
                 {
                   icon: Shield,
                   title: "Safety Metrics",
                   description: "Comprehensive tracking and reporting", 
-                  delay: 1.2
+                  delay: 1.02
                 }
               ].map((feature) => (
                 <motion.div
@@ -204,13 +247,13 @@ export default function Page() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{
-                    duration: 0.5,
+                    duration: 0.43,
                     delay: feature.delay,
                     x: { type: "spring", stiffness: 100, damping: 15 }
                   }}
                   whileHover={{ 
                     scale: 1.02,
-                    transition: { duration: 0.2, type: "spring", stiffness: 300, damping: 20 }
+                    transition: { duration: 0.14, type: "spring", stiffness: 300, damping: 20 }
                   }}
                 >
                   <motion.div 
@@ -218,9 +261,9 @@ export default function Page() {
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{
-                      duration: 0.3,
-                      delay: feature.delay + 0.2,
-                      scale: { type: "spring", visualDuration: 0.3, bounce: 0.4 }
+                      duration: 0.22,
+                      delay: feature.delay + 0.17,
+                      scale: { type: "spring", visualDuration: 0.22, bounce: 0.4 }
                     }}
                   >
                     <feature.icon className="h-6 w-6 text-white" />
@@ -240,8 +283,8 @@ export default function Page() {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{
-              duration: 0.6,
-              delay: 0.4,
+              duration: 0.43,
+              delay: 0.34,
               x: { type: "spring", stiffness: 100, damping: 15 }
             }}
           >
@@ -251,8 +294,8 @@ export default function Page() {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
-                duration: 0.5,
-                delay: 0.6,
+                duration: 0.37,
+                delay: 0.43,
                 y: { type: "spring", stiffness: 100, damping: 15 }
               }}
             >
@@ -262,9 +305,9 @@ export default function Page() {
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
-                    duration: 0.4,
-                    delay: 0.7,
-                    scale: { type: "spring", visualDuration: 0.4, bounce: 0.4 }
+                    duration: 0.29,
+                    delay: 0.6,
+                    scale: { type: "spring", visualDuration: 0.29, bounce: 0.4 }
                   }}
                 >
                   <Shield className="h-6 w-6 text-white" />
@@ -282,9 +325,9 @@ export default function Page() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{
-                duration: 0.5,
-                delay: 0.6,
-                scale: { type: "spring", visualDuration: 0.5, bounce: 0.2 }
+                duration: 0.43,
+                delay: 0.51,
+                scale: { type: "spring", visualDuration: 0.43, bounce: 0.2 }
               }}
             >
               <LoginForm />
@@ -296,9 +339,9 @@ export default function Page() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
-                duration: 0.5,
-                delay: 0.9,
-                y: { type: "spring", stiffness: 100, damping: 15 }
+                duration: 0.22,
+                delay: 0.77,
+                scale: { type: "spring", visualDuration: 0.22, bounce: 0.4 }
               }}
             >
               <p className="text-sm text-white/90 font-medium">
@@ -309,6 +352,13 @@ export default function Page() {
           
         </div>
       </div>
+
+      {/* Split Text Animation Styles */}
+      <style jsx>{`
+        .split-word {
+          will-change: transform, opacity;
+        }
+      `}</style>
     </motion.div>
   );
 }

@@ -69,8 +69,8 @@ export function SignUpForm({
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{
-          duration: 0.4,
-          scale: { type: "spring", visualDuration: 0.4, bounce: 0.2 }
+          duration: 0.34,
+          scale: { type: "spring", visualDuration: 0.34, bounce: 0.2 }
         }}
       >
         <Card className="hover-lift">
@@ -79,7 +79,7 @@ export function SignUpForm({
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
-                duration: 0.4,
+                duration: 0.34,
                 delay: 0.1,
                 y: { type: "spring", stiffness: 100, damping: 15 }
               }}
@@ -96,7 +96,7 @@ export function SignUpForm({
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{
-                    duration: 0.4,
+                    duration: 0.34,
                     delay: 0.2,
                     x: { type: "spring", stiffness: 100, damping: 15 }
                   }}
@@ -117,7 +117,7 @@ export function SignUpForm({
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{
-                    duration: 0.4,
+                    duration: 0.34,
                     delay: 0.3,
                     x: { type: "spring", stiffness: 100, damping: 15 }
                   }}
@@ -139,8 +139,8 @@ export function SignUpForm({
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{
-                    duration: 0.4,
-                    delay: 0.4,
+                    duration: 0.34,
+                    delay: 0.35,
                     x: { type: "spring", stiffness: 100, damping: 15 }
                   }}
                 >
@@ -161,8 +161,8 @@ export function SignUpForm({
                     initial={{ opacity: 0, scale: 0.9, y: -10 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{
-                      duration: 0.3,
-                      scale: { type: "spring", visualDuration: 0.3, bounce: 0.3 },
+                      duration: 0.26,
+                      scale: { type: "spring", visualDuration: 0.26, bounce: 0.3 },
                       y: { type: "spring", stiffness: 100, damping: 15 }
                     }}
                   >
@@ -173,9 +173,9 @@ export function SignUpForm({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
-                    duration: 0.4,
+                    duration: 0.34,
                     delay: 0.5,
-                    y: { type: "spring", stiffness: 100, damping: 15 }
+                    scale: { type: "spring", visualDuration: 0.34, bounce: 0.2 }
                   }}
                 >
                   <motion.div

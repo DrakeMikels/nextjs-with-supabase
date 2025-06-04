@@ -257,13 +257,13 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
                 initial={{ opacity: 0, y: 20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{
-                  duration: 0.4,
+                  duration: 0.34,
                   delay: card.delay,
                   scale: { type: "spring", stiffness: 200, damping: 15 }
                 }}
                 whileHover={{ 
                   scale: 1.02,
-                  transition: { duration: 0.2, type: "spring", stiffness: 300, damping: 20 }
+                  transition: { duration: 0.17, type: "spring", stiffness: 300, damping: 20 }
                 }}
               >
                 <Card className="hover-lift">
@@ -274,7 +274,7 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
                           className="text-sm font-medium text-medium-contrast"
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.3, delay: card.delay + 0.1 }}
+                          transition={{ duration: 0.26, delay: card.delay + 0.1 }}
                         >
                           {card.title}
                         </motion.p>
@@ -283,7 +283,7 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
                           initial={{ opacity: 0, scale: 0.5 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{
-                            duration: 0.4,
+                            duration: 0.34,
                             delay: card.delay + 0.2,
                             scale: { type: "spring", stiffness: 300, damping: 20 }
                           }}
@@ -295,7 +295,7 @@ export function ActionItems({ coaches, onDataChange }: ActionItemsProps) {
                         initial={{ opacity: 0, scale: 0, rotate: -180 }}
                         animate={{ opacity: 1, scale: 1, rotate: 0 }}
                         transition={{
-                          duration: 0.5,
+                          duration: 0.43,
                           delay: card.delay + 0.3,
                           scale: { type: "spring", stiffness: 200, damping: 15 },
                           rotate: { type: "spring", stiffness: 200, damping: 15 }

@@ -248,13 +248,13 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{
-              duration: 0.6,
+              duration: 0.51,
               delay: 0.1 + (index * 0.1),
-              scale: { type: "spring", visualDuration: 0.6, bounce: 0.3 }
+              scale: { type: "spring", visualDuration: 0.51, bounce: 0.3 }
             }}
             whileHover={{ 
               scale: 1.02,
-              transition: { duration: 0.2, type: "spring", stiffness: 300, damping: 20 }
+              transition: { duration: 0.17, type: "spring", stiffness: 300, damping: 20 }
             }}
           >
             <Card className={`${card.borderColor ? `border-${card.borderColor} hover:border-${card.hoverBorderColor}` : `border-${card.color}/20 hover:border-${card.color}/40`} hover:shadow-lg transition-all duration-300 hover-lift`}>
@@ -279,10 +279,10 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                     initial={{ opacity: 0, rotate: -180, scale: 0 }}
                     animate={{ opacity: 1, rotate: 0, scale: 1 }}
                     transition={{
-                      duration: 0.5,
+                      duration: 0.51,
                       delay: 0.2 + (index * 0.1),
                       rotate: { type: "spring", stiffness: 200, damping: 15 },
-                      scale: { type: "spring", visualDuration: 0.5, bounce: 0.4 }
+                      scale: { type: "spring", visualDuration: 0.51, bounce: 0.4 }
                     }}
                   >
                     <card.icon className={`h-8 w-8 text-${card.color}/30`} />
@@ -591,13 +591,13 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{
-                                  duration: 0.3,
-                                  delay: 2.2 + (certIndex * 0.1) + (coachIndex * 0.02),
-                                  scale: { type: "spring", visualDuration: 0.3, bounce: 0.3 }
+                                  duration: 0.34,
+                                  delay: 0.2 + (certIndex * 0.1) + (coachIndex * 0.02),
+                                  scale: { type: "spring", visualDuration: 0.34, bounce: 0.4 }
                                 }}
                                 whileHover={{ 
                                   scale: 1.02,
-                                  transition: { duration: 0.2, type: "spring", stiffness: 300, damping: 20 }
+                                  transition: { duration: 0.17, type: "spring", stiffness: 300, damping: 20 }
                                 }}
                                 onClick={() => openQuickUpdateDialog(coach, cert)}
                               >
