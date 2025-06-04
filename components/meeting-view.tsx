@@ -17,6 +17,7 @@ import {
   Eye
 } from "lucide-react";
 import { AnimatedContainer, AnimatedItem, LoadingSpinner } from "@/components/ui/animated-container";
+import * as motion from "motion/react-client";
 import type { BiWeeklyPeriod, Coach, SafetyMetric } from "@/lib/types";
 
 interface MeetingViewProps {
@@ -153,9 +154,18 @@ export function MeetingView({ coaches, selectedPeriod }: MeetingViewProps) {
 
       {/* Coach Cards Grid */}
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {coachMetrics.map((coach) => (
-          <AnimatedItem key={coach.id}>
-            <Card className={`h-full ${coach.hasData ? 'border-green-200 hover:border-green-300' : 'border-red-200 hover:border-red-300'} transition-colors`}>
+        {coachMetrics.map((coach, index) => (
+          <motion.div
+            key={coach.id}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.1 + (index * 0.1),
+              ease: [0, 0.71, 0.2, 1.01],
+            }}
+          >
+            <Card className={`h-full ${coach.hasData ? 'border-green-200 hover:border-green-300' : 'border-red-200 hover:border-red-300'} transition-colors hover-lift`}>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg text-high-contrast">{coach.name}</CardTitle>
@@ -171,7 +181,16 @@ export function MeetingView({ coaches, selectedPeriod }: MeetingViewProps) {
                 {coach.hasData && coach.metrics ? (
                   <>
                     {/* Travel Plans */}
-                    <div className="space-y-2">
+                    <motion.div 
+                      className="space-y-2"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.6,
+                        delay: 0.3 + (index * 0.1),
+                        ease: [0, 0.71, 0.2, 1.01],
+                      }}
+                    >
                       <div className="flex items-center gap-2 text-sm font-medium">
                         <MapPin className="h-4 w-4 text-brand-olive" />
                         Travel Plans
@@ -179,10 +198,19 @@ export function MeetingView({ coaches, selectedPeriod }: MeetingViewProps) {
                       <p className="text-xs text-medium-contrast bg-muted p-2 rounded">
                         {coach.metrics.travel_plans || "No travel plans specified"}
                       </p>
-                    </div>
+                    </motion.div>
 
                     {/* Training Location */}
-                    <div className="space-y-2">
+                    <motion.div 
+                      className="space-y-2"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.6,
+                        delay: 0.4 + (index * 0.1),
+                        ease: [0, 0.71, 0.2, 1.01],
+                      }}
+                    >
                       <div className="flex items-center gap-2 text-sm font-medium">
                         <Building className="h-4 w-4 text-brand-olive" />
                         Training Branch
@@ -190,10 +218,19 @@ export function MeetingView({ coaches, selectedPeriod }: MeetingViewProps) {
                       <p className="text-xs text-medium-contrast">
                         {coach.metrics.training_branch_location || "Not specified"}
                       </p>
-                    </div>
+                    </motion.div>
 
                     {/* Safety Metrics */}
-                    <div className="space-y-2">
+                    <motion.div 
+                      className="space-y-2"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.6,
+                        delay: 0.5 + (index * 0.1),
+                        ease: [0, 0.71, 0.2, 1.01],
+                      }}
+                    >
                       <div className="flex items-center gap-2 text-sm font-medium">
                         <Eye className="h-4 w-4 text-brand-olive" />
                         Evaluations & Audits
@@ -212,10 +249,19 @@ export function MeetingView({ coaches, selectedPeriod }: MeetingViewProps) {
                           <div className="text-orange-600">{coach.metrics.warehouse_safety_audits}</div>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
 
                     {/* Open Investigations */}
-                    <div className="space-y-2">
+                    <motion.div 
+                      className="space-y-2"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.6,
+                        delay: 0.6 + (index * 0.1),
+                        ease: [0, 0.71, 0.2, 1.01],
+                      }}
+                    >
                       <div className="flex items-center gap-2 text-sm font-medium">
                         <Shield className="h-4 w-4 text-brand-olive" />
                         Open Investigations
@@ -246,10 +292,19 @@ export function MeetingView({ coaches, selectedPeriod }: MeetingViewProps) {
                           </span>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
 
                     {/* Meeting Dates */}
-                    <div className="space-y-2">
+                    <motion.div 
+                      className="space-y-2"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.6,
+                        delay: 0.7 + (index * 0.1),
+                        ease: [0, 0.71, 0.2, 1.01],
+                      }}
+                    >
                       <div className="flex items-center gap-2 text-sm font-medium">
                         <Calendar className="h-4 w-4 text-brand-olive" />
                         Meetings & Reports
@@ -280,11 +335,20 @@ export function MeetingView({ coaches, selectedPeriod }: MeetingViewProps) {
                           </span>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
 
                     {/* Notes */}
                     {coach.metrics.notes && (
-                      <div className="space-y-2">
+                      <motion.div 
+                        className="space-y-2"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          duration: 0.6,
+                          delay: 0.8 + (index * 0.1),
+                          ease: [0, 0.71, 0.2, 1.01],
+                        }}
+                      >
                         <div className="flex items-center gap-2 text-sm font-medium">
                           <FileText className="h-4 w-4 text-brand-olive" />
                           Notes
@@ -292,18 +356,27 @@ export function MeetingView({ coaches, selectedPeriod }: MeetingViewProps) {
                         <p className="text-xs text-medium-contrast bg-muted p-2 rounded">
                           {coach.metrics.notes}
                         </p>
-                      </div>
+                      </motion.div>
                     )}
                   </>
                 ) : (
-                  <div className="text-center py-8">
+                  <motion.div 
+                    className="text-center py-8"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{
+                      duration: 0.6,
+                      delay: 0.3 + (index * 0.1),
+                      ease: [0, 0.71, 0.2, 1.01],
+                    }}
+                  >
                     <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-2" />
                     <p className="text-sm text-medium-contrast">No data submitted for this period</p>
-                  </div>
+                  </motion.div>
                 )}
               </CardContent>
             </Card>
-          </AnimatedItem>
+          </motion.div>
         ))}
       </div>
     </AnimatedContainer>
