@@ -24,7 +24,8 @@ import {
   GraduationCap,
   Menu,
   X,
-  ClipboardList
+  ClipboardList,
+  MapPin
 } from "lucide-react";
 import { BiWeeklyPeriodList } from "./bi-weekly-period-list";
 import { SafetyMetricsForm } from "./safety-metrics-form";
@@ -35,6 +36,7 @@ import { IdpDashboard } from "./idp-dashboard";
 import { ActionItems } from "./action-items";
 import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/ui/animated-container";
 import type { BiWeeklyPeriod, Coach } from "@/lib/types";
+import { BranchVisits } from "./branch-visits";
 
 const navigationItems = [
   {
@@ -78,6 +80,12 @@ const navigationItems = [
     label: "Action Items",
     icon: ClipboardList,
     description: "Manage action items"
+  },
+  {
+    id: "branch-visits",
+    label: "Branch Visits",
+    icon: MapPin,
+    description: "Track branch assignments and visits"
   }
 ];
 
@@ -268,6 +276,13 @@ export function BiWeeklyDashboard() {
       case "action-items":
         return (
           <ActionItems 
+            coaches={coaches}
+            onDataChange={fetchData}
+          />
+        );
+      case "branch-visits":
+        return (
+          <BranchVisits 
             coaches={coaches}
             onDataChange={fetchData}
           />
