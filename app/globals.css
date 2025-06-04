@@ -407,11 +407,28 @@
     transform: none !important;
   }
   
-  /* Existing dropdown overrides */
+  /* COMPREHENSIVE DROPDOWN ANIMATION OVERRIDES - Target all Radix components */
+  [data-radix-dropdown-menu-content],
+  [data-radix-select-content],
+  [data-radix-dialog-content],
+  [data-radix-popover-content],
+  [data-radix-tooltip-content],
+  [data-radix-hover-card-content],
+  [data-radix-context-menu-content],
+  [data-radix-menubar-content] {
+    animation: none !important;
+    transform: none !important;
+    transition: opacity 150ms ease-in-out !important;
+  }
+  
   [data-radix-dropdown-menu-content][data-state="open"],
   [data-radix-select-content][data-state="open"],
-  [data-radix-dialog-content][data-state="open"] {
-    transition: opacity 150ms ease-in-out !important;
+  [data-radix-dialog-content][data-state="open"],
+  [data-radix-popover-content][data-state="open"],
+  [data-radix-tooltip-content][data-state="open"],
+  [data-radix-hover-card-content][data-state="open"],
+  [data-radix-context-menu-content][data-state="open"],
+  [data-radix-menubar-content][data-state="open"] {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
@@ -419,20 +436,60 @@
   
   [data-radix-dropdown-menu-content][data-state="closed"],
   [data-radix-select-content][data-state="closed"],
-  [data-radix-dialog-content][data-state="closed"] {
-    transition: opacity 150ms ease-in-out !important;
+  [data-radix-dialog-content][data-state="closed"],
+  [data-radix-popover-content][data-state="closed"],
+  [data-radix-tooltip-content][data-state="closed"],
+  [data-radix-hover-card-content][data-state="closed"],
+  [data-radix-context-menu-content][data-state="closed"],
+  [data-radix-menubar-content][data-state="closed"] {
     opacity: 0 !important;
     transform: none !important;
     animation: none !important;
   }
   
-  /* Remove all Tailwind animate classes */
+  /* Override Tailwind's animate classes completely */
   .animate-in {
     animation: none !important;
   }
   
   .animate-out {
     animation: none !important;
+  }
+  
+  /* Target any remaining animation classes */
+  .animate-in.slide-in-from-top,
+  .animate-in.slide-in-from-bottom,
+  .animate-in.slide-in-from-left,
+  .animate-in.slide-in-from-right,
+  .animate-in.zoom-in,
+  .animate-in.fade-in,
+  .animate-out.slide-out-to-top,
+  .animate-out.slide-out-to-bottom,
+  .animate-out.slide-out-to-left,
+  .animate-out.slide-out-to-right,
+  .animate-out.zoom-out,
+  .animate-out.fade-out {
+    animation: none !important;
+    transform: none !important;
+    transition: opacity 150ms ease-in-out !important;
+  }
+
+  /* Force all dropdown-like elements to use only opacity */
+  [role="menu"],
+  [role="listbox"],
+  [role="combobox"],
+  [data-state="open"],
+  [data-state="closed"] {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  /* Ensure Select components specifically don't animate */
+  [data-radix-select-viewport],
+  [data-radix-select-content] {
+    animation: none !important;
+    transform: none !important;
+    transition: opacity 150ms ease-in-out !important;
   }
   
   /* Essential utility classes */
