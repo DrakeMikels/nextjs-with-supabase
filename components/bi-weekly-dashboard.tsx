@@ -132,6 +132,24 @@ const sidebarVariants = {
       delay: 0.5, // Slight delay for dramatic effect
     },
   },
+  // Mobile-specific variants
+  mobileOpen: {
+    width: "85vw", // Take up most of the screen on mobile
+    maxWidth: "320px", // But not too wide on larger phones
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 30,
+    },
+  },
+  mobileClosed: {
+    width: "0px",
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 30,
+    },
+  },
 };
 
 const navVariants = {
@@ -143,6 +161,12 @@ const navVariants = {
   },
   welcome: {
     transition: { staggerChildren: 0.08, delayChildren: 0.8 }, // Slower, more dramatic stagger
+  },
+  mobileOpen: {
+    transition: { staggerChildren: 0.03, delayChildren: 0.1 },
+  },
+  mobileClosed: {
+    transition: { staggerChildren: 0.02, staggerDirection: -1 },
   },
 };
 
@@ -171,6 +195,22 @@ const itemVariants = {
       x: { type: "spring", stiffness: 250, damping: 20 },
     },
   },
+  mobileOpen: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.2,
+      x: { type: "spring", stiffness: 400, damping: 25 },
+    },
+  },
+  mobileClosed: {
+    opacity: 0,
+    x: -10,
+    transition: {
+      duration: 0.15,
+      x: { type: "spring", stiffness: 400, damping: 25 },
+    },
+  },
 };
 
 const iconVariants = {
@@ -195,6 +235,20 @@ const iconVariants = {
       scale: { type: "spring", stiffness: 300, damping: 20 },
     },
   },
+  mobileOpen: {
+    scale: 1,
+    transition: {
+      duration: 0.2,
+      scale: { type: "spring", stiffness: 400, damping: 25 },
+    },
+  },
+  mobileClosed: {
+    scale: 1,
+    transition: {
+      duration: 0.2,
+      scale: { type: "spring", stiffness: 400, damping: 25 },
+    },
+  },
 };
 
 export function BiWeeklyDashboard() {
@@ -210,7 +264,23 @@ export function BiWeeklyDashboard() {
     start: "",
     end: ""
   });
+  const [isMobile, setIsMobile] = useState(false);
   const supabase = createClient();
+
+  // Check if we're on mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+      // Auto-close sidebar on mobile by default
+      if (window.innerWidth < 1024) {
+        setSidebarOpen(false);
+      }
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const fetchData = useCallback(async () => {
     try {
@@ -499,7 +569,7 @@ export function BiWeeklyDashboard() {
               scale: { type: "spring", visualDuration: 0.5, bounce: 0.1 }
             }}
           >
-            <LoadingSkeleton className="h-96" />
+          <LoadingSkeleton className="h-96" />
           </motion.div>
         </motion.div>
       </motion.div>
@@ -517,14 +587,18 @@ export function BiWeeklyDashboard() {
       <motion.nav
         initial={false}
         animate={
-          isFirstLoad && sidebarOpen 
-            ? "welcome" 
-            : sidebarOpen 
-              ? "open" 
-              : "closed"
+          isMobile
+            ? sidebarOpen 
+              ? "mobileOpen" 
+              : "mobileClosed"
+            : isFirstLoad && sidebarOpen 
+              ? "welcome" 
+              : sidebarOpen 
+                ? "open" 
+                : "closed"
         }
         variants={sidebarVariants}
-        className="fixed lg:static inset-y-0 left-0 z-40 bg-gradient-to-b from-brand-olive via-brand-olive-light to-brand-olive-medium border-r border-white/20 overflow-hidden"
+        className="fixed lg:static inset-y-0 left-0 z-40 bg-gradient-to-b from-brand-olive via-brand-olive-light to-brand-olive-medium dark:from-brand-olive-medium dark:via-brand-olive-soft dark:to-brand-olive-pale border-r border-white/20 overflow-hidden"
       >
         {/* Navigation content */}
         <div className="flex flex-col h-full relative">
@@ -534,7 +608,7 @@ export function BiWeeklyDashboard() {
           <div className="absolute inset-0 bg-black/10"></div>
           
           {/* Welcome pulse effect for first load */}
-          {isFirstLoad && (
+          {isFirstLoad && !isMobile && (
             <motion.div
               className="absolute inset-0 bg-white/5 rounded-r-lg"
               initial={{ opacity: 0 }}
@@ -553,8 +627,8 @@ export function BiWeeklyDashboard() {
                 className="p-2 bg-white/20 rounded-lg border border-white/30 flex-shrink-0"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                animate={isFirstLoad ? { scale: [1, 1.1, 1] } : {}}
-                transition={isFirstLoad ? { duration: 1, delay: 1.5 } : {}}
+                animate={isFirstLoad && !isMobile ? { scale: [1, 1.1, 1] } : {}}
+                transition={isFirstLoad && !isMobile ? { duration: 1, delay: 1.5 } : {}}
               >
                 <Shield className="h-6 w-6 text-white" />
               </motion.div>
@@ -572,15 +646,19 @@ export function BiWeeklyDashboard() {
             className="flex-1 p-2 space-y-1 relative z-10"
             variants={navVariants}
             animate={
-              isFirstLoad && sidebarOpen 
-                ? "welcome" 
-                : sidebarOpen 
-                  ? "open" 
-                  : "closed"
+              isMobile
+                ? sidebarOpen 
+                  ? "mobileOpen" 
+                  : "mobileClosed"
+                : isFirstLoad && sidebarOpen 
+                  ? "welcome" 
+                  : sidebarOpen 
+                    ? "open" 
+                    : "closed"
             }
           >
-            {/* Welcome tooltip for first-time users */}
-            {isFirstLoad && (
+            {/* Welcome tooltip for first-time users - only on desktop */}
+            {isFirstLoad && !isMobile && (
               <motion.div
                 className="absolute -right-4 top-4 bg-white text-brand-olive px-3 py-2 rounded-lg shadow-lg text-sm font-medium z-50"
                 initial={{ opacity: 0, x: -20, scale: 0.8 }}
@@ -618,34 +696,35 @@ export function BiWeeklyDashboard() {
                   whileTap={{ scale: 0.98 }}
                   onClick={() => {
                     setActiveView(item.id);
-                    // Don't close sidebar on desktop, only on mobile
-                    if (window.innerWidth < 1024) {
+                    // Always close sidebar on mobile after selection
+                    if (isMobile) {
                       setSidebarOpen(false);
                     }
                   }}
                   className={`
-                    w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all duration-200 group relative
+                    w-full flex items-center gap-3 px-3 rounded-lg text-left transition-all duration-200 group relative mobile-touch-target
+                    ${isMobile ? 'py-4' : 'py-2.5'}
                     ${isActive 
                       ? 'bg-white/25 text-white shadow-lg border border-white/40 drop-shadow-sm' 
                       : 'text-white/90 hover:bg-white/15 hover:text-white hover:drop-shadow-sm'
                     }
-                    ${isFirstLoad ? 'animate-pulse-subtle' : ''}
+                    ${isFirstLoad && !isMobile ? 'animate-pulse-subtle' : ''}
                   `}
                 >
                   <motion.div
                     variants={iconVariants}
                     className="flex-shrink-0"
                   >
-                    <Icon className={`h-5 w-5 ${isActive ? 'drop-shadow-sm' : ''}`} />
+                    <Icon className={`${isMobile ? 'h-6 w-6' : 'h-5 w-5'} ${isActive ? 'drop-shadow-sm' : ''}`} />
                   </motion.div>
                   <motion.div 
                     variants={itemVariants}
                     className="flex-1 min-w-0"
                   >
-                    <div className={`font-medium text-sm truncate ${isActive ? 'drop-shadow-sm' : ''}`}>
+                    <div className={`font-medium ${isMobile ? 'text-base' : 'text-sm'} truncate ${isActive ? 'drop-shadow-sm' : ''}`}>
                       {item.label}
                     </div>
-                    <div className={`text-xs truncate ${isActive ? 'text-white/95 drop-shadow-sm' : 'text-white/75'}`}>
+                    <div className={`${isMobile ? 'text-sm' : 'text-xs'} truncate ${isActive ? 'text-white/95 drop-shadow-sm' : 'text-white/75'}`}>
                       {item.description}
                     </div>
                   </motion.div>
@@ -654,33 +733,35 @@ export function BiWeeklyDashboard() {
             })}
           </motion.div>
           
-          {/* Toggle Button */}
-          <div className="p-4 border-t border-white/30 relative z-10">
-            <motion.button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="w-full flex items-center justify-center lg:justify-start gap-3 px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <motion.div
-                animate={{ rotate: sidebarOpen ? 180 : 0 }}
-                transition={{ duration: 0.3 }}
+          {/* Toggle Button - Hidden on mobile */}
+          {!isMobile && (
+            <div className="p-4 border-t border-white/30 relative z-10">
+              <motion.button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="w-full flex items-center justify-center lg:justify-start gap-3 px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <ChevronDown className="h-4 w-4 rotate-90" />
-              </motion.div>
-              <motion.span
-                variants={itemVariants}
-                className="text-sm font-medium"
-              >
-                {sidebarOpen ? 'Collapse' : 'Expand'}
-              </motion.span>
-            </motion.button>
-          </div>
+                <motion.div
+                  animate={{ rotate: sidebarOpen ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ChevronDown className="h-4 w-4 rotate-90" />
+                </motion.div>
+                <motion.span
+                  variants={itemVariants}
+                  className="text-sm font-medium"
+                >
+                  {sidebarOpen ? 'Collapse' : 'Expand'}
+                </motion.span>
+              </motion.button>
+            </div>
+          )}
         </div>
       </motion.nav>
 
       {/* Mobile overlay - Only show on mobile when sidebar is open */}
-      {sidebarOpen && (
+      {sidebarOpen && isMobile && (
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -696,28 +777,61 @@ export function BiWeeklyDashboard() {
         <div className="bg-background border-b border-brand-olive/20 p-4 lg:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              {/* Mobile menu button */}
+              {/* Mobile menu button - Improved hamburger style */}
               <motion.button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden p-2 rounded-lg bg-brand-olive/10 hover:bg-brand-olive/20 text-brand-olive transition-colors"
+                className="lg:hidden p-3 rounded-xl bg-brand-olive/10 hover:bg-brand-olive/20 text-brand-olive transition-colors border border-brand-olive/20 mobile-touch-target"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <motion.div
-                  animate={{ rotate: sidebarOpen ? 90 : 0 }}
-                  transition={{ duration: 0.3 }}
+                  animate={{ 
+                    rotate: sidebarOpen ? 90 : 0,
+                  }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="relative w-6 h-6 flex items-center justify-center"
                 >
-                  <ChevronDown className="h-5 w-5 rotate-90" />
+                  {/* Hamburger menu icon that transforms */}
+                  <motion.div
+                    className="absolute"
+                    animate={{
+                      rotate: sidebarOpen ? 45 : 0,
+                      y: sidebarOpen ? 0 : -6,
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="w-5 h-0.5 bg-current rounded-full" />
+                  </motion.div>
+                  <motion.div
+                    className="absolute"
+                    animate={{
+                      opacity: sidebarOpen ? 0 : 1,
+                      scale: sidebarOpen ? 0 : 1,
+                    }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <div className="w-5 h-0.5 bg-current rounded-full" />
+                  </motion.div>
+                  <motion.div
+                    className="absolute"
+                    animate={{
+                      rotate: sidebarOpen ? -45 : 0,
+                      y: sidebarOpen ? 0 : 6,
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="w-5 h-0.5 bg-current rounded-full" />
+                  </motion.div>
                 </motion.div>
               </motion.button>
               
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-brand-olive">
-                  {currentNavItem?.label || "Dashboard"}
-                </h1>
-                <p className="text-medium-contrast text-sm sm:text-base">
-                  {currentNavItem?.description || "Regional Safety Coaches Dashboard"}
-                </p>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-brand-olive">
+                {currentNavItem?.label || "Dashboard"}
+              </h1>
+              <p className="text-medium-contrast text-sm sm:text-base">
+                {currentNavItem?.description || "Regional Safety Coaches Dashboard"}
+              </p>
               </div>
             </div>
             <Button 
@@ -750,43 +864,43 @@ export function BiWeeklyDashboard() {
                 }}
               >
                 <Card className={`border-${card.color}/20 hover:border-${card.color}/40 transition-colors hover-lift`}>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium text-high-contrast">{card.title}</CardTitle>
                     <card.icon className={`h-4 w-4 text-${card.color}`} />
-                  </CardHeader>
-                  <CardContent>
+                </CardHeader>
+                <CardContent>
                     {card.isDropdown ? (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            className="h-auto p-0 text-left justify-start hover:bg-transparent w-full hover-scale"
-                          >
-                            <div className="flex items-center gap-2 w-full">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        className="h-auto p-0 text-left justify-start hover:bg-transparent w-full hover-scale"
+                      >
+                        <div className="flex items-center gap-2 w-full">
                               <div className={`text-xl sm:text-2xl font-bold text-${card.color} truncate`}>
-                                {selectedPeriod?.period_name || "None"}
-                              </div>
+                            {selectedPeriod?.period_name || "None"}
+                          </div>
                               <ChevronDown className={`h-4 w-4 text-${card.color} flex-shrink-0`} />
-                            </div>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start" className="w-56">
-                          {periods.map((period) => (
-                            <DropdownMenuItem
-                              key={period.id}
-                              onClick={() => setSelectedPeriod(period)}
-                              className={selectedPeriod?.id === period.id ? "bg-brand-olive/10" : ""}
-                            >
-                              <div className="flex flex-col">
-                                <span className="font-medium">{period.period_name}</span>
-                                <span className="text-xs text-medium-contrast">
-                                  {new Date(period.start_date).toLocaleDateString()} - {new Date(period.end_date).toLocaleDateString()}
-                                </span>
-                              </div>
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                        </div>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="w-56">
+                      {periods.map((period) => (
+                        <DropdownMenuItem
+                          key={period.id}
+                          onClick={() => setSelectedPeriod(period)}
+                          className={selectedPeriod?.id === period.id ? "bg-brand-olive/10" : ""}
+                        >
+                          <div className="flex flex-col">
+                            <span className="font-medium">{period.period_name}</span>
+                            <span className="text-xs text-medium-contrast">
+                              {new Date(period.start_date).toLocaleDateString()} - {new Date(period.end_date).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                     ) : card.isCustomRange ? (
                       <div className="space-y-2">
                         <div className="flex gap-2">
@@ -814,8 +928,8 @@ export function BiWeeklyDashboard() {
                     ) : (
                       <div className={`text-2xl font-bold text-${card.color}`}>{card.value}</div>
                     )}
-                  </CardContent>
-                </Card>
+                </CardContent>
+              </Card>
               </motion.div>
             ))}
           </div>

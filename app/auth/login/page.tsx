@@ -10,9 +10,9 @@ export default function Page() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      {/* Animated Gradient Background - Matching Dashboard Sidebar */}
+      {/* Animated Gradient Background - Matching Dashboard Sidebar with Dark Theme Support */}
       <motion.div
-        className="absolute inset-0 bg-gradient-to-b from-brand-olive via-brand-olive-light to-brand-olive-medium"
+        className="absolute inset-0 bg-gradient-to-b from-brand-olive via-brand-olive-light to-brand-olive-medium dark:from-brand-olive-medium dark:via-brand-olive-soft dark:to-brand-olive-pale"
         animate={{
           backgroundPosition: ["0% 0%", "0% 100%", "0% 0%"]
         }}
@@ -29,9 +29,9 @@ export default function Page() {
       {/* Enhanced Background Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
       
-      {/* Enhanced Floating Elements with Motion */}
+      {/* Enhanced Floating Elements with Motion - Dark theme aware */}
       <motion.div 
-        className="absolute top-20 left-10 w-24 h-24 bg-white/20 rounded-full blur-xl"
+        className="absolute top-20 left-10 w-24 h-24 bg-white/20 dark:bg-white/10 rounded-full blur-xl"
         initial={{ opacity: 0, scale: 0 }}
         animate={{ 
           opacity: 1, 
@@ -47,7 +47,7 @@ export default function Page() {
         }}
       />
       <motion.div 
-        className="absolute bottom-32 right-16 w-36 h-36 bg-white/15 rounded-full blur-xl"
+        className="absolute bottom-32 right-16 w-36 h-36 bg-white/15 dark:bg-white/8 rounded-full blur-xl"
         initial={{ opacity: 0, scale: 0 }}
         animate={{ 
           opacity: 1, 
@@ -63,7 +63,7 @@ export default function Page() {
         }}
       />
       <motion.div 
-        className="absolute top-1/2 left-1/4 w-20 h-20 bg-white/25 rounded-full blur-xl"
+        className="absolute top-1/2 left-1/4 w-20 h-20 bg-white/25 dark:bg-white/12 rounded-full blur-xl"
         initial={{ opacity: 0, scale: 0 }}
         animate={{ 
           opacity: 1, 
@@ -79,7 +79,7 @@ export default function Page() {
         }}
       />
       <motion.div 
-        className="absolute top-1/3 right-1/3 w-28 h-28 bg-white/10 rounded-full blur-xl"
+        className="absolute top-1/3 right-1/3 w-28 h-28 bg-white/10 dark:bg-white/6 rounded-full blur-xl"
         initial={{ opacity: 0, scale: 0 }}
         animate={{ 
           opacity: 1, 
