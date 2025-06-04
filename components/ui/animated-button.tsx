@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import * as motion from "motion/react-client";
 import { Button, ButtonProps } from "@/components/ui/button";
 import { forwardRef } from "react";
 import { cn } from "@/lib/utils";

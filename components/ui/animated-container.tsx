@@ -1,7 +1,25 @@
 "use client";
 
-import { motion, HTMLMotionProps, Variants } from "framer-motion";
+import * as motion from "motion/react-client";
+import type { ReactNode } from "react";
 import { forwardRef } from "react";
+
+// Define our own types since motion/react-client doesn't export these
+type MotionProps = React.ComponentProps<typeof motion.div>;
+type Variants = Record<string, {
+  opacity?: number;
+  x?: number;
+  y?: number;
+  scale?: number;
+  transition?: {
+    duration?: number;
+    delay?: number;
+    ease?: number[] | string;
+    staggerChildren?: number;
+    delayChildren?: number;
+    repeat?: number;
+  };
+}>;
 
 // Animation variants for different entrance effects
 export const fadeInVariants: Variants = {
@@ -78,8 +96,9 @@ export const staggerItemVariants: Variants = {
   }
 };
 
-interface AnimatedContainerProps extends HTMLMotionProps<"div"> {
-  variant?: "fadeIn" | "fadeInUp" | "fadeInDown" | "slideInLeft" | "slideInRight" | "scaleIn" | "stagger";
+interface AnimatedContainerProps extends Omit<MotionProps, 'variants' | 'initial' | 'animate'> {
+  variant?: "fadeIn" | "slideUp" | "stagger" | "fadeInUp" | "fadeInDown" | "slideInLeft" | "slideInRight" | "scaleIn";
+  children: ReactNode;
   delay?: number;
   duration?: number;
 }
@@ -145,7 +164,7 @@ export const AnimatedContainer = forwardRef<HTMLDivElement, AnimatedContainerPro
 AnimatedContainer.displayName = "AnimatedContainer";
 
 // Animated item for use within stagger containers
-export const AnimatedItem = forwardRef<HTMLDivElement, HTMLMotionProps<"div">>(
+export const AnimatedItem = forwardRef<HTMLDivElement, AnimatedItemProps>(
   ({ children, ...props }, ref) => {
     return (
       <motion.div
@@ -196,4 +215,9 @@ export const LoadingSpinner = () => {
       />
     </motion.div>
   );
-}; 
+};
+
+interface AnimatedItemProps extends Omit<MotionProps, 'variants' | 'initial' | 'animate'> {
+  children: ReactNode;
+  delay?: number;
+} 

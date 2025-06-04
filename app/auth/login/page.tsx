@@ -14,17 +14,17 @@ export default function Page() {
       gradientRef.current,
       {
         background: [
-          "linear-gradient(180deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
-          "linear-gradient(200deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
-          "linear-gradient(220deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
-          "linear-gradient(240deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
-          "linear-gradient(260deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
-          "linear-gradient(280deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
-          "linear-gradient(300deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
-          "linear-gradient(320deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
-          "linear-gradient(340deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
-          "linear-gradient(360deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)",
-          "linear-gradient(180deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)"
+          "linear-gradient(180deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
+          "linear-gradient(200deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
+          "linear-gradient(220deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
+          "linear-gradient(240deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
+          "linear-gradient(260deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
+          "linear-gradient(280deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
+          "linear-gradient(300deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
+          "linear-gradient(320deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
+          "linear-gradient(340deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
+          "linear-gradient(360deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)",
+          "linear-gradient(180deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)"
         ]
       },
       {
@@ -51,7 +51,7 @@ export default function Page() {
         ref={gradientRef}
         className="absolute inset-0"
         style={{
-          background: "linear-gradient(180deg, #1a3d20 0%, #2d5a34 50%, #9acd32 100%)"
+          background: "linear-gradient(180deg, #1a1a1a 0%, #2C5134 50%, #4E855A 100%)"
         }}
       />
       

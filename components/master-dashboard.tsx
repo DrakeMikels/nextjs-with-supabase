@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Eye, EyeOff, Calendar, Users, TrendingUp, AlertTriangle } from "lucide-react";
 import { AnimatedContainer, AnimatedItem, LoadingSpinner } from "@/components/ui/animated-container";
 import type { Coach, SafetyMetric, DashboardProps } from "@/lib/types";
-import { motion } from "framer-motion";
+import * as motion from "motion/react-client";
 
 export function MasterDashboard({ periods, coaches, onDataChange }: DashboardProps) {
   const [metrics, setMetrics] = useState<SafetyMetric[]>([]);
@@ -400,87 +400,94 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
       </AnimatedItem>
 
       {/* Summary Cards */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          {
-            title: "Total Entries",
-            value: metrics.length,
-            description: `Across ${periods.length} periods`,
-            icon: Calendar,
-            color: "brand-olive"
-          },
-          {
-            title: "Active Coaches", 
-            value: coaches.length,
-            description: "Regional safety coaches",
-            icon: Users,
-            color: "brand-olive-light"
-          },
-          {
-            title: "Completion Rate",
-            value: `${calculateCompletionRate()}%`,
-            description: "Of filtered entries",
-            icon: TrendingUp,
-            color: "green-600",
-            borderColor: "green-200",
-            hoverBorderColor: "green-300"
-          },
-          {
-            title: "Recent Activity",
-            value: getRecentActivity().length,
-            description: "Updates in last 3 days", 
-            icon: AlertTriangle,
-            color: "orange-600",
-            borderColor: "orange-200",
-            hoverBorderColor: "orange-300"
-          }
-        ].map((card, index) => (
-          <motion.div
-            key={card.title}
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              duration: 0.8,
-              delay: 0.1 + (index * 0.1),
-              ease: [0, 0.71, 0.2, 1.01],
-            }}
-          >
-            <Card className={`${card.borderColor ? `border-${card.borderColor} hover:border-${card.hoverBorderColor}` : `border-${card.color}/20 hover:border-${card.color}/40`} hover:shadow-lg transition-all duration-300 hover-lift`}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-high-contrast">{card.title}</CardTitle>
-                <motion.div
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{
-                    duration: 0.6,
-                    delay: 0.3 + (index * 0.1),
-                    ease: [0, 0.71, 0.2, 1.01],
-                  }}
-                >
-                  <card.icon className={`h-4 w-4 text-${card.color}`} />
-                </motion.div>
-              </CardHeader>
-              <CardContent>
-                <motion.div 
-                  className={`text-2xl font-bold text-${card.color}`}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.6,
-                    delay: 0.4 + (index * 0.1),
-                    ease: [0, 0.71, 0.2, 1.01],
-                  }}
-                >
-                  {card.value}
-                </motion.div>
-                <p className="text-xs text-medium-contrast">
-                  {card.description}
-                </p>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+      <AnimatedItem>
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            {
+              title: "Total Entries",
+              value: metrics.length,
+              description: `Across ${periods.length} periods`,
+              icon: Calendar,
+              color: "brand-olive",
+              delay: 0.1
+            },
+            {
+              title: "Active Coaches", 
+              value: coaches.length,
+              description: "Regional safety coaches",
+              icon: Users,
+              color: "green-600",
+              delay: 0.2
+            },
+            {
+              title: "Completion Rate",
+              value: `${calculateCompletionRate()}%`,
+              description: "Of filtered entries",
+              icon: TrendingUp,
+              color: "blue-600",
+              delay: 0.3
+            },
+            {
+              title: "Recent Activity",
+              value: getRecentActivity().length,
+              description: "Updates in last 3 days", 
+              icon: AlertTriangle,
+              color: "amber-600",
+              delay: 0.4
+            }
+          ].map((card) => (
+            <motion.div
+              key={card.title}
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{
+                duration: 0.6,
+                delay: card.delay,
+                scale: { type: "spring", visualDuration: 0.6, bounce: 0.3 }
+              }}
+              whileHover={{ 
+                scale: 1.02,
+                transition: { duration: 0.2, type: "spring", stiffness: 300, damping: 20 }
+              }}
+            >
+              <Card className={`border-${card.color}/20 hover:border-${card.color}/40 hover:shadow-lg transition-all duration-300 hover-lift`}>
+                <CardContent className="pt-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-medium-contrast">{card.title}</p>
+                      <motion.p 
+                        className={`text-2xl font-bold text-${card.color}`}
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{
+                          duration: 0.4,
+                          delay: card.delay + 0.2,
+                          scale: { type: "spring", visualDuration: 0.4, bounce: 0.4 }
+                        }}
+                      >
+                        {card.value}
+                      </motion.p>
+                      <p className="text-xs text-medium-contrast">{card.description}</p>
+                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, rotate: -180, scale: 0 }}
+                      animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                      transition={{
+                        duration: 0.5,
+                        delay: card.delay + 0.1,
+                        rotate: { type: "spring", stiffness: 200, damping: 15 },
+                        scale: { type: "spring", visualDuration: 0.5, bounce: 0.4 }
+                      }}
+                    >
+                      <card.icon className={`h-8 w-8 text-${card.color}/30`} />
+                    </motion.div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </AnimatedItem>
 
       {/* Coach Filter Tabs */}
       <AnimatedItem>
