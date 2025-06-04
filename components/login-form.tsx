@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { AnimatedContainer } from "@/components/ui/animated-container";
+import * as motion from "motion/react-client";
 
 export function LoginForm({
   className,
@@ -50,18 +50,44 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <AnimatedContainer variant="scaleIn">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{
+          duration: 0.4,
+          scale: { type: "spring", visualDuration: 0.4, bounce: 0.2 }
+        }}
+      >
         <Card className="hover-lift">
           <CardHeader>
-            <CardTitle className="text-2xl text-brand-olive font-bold">Login</CardTitle>
-            <CardDescription className="text-gray-600">
-              Enter your email below to login to your account
-            </CardDescription>
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.4,
+                delay: 0.1,
+                y: { type: "spring", stiffness: 100, damping: 15 }
+              }}
+            >
+              <CardTitle className="text-2xl text-brand-olive font-bold">Login</CardTitle>
+              <CardDescription className="text-gray-600">
+                Enter your email below to login to your account
+              </CardDescription>
+            </motion.div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin}>
               <div className="flex flex-col gap-6">
-                <div className="grid gap-2">
+                <motion.div 
+                  className="grid gap-2"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: 0.2,
+                    x: { type: "spring", stiffness: 100, damping: 15 }
+                  }}
+                >
                   <Label htmlFor="email" className="text-gray-800 font-medium">Email</Label>
                   <Input
                     id="email"
@@ -72,16 +98,30 @@ export function LoginForm({
                     onChange={(e) => setEmail(e.target.value)}
                     className="mobile-touch-target text-gray-900 placeholder:text-gray-500"
                   />
-                </div>
-                <div className="grid gap-2">
+                </motion.div>
+                <motion.div 
+                  className="grid gap-2"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: 0.3,
+                    x: { type: "spring", stiffness: 100, damping: 15 }
+                  }}
+                >
                   <div className="flex items-center">
                     <Label htmlFor="password" className="text-gray-800 font-medium">Password</Label>
-                    <Link
-                      href="/auth/forgot-password"
-                      className="ml-auto inline-block text-sm text-brand-olive hover:text-brand-olive/80 underline-offset-4 hover:underline hover-scale font-medium"
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      Forgot your password?
-                    </Link>
+                      <Link
+                        href="/auth/forgot-password"
+                        className="ml-auto inline-block text-sm text-brand-olive hover:text-brand-olive/80 underline-offset-4 hover:underline hover-scale font-medium"
+                      >
+                        Forgot your password?
+                      </Link>
+                    </motion.div>
                   </div>
                   <Input
                     id="password"
@@ -91,24 +131,47 @@ export function LoginForm({
                     onChange={(e) => setPassword(e.target.value)}
                     className="mobile-touch-target text-gray-900 placeholder:text-gray-500"
                   />
-                </div>
+                </motion.div>
                 {error && (
-                  <AnimatedContainer variant="fadeInUp">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9, y: -10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{
+                      duration: 0.3,
+                      scale: { type: "spring", visualDuration: 0.3, bounce: 0.3 },
+                      y: { type: "spring", stiffness: 100, damping: 15 }
+                    }}
+                  >
                     <p className="text-sm text-red-600 font-medium bg-red-50 p-3 rounded-md border border-red-200">{error}</p>
-                  </AnimatedContainer>
+                  </motion.div>
                 )}
-                <Button 
-                  type="submit" 
-                  className="w-full mobile-touch-target bg-brand-olive hover:bg-brand-olive/90 hover-lift text-white font-semibold" 
-                  disabled={isLoading}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: 0.4,
+                    y: { type: "spring", stiffness: 100, damping: 15 }
+                  }}
                 >
-                  {isLoading ? "Logging in..." : "Login"}
-                </Button>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Button 
+                      type="submit" 
+                      className="w-full mobile-touch-target bg-brand-olive hover:bg-brand-olive/90 hover-lift text-white font-semibold" 
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Logging in..." : "Login"}
+                    </Button>
+                  </motion.div>
+                </motion.div>
               </div>
             </form>
           </CardContent>
         </Card>
-      </AnimatedContainer>
+      </motion.div>
     </div>
   );
 }
