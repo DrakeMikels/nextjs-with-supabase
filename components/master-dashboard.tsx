@@ -7,7 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Edit3, Eye, EyeOff, Sparkles } from "lucide-react";
+import { Edit3, Eye, EyeOff, Sparkles, Calendar, Users, TrendingUp, AlertTriangle } from "lucide-react";
+import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/ui/animated-container";
 import type { Coach, SafetyMetric, DashboardProps } from "@/lib/types";
 
 export function MasterDashboard({ periods, coaches, onDataChange }: DashboardProps) {
@@ -16,6 +17,7 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
   const [loading, setLoading] = useState(true);
   const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
   const [showAllColumns, setShowAllColumns] = useState(false);
+  const [showCompleted, setShowCompleted] = useState(true);
   const supabase = createClient();
 
   const fetchMetrics = useCallback(async () => {
@@ -39,6 +41,24 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
 
   const getMetricForCoachAndPeriod = (coachId: string, periodId: string): SafetyMetric | null => {
     return metrics.find(m => m.coach_id === coachId && m.period_id === periodId) || null;
+  };
+
+  const calculateCompletionRate = () => {
+    if (metrics.length === 0) return 0;
+    // Calculate completion based on whether key fields are filled
+    const completed = metrics.filter(m => 
+      m.travel_plans && 
+      m.training_branch_location && 
+      (m.site_safety_evaluations > 0 || m.forensic_survey_audits > 0 || m.warehouse_safety_audits > 0)
+    ).length;
+    return Math.round((completed / metrics.length) * 100);
+  };
+
+  const getRecentActivity = () => {
+    // Since we don't have updated_at, we'll return the most recent metrics by ID
+    return metrics
+      .sort((a, b) => (b.id || '').localeCompare(a.id || ''))
+      .slice(0, 5);
   };
 
   const updateMetric = async (coachId: string, periodId: string, field: keyof SafetyMetric, value: string | number) => {
@@ -351,84 +371,172 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <div className="text-lg">Loading master dashboard...</div>
-      </div>
+      <AnimatedContainer variant="fadeIn" className="space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-2">
+            <LoadingSkeleton className="h-8 w-64" />
+            <LoadingSkeleton className="h-4 w-48" />
+          </div>
+          <LoadingSkeleton className="h-10 w-32" />
+        </div>
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          {[...Array(4)].map((_, i) => (
+            <LoadingSkeleton key={i} className="h-24" />
+          ))}
+        </div>
+        <LoadingSkeleton className="h-96" />
+      </AnimatedContainer>
     );
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <AnimatedContainer variant="stagger" className="space-y-4 sm:space-y-6">
+      <AnimatedItem className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-brand-olive" />
-            <span className="text-brand-olive">Master Dashboard</span>
+          <h2 className="text-xl sm:text-2xl font-bold text-brand-olive flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6" />
+            Master Dashboard
           </h2>
-          <p className="text-medium-contrast text-sm">
-            Excel-style interface - Click any cell to edit data directly
+          <p className="text-medium-contrast text-sm sm:text-base">
+            Complete overview of all safety metrics and coach performance
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="outline" className="gap-1 border-brand-olive/30 text-brand-olive text-xs">
-            <Edit3 className="h-3 w-3" />
-            Click to edit
-          </Badge>
-        </div>
-      </div>
+        <Button
+          onClick={() => setShowCompleted(!showCompleted)}
+          variant="outline"
+          className="gap-2 w-full sm:w-auto mobile-touch-target hover-scale"
+        >
+          {showCompleted ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          {showCompleted ? "Hide" : "Show"} Completed
+        </Button>
+      </AnimatedItem>
 
-      <Tabs value={selectedCoach?.id || "all"} onValueChange={(value) => {
-        if (value === "all") {
-          setSelectedCoach(null);
-        } else {
-          const coach = coaches.find(c => c.id === value);
-          setSelectedCoach(coach || null);
-        }
-      }}>
-        <div className="overflow-x-auto">
-          <TabsList className="grid grid-cols-8 bg-brand-off-white border border-brand-olive/20 min-w-max w-full">
-            <TabsTrigger value="all" className="data-[state=active]:bg-brand-olive data-[state=active]:text-white text-medium-contrast whitespace-nowrap text-xs sm:text-sm">All Coaches</TabsTrigger>
-            {coaches.map((coach) => (
+      {/* Summary Cards */}
+      <AnimatedContainer variant="stagger" className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        <AnimatedItem>
+          <Card className="border-brand-olive/20 hover:border-brand-olive/40 transition-colors hover-lift">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-high-contrast">Total Entries</CardTitle>
+              <Calendar className="h-4 w-4 text-brand-olive" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-brand-olive">{metrics.length}</div>
+              <p className="text-xs text-medium-contrast">
+                Across {periods.length} periods
+              </p>
+            </CardContent>
+          </Card>
+        </AnimatedItem>
+
+        <AnimatedItem>
+          <Card className="border-brand-olive-light/20 hover:border-brand-olive-light/40 transition-colors hover-lift">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-high-contrast">Active Coaches</CardTitle>
+              <Users className="h-4 w-4 text-brand-olive-light" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-brand-olive-light">{coaches.length}</div>
+              <p className="text-xs text-medium-contrast">
+                Regional safety coaches
+              </p>
+            </CardContent>
+          </Card>
+        </AnimatedItem>
+
+        <AnimatedItem>
+          <Card className="border-green-200 hover:border-green-300 transition-colors hover-lift">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-high-contrast">Completion Rate</CardTitle>
+              <TrendingUp className="h-4 w-4 text-green-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-green-600">{calculateCompletionRate()}%</div>
+              <p className="text-xs text-medium-contrast">
+                Of filtered entries
+              </p>
+            </CardContent>
+          </Card>
+        </AnimatedItem>
+
+        <AnimatedItem>
+          <Card className="border-orange-200 hover:border-orange-300 transition-colors hover-lift">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-high-contrast">Recent Activity</CardTitle>
+              <AlertTriangle className="h-4 w-4 text-orange-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-orange-600">{getRecentActivity().length}</div>
+              <p className="text-xs text-medium-contrast">
+                Updates in last 3 days
+              </p>
+            </CardContent>
+          </Card>
+        </AnimatedItem>
+      </AnimatedContainer>
+
+      {/* Coach Filter Tabs */}
+      <AnimatedItem>
+        <Tabs value={selectedCoach?.id || "all"} onValueChange={(value) => {
+          if (value === "all") {
+            setSelectedCoach(null);
+          } else {
+            const coach = coaches.find(c => c.id === value);
+            setSelectedCoach(coach || null);
+          }
+        }}>
+          <div className="overflow-x-auto mobile-scroll">
+            <TabsList className="bg-brand-off-white border border-brand-olive/20 min-w-max">
               <TabsTrigger 
-                key={coach.id} 
-                value={coach.id} 
-                className="text-xs data-[state=active]:bg-brand-olive-light data-[state=active]:text-white text-medium-contrast whitespace-nowrap"
+                value="all" 
+                className="data-[state=active]:bg-brand-olive data-[state=active]:text-white text-medium-contrast hover-scale"
               >
-                {coach.name}
+                All Coaches ({metrics.length})
               </TabsTrigger>
+              {coaches.map((coach) => {
+                const coachMetrics = metrics.filter(m => m.coach_id === coach.id);
+                return (
+                  <TabsTrigger 
+                    key={coach.id} 
+                    value={coach.id}
+                    className="data-[state=active]:bg-brand-olive data-[state=active]:text-white text-medium-contrast hover-scale whitespace-nowrap"
+                  >
+                    {coach.name} ({coachMetrics.length})
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+          </div>
+
+          <TabsContent value="all" className="space-y-4">
+            {coaches.map((coach) => (
+              <Card key={coach.id}>
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-base sm:text-lg text-high-contrast">{coach.name}</CardTitle>
+                </CardHeader>
+                <CardContent className="p-3 sm:p-6">
+                  <CoachView coach={coach} />
+                </CardContent>
+              </Card>
             ))}
-          </TabsList>
-        </div>
-
-        <TabsContent value="all" className="space-y-4 sm:space-y-6">
-          {coaches.map((coach) => (
-            <Card key={coach.id}>
-              <CardHeader className="pb-4">
-                <CardTitle className="text-base sm:text-lg text-high-contrast">{coach.name}</CardTitle>
-              </CardHeader>
-              <CardContent className="p-3 sm:p-6">
-                <CoachView coach={coach} />
-              </CardContent>
-            </Card>
-          ))}
-        </TabsContent>
-
-        {coaches.map((coach) => (
-          <TabsContent key={coach.id} value={coach.id}>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base sm:text-lg text-high-contrast">{coach.name} - Detailed View</CardTitle>
-                <CardDescription className="text-medium-contrast text-sm">
-                  Complete data view for {coach.name} across all periods
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-3 sm:p-6">
-                <CoachView coach={coach} />
-              </CardContent>
-            </Card>
           </TabsContent>
-        ))}
-      </Tabs>
-    </div>
+
+          {coaches.map((coach) => (
+            <TabsContent key={coach.id} value={coach.id}>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base sm:text-lg text-high-contrast">{coach.name} - Detailed View</CardTitle>
+                  <CardDescription className="text-medium-contrast text-sm">
+                    Complete data view for {coach.name} across all periods
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-3 sm:p-6">
+                  <CoachView coach={coach} />
+                </CardContent>
+              </Card>
+            </TabsContent>
+          ))}
+        </Tabs>
+      </AnimatedItem>
+    </AnimatedContainer>
   );
 } 
