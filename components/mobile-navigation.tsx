@@ -300,21 +300,23 @@ const background: React.CSSProperties = {
 
 const toggleContainer: React.CSSProperties = {
   outline: "none",
-  border: "none",
   WebkitUserSelect: "none",
   MozUserSelect: "none",
   cursor: "pointer",
-  position: "absolute",
-  top: 80,
-  left: 15,
-  width: 50,
-  height: 50,
+  position: "fixed",
+  top: 20,
+  left: 20,
+  width: 44,
+  height: 44,
   borderRadius: "50%",
-  background: "rgba(44, 81, 52, 0.1)",
+  background: "rgba(44, 81, 52, 0.9)",
+  backdropFilter: "blur(8px)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   zIndex: 1001,
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+  border: "2px solid rgba(255, 255, 255, 0.2)",
 };
 
 const list: React.CSSProperties = {

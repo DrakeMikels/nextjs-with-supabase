@@ -731,34 +731,22 @@ export function BiWeeklyDashboard() {
 
         {/* Stats Cards */}
         <motion.div 
-          className="border-b border-brand-olive/10 overflow-hidden"
+          className="border-b border-brand-olive/10"
           initial={false}
           animate={{ 
-            height: statsCollapsed ? 0 : "auto",
             opacity: statsCollapsed ? 0 : 1,
-            paddingTop: statsCollapsed ? 0 : "0.5rem",
-            paddingBottom: statsCollapsed ? 0 : "0.5rem",
-            paddingLeft: statsCollapsed ? 0 : "0.5rem",
-            paddingRight: statsCollapsed ? 0 : "0.5rem",
+            scaleY: statsCollapsed ? 0 : 1,
+            transformOrigin: "top"
           }}
           transition={{ 
-            duration: 0.4, 
-            ease: "easeInOut",
-            height: { duration: 0.4 },
-            opacity: { duration: 0.3, delay: statsCollapsed ? 0 : 0.1 },
-            padding: { duration: 0.4 }
+            duration: 0.3, 
+            ease: "easeInOut"
           }}
           style={{
-            // Force the animation to work on mobile by using explicit height control
-            ...(statsCollapsed && { 
-              height: 0, 
-              padding: 0, 
-              margin: 0,
-              overflow: 'hidden'
-            })
+            display: statsCollapsed ? 'none' : 'block'
           }}
         >
-          <div className="sm:p-3 lg:p-5">
+          <div className="p-2 sm:p-3 lg:p-5">
             <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 { title: "Total Periods", value: periods.length, icon: Calendar, color: "brand-olive" },
@@ -769,14 +757,11 @@ export function BiWeeklyDashboard() {
                 <motion.div
                   key={card.title}
                   initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ 
-                    opacity: statsCollapsed ? 0 : 1, 
-                    scale: statsCollapsed ? 0.8 : 1 
-                  }}
+                  animate={{ opacity: 1, scale: 1 }}
                   transition={{
-                    duration: 0.6,
-                    delay: statsCollapsed ? 0 : 0.1 + (index * 0.1),
-                    ease: [0, 0.71, 0.2, 1.01],
+                    duration: 0.4,
+                    delay: 0.1 + (index * 0.05),
+                    ease: "easeOut",
                   }}
                 >
                   <Card className={`border-${card.color}/20 hover:border-${card.color}/40 hover:shadow-lg transition-all duration-300 hover-lift`}>
@@ -784,14 +769,11 @@ export function BiWeeklyDashboard() {
                       <CardTitle className="text-xs sm:text-sm font-medium text-high-contrast">{card.title}</CardTitle>
                       <motion.div
                         initial={{ opacity: 0, scale: 0 }}
-                        animate={{ 
-                          opacity: statsCollapsed ? 0 : 1, 
-                          scale: statsCollapsed ? 0 : 1 
-                        }}
+                        animate={{ opacity: 1, scale: 1 }}
                         transition={{
-                          duration: 0.6,
-                          delay: statsCollapsed ? 0 : 0.3 + (index * 0.1),
-                          ease: [0, 0.71, 0.2, 1.01],
+                          duration: 0.3,
+                          delay: 0.2 + (index * 0.05),
+                          ease: "easeOut",
                         }}
                       >
                         <card.icon className={`h-3 w-3 sm:h-4 sm:w-4 text-${card.color}`} />
@@ -809,14 +791,11 @@ export function BiWeeklyDashboard() {
                                 <motion.div 
                                   className={`text-lg sm:text-xl lg:text-2xl font-bold text-${card.color} truncate`}
                                   initial={{ opacity: 0, y: 10 }}
-                                  animate={{ 
-                                    opacity: statsCollapsed ? 0 : 1, 
-                                    y: statsCollapsed ? 10 : 0 
-                                  }}
+                                  animate={{ opacity: 1, y: 0 }}
                                   transition={{
-                                    duration: 0.6,
-                                    delay: statsCollapsed ? 0 : 0.4 + (index * 0.1),
-                                    ease: [0, 0.71, 0.2, 1.01],
+                                    duration: 0.3,
+                                    delay: 0.3 + (index * 0.05),
+                                    ease: "easeOut",
                                   }}
                                 >
                               {selectedPeriod?.period_name || "None"}
@@ -863,14 +842,11 @@ export function BiWeeklyDashboard() {
                             <motion.div 
                               className={`text-xs text-${card.color} font-medium`}
                               initial={{ opacity: 0, y: 10 }}
-                              animate={{ 
-                                opacity: statsCollapsed ? 0 : 1, 
-                                y: statsCollapsed ? 10 : 0 
-                              }}
+                              animate={{ opacity: 1, y: 0 }}
                               transition={{
-                                duration: 0.6,
-                                delay: statsCollapsed ? 0 : 0.4 + (index * 0.1),
-                                ease: [0, 0.71, 0.2, 1.01],
+                                duration: 0.3,
+                                delay: 0.3 + (index * 0.05),
+                                ease: "easeOut",
                               }}
                             >
                               {new Date(customDateRange.start).toLocaleDateString()} - {new Date(customDateRange.end).toLocaleDateString()}
@@ -881,14 +857,11 @@ export function BiWeeklyDashboard() {
                         <motion.div 
                           className={`text-lg sm:text-xl lg:text-2xl font-bold text-${card.color}`}
                           initial={{ opacity: 0, y: 10 }}
-                          animate={{ 
-                            opacity: statsCollapsed ? 0 : 1, 
-                            y: statsCollapsed ? 10 : 0 
-                          }}
+                          animate={{ opacity: 1, y: 0 }}
                           transition={{
-                            duration: 0.6,
-                            delay: statsCollapsed ? 0 : 0.4 + (index * 0.1),
-                            ease: [0, 0.71, 0.2, 1.01],
+                            duration: 0.3,
+                            delay: 0.3 + (index * 0.05),
+                            ease: "easeOut",
                           }}
                         >
                           {card.value}
