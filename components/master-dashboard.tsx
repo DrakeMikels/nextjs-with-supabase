@@ -5,9 +5,8 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Edit3, Eye, EyeOff, Sparkles, Calendar, Users, TrendingUp, AlertTriangle } from "lucide-react";
+import { Eye, EyeOff, Calendar, Users, TrendingUp, AlertTriangle } from "lucide-react";
 import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/ui/animated-container";
 import type { Coach, SafetyMetric, DashboardProps } from "@/lib/types";
 

@@ -82,11 +82,10 @@ interface AnimatedContainerProps extends HTMLMotionProps<"div"> {
   variant?: "fadeIn" | "fadeInUp" | "fadeInDown" | "slideInLeft" | "slideInRight" | "scaleIn" | "stagger";
   delay?: number;
   duration?: number;
-  staggerChildren?: boolean;
 }
 
 export const AnimatedContainer = forwardRef<HTMLDivElement, AnimatedContainerProps>(
-  ({ variant = "fadeIn", delay = 0, duration, staggerChildren = false, children, ...props }, ref) => {
+  ({ variant = "fadeIn", delay = 0, duration, children, ...props }, ref) => {
     const getVariants = () => {
       switch (variant) {
         case "fadeInUp": return fadeInUpVariants;
