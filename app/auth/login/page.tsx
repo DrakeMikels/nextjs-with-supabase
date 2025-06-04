@@ -12,7 +12,7 @@ export default function Page() {
     >
       {/* Animated Gradient Background - Using Dark Mode Colors for Both Themes */}
       <motion.div
-        className="absolute inset-0 bg-gradient-to-b from-brand-olive-medium via-brand-olive-soft to-brand-olive-pale"
+        className="absolute inset-0 bg-gradient-to-b from-brand-olive via-brand-olive-light to-brand-olive-medium"
         animate={{
           backgroundPosition: ["0% 0%", "0% 100%", "0% 0%"]
         }}
