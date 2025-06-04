@@ -39,9 +39,9 @@ export default function Page() {
         ]
       },
       {
-        duration: 20,
+        duration: 30,
         repeat: Infinity,
-        ease: "linear"
+        ease: "easeInOut"
       }
     );
 
