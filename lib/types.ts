@@ -92,4 +92,54 @@ export interface IdpGoal {
 export interface IdpDashboardProps {
   coach: Coach;
   onDataChange: () => void;
+}
+
+// CPR/First Aid Types
+export interface Office {
+  id: string;
+  name: string;
+  location: string;
+  region: string;
+  created_at: string;
+}
+
+export interface Region {
+  id: string;
+  name: string;
+  description: string | null;
+  created_at: string;
+}
+
+export interface CoachOfficeAssignment {
+  id: string;
+  coach_id: string;
+  office_id: string;
+  assigned_date: string;
+  is_primary: boolean;
+  created_at: string;
+  coach?: Coach;
+  office?: Office;
+}
+
+export interface CprFirstAidRecord {
+  id: string;
+  coach_id: string;
+  office_id: string;
+  cpr_certification_date: string | null;
+  cpr_expiration_date: string | null;
+  first_aid_certification_date: string | null;
+  first_aid_expiration_date: string | null;
+  provider: string | null;
+  certificate_number: string | null;
+  status: 'current' | 'expiring_soon' | 'expired' | 'not_certified';
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+  coach?: Coach;
+  office?: Office;
+}
+
+export interface CprFirstAidProps {
+  coaches: Coach[];
+  onDataChange: () => void;
 } 

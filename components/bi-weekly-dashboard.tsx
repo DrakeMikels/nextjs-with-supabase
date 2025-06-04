@@ -25,7 +25,8 @@ import {
   Menu,
   X,
   ClipboardList,
-  MapPin
+  MapPin,
+  Heart
 } from "lucide-react";
 import { BiWeeklyPeriodList } from "./bi-weekly-period-list";
 import { SafetyMetricsForm } from "./safety-metrics-form";
@@ -37,6 +38,7 @@ import { ActionItems } from "./action-items";
 import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/ui/animated-container";
 import type { BiWeeklyPeriod, Coach } from "@/lib/types";
 import { BranchVisits } from "./branch-visits";
+import { CprFirstAid } from "./cpr-first-aid";
 
 const navigationItems = [
   {
@@ -86,6 +88,12 @@ const navigationItems = [
     label: "Branch Visits",
     icon: MapPin,
     description: "Track branch assignments and visits"
+  },
+  {
+    id: "cpr-first-aid",
+    label: "CPR/First Aid",
+    icon: Heart,
+    description: "Track CPR and First Aid certifications"
   }
 ];
 
@@ -284,6 +292,13 @@ export function BiWeeklyDashboard() {
       case "branch-visits":
         return (
           <BranchVisits 
+            coaches={coaches}
+            onDataChange={fetchData}
+          />
+        );
+      case "cpr-first-aid":
+        return (
+          <CprFirstAid 
             coaches={coaches}
             onDataChange={fetchData}
           />
