@@ -31,7 +31,6 @@ import { CoachManagement } from "./coach-management";
 import { MetricsDashboard } from "./metrics-dashboard";
 import { MasterDashboard } from "./master-dashboard";
 import { IdpDashboard } from "./idp-dashboard";
-import { IdpOverview } from "./idp-overview";
 import { AnimatedContainer, AnimatedItem, LoadingSkeleton } from "@/components/ui/animated-container";
 import type { BiWeeklyPeriod, Coach } from "@/lib/types";
 
