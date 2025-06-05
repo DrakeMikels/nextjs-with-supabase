@@ -295,8 +295,7 @@ export default function Page() {
               }}
             >
               <div className="flex justify-center">
-                <motion.div 
-                  className="p-2 bg-white/20 rounded-xl border border-white/30 shadow-lg"
+                <motion.div
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
@@ -307,8 +306,8 @@ export default function Page() {
                   <Image 
                     src="/rsc-logo.svg" 
                     alt="RSC Logo" 
-                    width={80} 
-                    height={80}
+                    width={120} 
+                    height={120}
                     className="object-contain"
                   />
                 </motion.div>
@@ -396,8 +395,7 @@ export default function Page() {
               }}
             >
               <div className="flex justify-center">
-                <motion.div 
-                  className="p-2 bg-white/20 rounded-xl border border-white/30 shadow-lg"
+                <motion.div
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
@@ -408,8 +406,8 @@ export default function Page() {
                   <Image 
                     src="/rsc-logo.svg" 
                     alt="RSC Logo" 
-                    width={60} 
-                    height={60}
+                    width={100} 
+                    height={100}
                     className="object-contain"
                   />
                 </motion.div>

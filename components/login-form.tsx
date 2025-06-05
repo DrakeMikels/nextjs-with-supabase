@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import * as motion from "motion/react-client";
+import { LoadingOverlay } from "@/components/ui/loading-overlay";
 
 export function LoginForm({
   className,
@@ -25,6 +26,7 @@ export function LoginForm({
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showLoadingOverlay, setShowLoadingOverlay] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -39,25 +41,35 @@ export function LoginForm({
         password,
       });
       if (error) throw error;
-      // Redirect to main dashboard after successful login
-      router.push("/");
+      
+      // Show loading overlay before redirect
+      setShowLoadingOverlay(true);
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
-    } finally {
       setIsLoading(false);
     }
   };
 
+  const handleLoadingComplete = () => {
+    // Redirect to main dashboard after loading animation
+    router.push("/");
+  };
+
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{
-          duration: 0.34,
-          scale: { type: "spring", visualDuration: 0.34, bounce: 0.2 }
-        }}
-      >
+    <>
+      <LoadingOverlay 
+        isVisible={showLoadingOverlay} 
+        onComplete={handleLoadingComplete}
+      />
+      <div className={cn("flex flex-col gap-6", className)} {...props}>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            duration: 0.34,
+            scale: { type: "spring", visualDuration: 0.34, bounce: 0.2 }
+          }}
+        >
         <Card className="hover-lift">
           <CardHeader>
             <motion.div
@@ -173,5 +185,6 @@ export function LoginForm({
         </Card>
       </motion.div>
     </div>
+    </>
   );
 }
