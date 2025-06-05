@@ -65,52 +65,120 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
 
   // Enhanced filtering logic that handles both period selection and custom date range
   const filteredMetrics = useMemo(() => {
+    console.log('🔍 Filtering metrics:', {
+      totalMetrics: metrics.length,
+      selectedPeriod: selectedPeriod?.period_name,
+      customDateRange,
+      periodsCount: periods.length
+    });
+
     let filtered = metrics;
 
     // If a specific period is selected, filter by that period
     if (selectedPeriod) {
       filtered = filtered.filter(m => m.period_id === selectedPeriod.id);
+      console.log('📅 Filtered by selected period:', filtered.length);
     }
     // If custom date range is set, filter by date range instead
     else if (customDateRange.start && customDateRange.end) {
       const startDate = new Date(customDateRange.start);
       const endDate = new Date(customDateRange.end);
       
+      console.log('📊 Filtering by date range:', {
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString()
+      });
+      
       // Find periods that overlap with the custom date range
       const overlappingPeriods = periods.filter(period => {
         const periodStart = new Date(period.start_date);
         const periodEnd = new Date(period.end_date);
-        return (periodStart <= endDate && periodEnd >= startDate);
+        const overlaps = (periodStart <= endDate && periodEnd >= startDate);
+        
+        console.log(`Period ${period.period_name}:`, {
+          periodStart: periodStart.toISOString(),
+          periodEnd: periodEnd.toISOString(),
+          overlaps
+        });
+        
+        return overlaps;
       });
+      
+      console.log('🎯 Overlapping periods:', overlappingPeriods.map(p => p.period_name));
       
       // Filter metrics by overlapping periods
       const overlappingPeriodIds = overlappingPeriods.map(p => p.id);
       filtered = filtered.filter(m => overlappingPeriodIds.includes(m.period_id));
+      console.log('📊 Filtered by date range:', filtered.length);
     }
 
+    console.log('✅ Final filtered metrics:', filtered.length);
     return filtered;
   }, [metrics, selectedPeriod, customDateRange, periods]);
 
-  // Get filtered periods for trend analysis
+  // Get filtered periods for trend analysis with enhanced logic
   const filteredPeriods = useMemo(() => {
+    console.log('📈 Filtering periods for trends:', {
+      selectedPeriod: selectedPeriod?.period_name,
+      customDateRange,
+      totalPeriods: periods.length
+    });
+
     if (selectedPeriod) {
       // When a specific period is selected, show comparison with previous periods
-      return periods.slice(0, 6).reverse();
+      const currentIndex = periods.findIndex(p => p.id === selectedPeriod.id);
+      const contextPeriods = periods.slice(Math.max(0, currentIndex - 2), currentIndex + 4).reverse();
+      console.log('📅 Selected period - showing context periods:', contextPeriods.map(p => p.period_name));
+      return contextPeriods;
     } else if (customDateRange.start && customDateRange.end) {
       // When custom date range is set, filter periods that overlap with the range
       const startDate = new Date(customDateRange.start);
       const endDate = new Date(customDateRange.end);
       
-      return periods.filter(period => {
+      const filtered = periods.filter(period => {
         const periodStart = new Date(period.start_date);
         const periodEnd = new Date(period.end_date);
-        return (periodStart <= endDate && periodEnd >= startDate);
-      }).slice(0, 6).reverse();
+        const overlaps = (periodStart <= endDate && periodEnd >= startDate);
+        
+        console.log(`Trend period ${period.period_name}:`, {
+          periodStart: periodStart.toISOString(),
+          periodEnd: periodEnd.toISOString(),
+          overlaps
+        });
+        
+        return overlaps;
+      }).reverse(); // Show in chronological order for trends
+      
+      console.log('📊 Date range - filtered periods for trends:', filtered.map(p => p.period_name));
+      return filtered;
     } else {
-      // Show all periods (last 6)
-      return periods.slice(0, 6).reverse();
+      // Show all periods (last 8 for better trend visibility)
+      const result = periods.slice(0, 8).reverse();
+      console.log('🌐 All periods - showing last 8:', result.map(p => p.period_name));
+      return result;
     }
   }, [selectedPeriod, customDateRange, periods]);
+
+  // Calculate time span context for adaptive chart configurations
+  const timeSpanContext = useMemo(() => {
+    const daysDifference = customDateRange.start && customDateRange.end 
+      ? Math.ceil((new Date(customDateRange.end).getTime() - new Date(customDateRange.start).getTime()) / (1000 * 60 * 60 * 24))
+      : 0;
+    
+    const periodCount = filteredPeriods.length;
+    
+    return {
+      daysDifference,
+      periodCount,
+      isShortTerm: daysDifference <= 30 || periodCount <= 2,
+      isMediumTerm: daysDifference > 30 && daysDifference <= 90 || (periodCount > 2 && periodCount <= 6),
+      isLongTerm: daysDifference > 90 || periodCount > 6,
+      chartHeight: periodCount <= 3 ? 300 : periodCount <= 6 ? 350 : 400,
+      showDataLabels: periodCount <= 4,
+      strokeWidth: periodCount <= 4 ? 4 : periodCount <= 6 ? 3 : 2,
+      dotSize: periodCount <= 4 ? 6 : periodCount <= 6 ? 5 : 4
+    };
+  }, [customDateRange, filteredPeriods.length]);
 
   // Get the current filtering context for display
   const filteringContext = useMemo(() => {
@@ -308,8 +376,48 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
               : '🌐 All Periods'
             }
           </div>
+          <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+            timeSpanContext.isShortTerm 
+              ? 'bg-green-500/10 text-green-600 border border-green-500/20'
+              : timeSpanContext.isMediumTerm
+              ? 'bg-yellow-500/10 text-yellow-600 border border-yellow-500/20'
+              : 'bg-purple-500/10 text-purple-600 border border-purple-500/20'
+          }`}>
+            {timeSpanContext.isShortTerm && '⚡ Short-term'}
+            {timeSpanContext.isMediumTerm && '📈 Medium-term'}
+            {timeSpanContext.isLongTerm && '🔍 Long-term'}
+          </div>
         </div>
       </AnimatedItem>
+
+      {/* Data Insights Section */}
+      {(filteringContext.type === 'dateRange' || timeSpanContext.periodCount > 1) && (
+        <AnimatedItem>
+          <Card className="border-blue-500/20 bg-blue-50/50">
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-blue-500/10 rounded-lg">
+                  <TrendingUp className="h-5 w-5 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-blue-900 mb-1">Data Insights</h3>
+                  <p className="text-sm text-blue-700">
+                    {timeSpanContext.isShortTerm && 
+                      `Analyzing ${timeSpanContext.periodCount} period${timeSpanContext.periodCount > 1 ? 's' : ''} - ideal for detailed performance review and immediate action items.`
+                    }
+                    {timeSpanContext.isMediumTerm && 
+                      `Reviewing ${timeSpanContext.periodCount} periods over ${timeSpanContext.daysDifference} days - perfect for identifying trends and patterns in safety performance.`
+                    }
+                    {timeSpanContext.isLongTerm && 
+                      `Comprehensive analysis of ${timeSpanContext.periodCount} periods - excellent for strategic planning and long-term trend analysis.`
+                    }
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </AnimatedItem>
+      )}
 
       {/* Overall Statistics Cards */}
       <AnimatedItem>
@@ -489,21 +597,27 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
             <CardTitle className="text-brand-olive">📊 Performance Trends</CardTitle>
             <CardDescription className="text-medium-contrast">
               {filteringContext.type === 'period' 
-                ? "Comparison with previous periods" 
+                ? `Comparison with context periods (${timeSpanContext.periodCount} periods)` 
                 : filteringContext.type === 'dateRange'
-                ? `Safety metrics for periods within ${filteringContext.subtitle}`
-                : "Safety metrics over the last 6 bi-weekly periods"
+                ? `Safety metrics for ${timeSpanContext.periodCount} periods within ${filteringContext.subtitle} (${timeSpanContext.daysDifference} days)`
+                : `Safety metrics over the last ${timeSpanContext.periodCount} bi-weekly periods`
               }
+              {timeSpanContext.isShortTerm && " • Short-term view"}
+              {timeSpanContext.isMediumTerm && " • Medium-term view"}
+              {timeSpanContext.isLongTerm && " • Long-term view"}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={400}>
+            <ResponsiveContainer width="100%" height={timeSpanContext.chartHeight}>
               <LineChart data={trendData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                 <XAxis 
                   dataKey="period" 
-                  tick={{ fontSize: 12, fill: '#2C5134' }}
+                  tick={{ fontSize: timeSpanContext.periodCount > 6 ? 10 : 12, fill: '#2C5134' }}
                   tickLine={{ stroke: '#2C5134' }}
+                  angle={timeSpanContext.periodCount > 6 ? -45 : 0}
+                  textAnchor={timeSpanContext.periodCount > 6 ? "end" : "middle"}
+                  height={timeSpanContext.periodCount > 6 ? 80 : 60}
                 />
                 <YAxis 
                   tick={{ fontSize: 12, fill: '#2C5134' }}
@@ -525,33 +639,37 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
                   type="monotone" 
                   dataKey="evaluations" 
                   stroke={brandColors.olive} 
-                  strokeWidth={3}
+                  strokeWidth={timeSpanContext.strokeWidth}
                   name="Site Evaluations"
-                  dot={{ fill: brandColors.olive, strokeWidth: 2, r: 4 }}
+                  dot={{ fill: brandColors.olive, strokeWidth: 2, r: timeSpanContext.dotSize }}
+                  label={timeSpanContext.showDataLabels ? { fontSize: 10, fill: brandColors.olive } : false}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="audits" 
                   stroke={brandColors.oliveLight} 
-                  strokeWidth={3}
+                  strokeWidth={timeSpanContext.strokeWidth}
                   name="Forensic Audits"
-                  dot={{ fill: brandColors.oliveLight, strokeWidth: 2, r: 4 }}
+                  dot={{ fill: brandColors.oliveLight, strokeWidth: 2, r: timeSpanContext.dotSize }}
+                  label={timeSpanContext.showDataLabels ? { fontSize: 10, fill: brandColors.oliveLight } : false}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="warehouse" 
                   stroke={brandColors.oliveMedium} 
-                  strokeWidth={3}
+                  strokeWidth={timeSpanContext.strokeWidth}
                   name="Warehouse Audits"
-                  dot={{ fill: brandColors.oliveMedium, strokeWidth: 2, r: 4 }}
+                  dot={{ fill: brandColors.oliveMedium, strokeWidth: 2, r: timeSpanContext.dotSize }}
+                  label={timeSpanContext.showDataLabels ? { fontSize: 10, fill: brandColors.oliveMedium } : false}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="investigations" 
                   stroke={brandColors.oliveSoft} 
-                  strokeWidth={3}
+                  strokeWidth={timeSpanContext.strokeWidth}
                   name="Investigations"
-                  dot={{ fill: brandColors.oliveSoft, strokeWidth: 2, r: 4 }}
+                  dot={{ fill: brandColors.oliveSoft, strokeWidth: 2, r: timeSpanContext.dotSize }}
+                  label={timeSpanContext.showDataLabels ? { fontSize: 10, fill: brandColors.oliveSoft } : false}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -652,13 +770,16 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
                       </div>
                     </div>
                     
-                    <ResponsiveContainer width="100%" height={350}>
+                    <ResponsiveContainer width="100%" height={timeSpanContext.chartHeight}>
                       <LineChart data={getIndividualCoachTrend(coach)}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                         <XAxis 
                           dataKey="period" 
-                          tick={{ fontSize: 12, fill: '#2C5134' }}
+                          tick={{ fontSize: timeSpanContext.periodCount > 6 ? 10 : 12, fill: '#2C5134' }}
                           tickLine={{ stroke: '#2C5134' }}
+                          angle={timeSpanContext.periodCount > 6 ? -45 : 0}
+                          textAnchor={timeSpanContext.periodCount > 6 ? "end" : "middle"}
+                          height={timeSpanContext.periodCount > 6 ? 80 : 60}
                         />
                         <YAxis 
                           tick={{ fontSize: 12, fill: '#2C5134' }}
@@ -680,33 +801,37 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
                           type="monotone" 
                           dataKey="evaluations" 
                           stroke={brandColors.olive} 
-                          strokeWidth={3}
+                          strokeWidth={timeSpanContext.strokeWidth}
                           name="Site Evaluations"
-                          dot={{ fill: brandColors.olive, strokeWidth: 2, r: 5 }}
+                          dot={{ fill: brandColors.olive, strokeWidth: 2, r: timeSpanContext.dotSize }}
+                          label={timeSpanContext.showDataLabels ? { fontSize: 10, fill: brandColors.olive } : false}
                         />
                         <Line 
                           type="monotone" 
                           dataKey="audits" 
                           stroke={brandColors.oliveLight} 
-                          strokeWidth={3}
+                          strokeWidth={timeSpanContext.strokeWidth}
                           name="Forensic Audits"
-                          dot={{ fill: brandColors.oliveLight, strokeWidth: 2, r: 5 }}
+                          dot={{ fill: brandColors.oliveLight, strokeWidth: 2, r: timeSpanContext.dotSize }}
+                          label={timeSpanContext.showDataLabels ? { fontSize: 10, fill: brandColors.oliveLight } : false}
                         />
                         <Line 
                           type="monotone" 
                           dataKey="warehouse" 
                           stroke={brandColors.oliveMedium} 
-                          strokeWidth={3}
+                          strokeWidth={timeSpanContext.strokeWidth}
                           name="Warehouse Audits"
-                          dot={{ fill: brandColors.oliveMedium, strokeWidth: 2, r: 5 }}
+                          dot={{ fill: brandColors.oliveMedium, strokeWidth: 2, r: timeSpanContext.dotSize }}
+                          label={timeSpanContext.showDataLabels ? { fontSize: 10, fill: brandColors.oliveMedium } : false}
                         />
                         <Line 
                           type="monotone" 
                           dataKey="investigations" 
                           stroke={brandColors.oliveSoft} 
-                          strokeWidth={3}
+                          strokeWidth={timeSpanContext.strokeWidth}
                           name="Investigations"
-                          dot={{ fill: brandColors.oliveSoft, strokeWidth: 2, r: 5 }}
+                          dot={{ fill: brandColors.oliveSoft, strokeWidth: 2, r: timeSpanContext.dotSize }}
+                          label={timeSpanContext.showDataLabels ? { fontSize: 10, fill: brandColors.oliveSoft } : false}
                         />
                       </LineChart>
                     </ResponsiveContainer>
