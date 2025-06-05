@@ -38,6 +38,7 @@ import { CoachManagement } from "./coach-management";
 import { MetricsDashboard } from "./metrics-dashboard";
 import { MasterDashboard } from "./master-dashboard";
 import { IdpDashboard } from "./idp-dashboard";
+import { IdpOverview } from "./idp-overview";
 import { ActionItems } from "./action-items";
 import { AnimatedContainer, AnimatedItem, LoadingSpinner } from "@/components/ui/animated-container";
 import type { BiWeeklyPeriod, Coach } from "@/lib/types";
@@ -411,55 +412,7 @@ export function BiWeeklyDashboard() {
         );
       case "idp":
         return (
-          <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-brand-olive">Individual Development Plans</h2>
-                <p className="text-medium-contrast text-sm sm:text-base">Professional development and certification tracking for coaches</p>
-              </div>
-            </div>
-            
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {coaches.map((coach) => (
-                <AnimatedItem key={coach.id}>
-                  <div className="p-4 border rounded-lg hover:bg-muted/50 cursor-pointer hover-lift">
-                    <h3 className="font-semibold text-high-contrast text-sm sm:text-base">{coach.name}</h3>
-                    <p className="text-xs sm:text-sm text-medium-contrast">
-                      Hired: {coach.date_of_hire ? new Date(coach.date_of_hire).toLocaleDateString() : 'N/A'}
-                    </p>
-                    <p className="text-xs sm:text-sm text-medium-contrast">
-                      Vacation: {coach.vacation_days_remaining}/{coach.vacation_days_total} days
-                    </p>
-                    <div className="mt-3">
-                      <button 
-                        onClick={() => setSelectedCoach(coach)}
-                        className="text-xs sm:text-sm bg-brand-olive text-white px-3 py-1 rounded hover:bg-brand-olive-light w-full sm:w-auto hover-scale"
-                      >
-                        View IDP
-                      </button>
-                    </div>
-                  </div>
-                </AnimatedItem>
-              ))}
-            </div>
-
-            {selectedCoach && (
-              <AnimatedContainer variant="fadeInUp" className="mt-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <button 
-                    onClick={() => setSelectedCoach(null)}
-                    className="text-xs sm:text-sm text-brand-olive hover:underline hover-scale"
-                  >
-                    ← Back to Coach List
-                  </button>
-                </div>
-                <IdpDashboard 
-                  coach={selectedCoach}
-                  onDataChange={fetchData}
-                />
-              </AnimatedContainer>
-            )}
-          </div>
+          <IdpOverview coaches={coaches} />
         );
       case "action-items":
         return (
