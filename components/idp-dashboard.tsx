@@ -347,7 +347,7 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
                   ease: [0, 0.71, 0.2, 1.01]
                 }}
               >
-                <Card className="border-l-4 border-l-brand-olive/30 hover-lift">
+                <Card className="border-l-4 border-l-brand-olive/30">
                   <motion.div
                     className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors"
                     onClick={() => setExpandedCategory(isExpanded ? null : category.id)}
@@ -461,7 +461,7 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
                           return (
                             <motion.div
                               key={certification.id}
-                              className="flex items-center justify-between p-2 border rounded hover:bg-muted/30 cursor-pointer transition-colors hover-lift"
+                              className="flex items-center justify-between p-2 border rounded hover:bg-muted/30 cursor-pointer transition-colors"
                               onClick={() => openCertificationDialog(certification)}
                               variants={{
                                 expanded: {
