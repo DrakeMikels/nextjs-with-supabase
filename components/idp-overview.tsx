@@ -392,7 +392,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
               Coach Certification Summary
             </CardTitle>
             <p className="text-sm text-medium-contrast">
-              Overview of each coach's completed certifications
+              Overview of each coach&apos;s completed certifications
             </p>
           </CardHeader>
           <CardContent>
