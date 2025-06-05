@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -64,7 +64,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
   }, [fetchMetrics]);
 
   // Enhanced filtering logic that handles both period selection and custom date range
-  const getFilteredMetrics = () => {
+  const filteredMetrics = useMemo(() => {
     let filtered = metrics;
 
     // If a specific period is selected, filter by that period
@@ -89,12 +89,10 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
     }
 
     return filtered;
-  };
-
-  const filteredMetrics = getFilteredMetrics();
+  }, [metrics, selectedPeriod, customDateRange, periods]);
 
   // Get filtered periods for trend analysis
-  const getFilteredPeriods = () => {
+  const filteredPeriods = useMemo(() => {
     if (selectedPeriod) {
       // When a specific period is selected, show comparison with previous periods
       return periods.slice(0, 6).reverse();
@@ -112,42 +110,42 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
       // Show all periods (last 6)
       return periods.slice(0, 6).reverse();
     }
-  };
+  }, [selectedPeriod, customDateRange, periods]);
 
   // Get the current filtering context for display
-  const getFilteringContext = () => {
+  const filteringContext = useMemo(() => {
     if (selectedPeriod) {
       return {
         title: `Current Period: ${selectedPeriod.period_name}`,
         subtitle: `${new Date(selectedPeriod.start_date).toLocaleDateString()} - ${new Date(selectedPeriod.end_date).toLocaleDateString()}`,
-        type: 'period'
+        type: 'period' as const
       };
     } else if (customDateRange.start && customDateRange.end) {
       return {
         title: 'Custom Date Range',
         subtitle: `${new Date(customDateRange.start).toLocaleDateString()} - ${new Date(customDateRange.end).toLocaleDateString()}`,
-        type: 'dateRange'
+        type: 'dateRange' as const
       };
     } else {
       return {
         title: 'All Periods',
         subtitle: 'Comprehensive safety metrics analysis and trends across all periods',
-        type: 'all'
+        type: 'all' as const
       };
     }
-  };
+  }, [selectedPeriod, customDateRange]);
 
   // Brand colors for charts - Consistent Olive Variations
-  const brandColors = {
+  const brandColors = useMemo(() => ({
     olive: "#2C5134",        // Primary olive
     oliveLight: "#3D6B47",   // Lighter olive
     oliveMedium: "#4E855A",  // Medium olive
     oliveSoft: "#5F9F6D",    // Soft olive
     olivePale: "#70B980",    // Pale olive
     sorbet: "#FF6B35"        // Keep sorbet for accent only
-  };
+  }), []);
 
-  const calculateOverallStats = () => {
+  const overallStats = useMemo(() => {
     const totalEvaluations = filteredMetrics.reduce((sum, m) => sum + (m.site_safety_evaluations || 0), 0);
     const totalAudits = filteredMetrics.reduce((sum, m) => sum + (m.forensic_survey_audits || 0), 0);
     const totalWarehouseAudits = filteredMetrics.reduce((sum, m) => sum + (m.warehouse_safety_audits || 0), 0);
@@ -155,7 +153,6 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
       sum + (m.open_investigations_injuries || 0) + (m.open_investigations_auto || 0) + 
       (m.open_investigations_property_damage || 0) + (m.open_investigations_near_miss || 0), 0);
 
-    // For current period, show totals instead of averages
     return {
       totalEvaluations,
       totalAudits,
@@ -164,9 +161,9 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
       avgEvaluationsPerPeriod: selectedPeriod ? totalEvaluations.toString() : (periods.length > 0 ? (totalEvaluations / periods.length).toFixed(1) : "0"),
       avgAuditsPerPeriod: selectedPeriod ? totalAudits.toString() : (periods.length > 0 ? (totalAudits / periods.length).toFixed(1) : "0")
     };
-  };
+  }, [filteredMetrics, selectedPeriod, periods.length]);
 
-  const getCoachPerformanceData = () => {
+  const coachPerformanceData = useMemo(() => {
     return coaches.map(coach => {
       const coachMetrics = filteredMetrics.filter(m => m.coach_id === coach.id);
       const totalEvaluations = coachMetrics.reduce((sum, m) => sum + (m.site_safety_evaluations || 0), 0);
@@ -185,11 +182,10 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
         periodsReported: coachMetrics.length
       };
     });
-  };
+  }, [coaches, filteredMetrics]);
 
-  const getTrendData = () => {
-    const periodsToShow = getFilteredPeriods();
-    return periodsToShow.map(period => {
+  const trendData = useMemo(() => {
+    return filteredPeriods.map(period => {
       const periodMetrics = metrics.filter(m => m.period_id === period.id);
       return {
         period: period.period_name,
@@ -201,23 +197,19 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
           (m.open_investigations_property_damage || 0) + (m.open_investigations_near_miss || 0), 0)
       };
     });
-  };
+  }, [filteredPeriods, metrics]);
 
-  const getGoalProgressData = () => {
-    const stats = calculateOverallStats();
-    const context = getFilteringContext();
-    
+  const goalProgressData = useMemo(() => {
     // Calculate goals based on the filtering context
     let evaluationGoal, auditGoal, warehouseGoal;
     
-    if (context.type === 'period') {
+    if (filteringContext.type === 'period') {
       // Single period goals (bi-weekly)
       evaluationGoal = 6;
       auditGoal = 6;
       warehouseGoal = 1;
-    } else if (context.type === 'dateRange') {
+    } else if (filteringContext.type === 'dateRange') {
       // Calculate goals based on the number of periods in the date range
-      const filteredPeriods = getFilteredPeriods();
       const periodCount = filteredPeriods.length;
       evaluationGoal = periodCount * 6; // 6 per bi-weekly period
       auditGoal = periodCount * 6; // 6 per bi-weekly period
@@ -232,29 +224,27 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
     return [
       {
         name: "Site Evaluations",
-        value: Math.min((stats.totalEvaluations / evaluationGoal) * 100, 100),
+        value: Math.min((overallStats.totalEvaluations / evaluationGoal) * 100, 100),
         goal: 100,
         fill: brandColors.olive
       },
       {
         name: "Forensic Audits", 
-        value: Math.min((stats.totalAudits / auditGoal) * 100, 100),
+        value: Math.min((overallStats.totalAudits / auditGoal) * 100, 100),
         goal: 100,
         fill: brandColors.oliveLight
       },
       {
         name: "Warehouse Audits",
-        value: Math.min((stats.totalWarehouseAudits / warehouseGoal) * 100, 100),
+        value: Math.min((overallStats.totalWarehouseAudits / warehouseGoal) * 100, 100),
         goal: 100,
         fill: brandColors.oliveMedium
       }
     ];
-  };
+  }, [overallStats, filteringContext.type, filteredPeriods.length, brandColors]);
 
-  const getIndividualCoachTrend = (coach: Coach) => {
-    const periodsToShow = getFilteredPeriods();
-    
-    return periodsToShow.map(period => {
+  const getIndividualCoachTrend = useCallback((coach: Coach) => {
+    return filteredPeriods.map(period => {
       const periodMetrics = metrics.filter(m => m.period_id === period.id && m.coach_id === coach.id);
       const metric = periodMetrics[0];
       return {
@@ -268,9 +258,9 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
                        (metric?.open_investigations_near_miss || 0)
       };
     });
-  };
+  }, [filteredPeriods, metrics]);
 
-  const getInvestigationBreakdown = () => {
+  const investigationData = useMemo(() => {
     const injuries = filteredMetrics.reduce((sum, m) => sum + (m.open_investigations_injuries || 0), 0);
     const auto = filteredMetrics.reduce((sum, m) => sum + (m.open_investigations_auto || 0), 0);
     const property = filteredMetrics.reduce((sum, m) => sum + (m.open_investigations_property_damage || 0), 0);
@@ -282,7 +272,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
       { name: "Property Damage", value: property, fill: brandColors.oliveMedium },
       { name: "Near Miss", value: nearMiss, fill: brandColors.oliveSoft }
     ];
-  };
+  }, [filteredMetrics, brandColors]);
 
   if (loading) {
     return (
@@ -292,33 +282,28 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
     );
   }
 
-  const coachPerformanceData = getCoachPerformanceData();
-  const trendData = getTrendData();
-  const goalProgressData = getGoalProgressData();
-  const investigationData = getInvestigationBreakdown();
-
   return (
     <AnimatedContainer variant="stagger" className="space-y-6">
       <AnimatedItem className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-brand-olive">Analytics Dashboard</h2>
           <p className="text-medium-contrast">
-            {getFilteringContext().title} - {getFilteringContext().subtitle}
+            {filteringContext.title} - {filteringContext.subtitle}
           </p>
         </div>
         
         {/* Filtering Status Indicator */}
         <div className="flex items-center gap-2">
           <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-            getFilteringContext().type === 'period' 
+            filteringContext.type === 'period' 
               ? 'bg-brand-olive/10 text-brand-olive border border-brand-olive/20'
-              : getFilteringContext().type === 'dateRange'
+              : filteringContext.type === 'dateRange'
               ? 'bg-blue-500/10 text-blue-600 border border-blue-500/20'
               : 'bg-gray-500/10 text-gray-600 border border-gray-500/20'
           }`}>
-            {getFilteringContext().type === 'period' 
+            {filteringContext.type === 'period' 
               ? '📅 Single Period'
-              : getFilteringContext().type === 'dateRange'
+              : filteringContext.type === 'dateRange'
               ? '📊 Date Range'
               : '🌐 All Periods'
             }
@@ -334,7 +319,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
               title: "Total",
               subtitle: "Evaluations",
               value: filteredMetrics.reduce((sum, m) => sum + (m.site_safety_evaluations || 0), 0),
-              description: getFilteringContext().type === 'period' ? "Current period" : getFilteringContext().type === 'dateRange' ? "Date range" : "All periods",
+              description: filteringContext.type === 'period' ? "Current period" : filteringContext.type === 'dateRange' ? "Date range" : "All periods",
               icon: BarChart3,
               color: "brand-olive",
               delay: 0.1
@@ -343,7 +328,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
               title: "Total",
               subtitle: "Audits", 
               value: filteredMetrics.reduce((sum, m) => sum + (m.forensic_survey_audits || 0), 0),
-              description: getFilteringContext().type === 'period' ? "Current period" : getFilteringContext().type === 'dateRange' ? "Date range" : "All periods",
+              description: filteringContext.type === 'period' ? "Current period" : filteringContext.type === 'dateRange' ? "Date range" : "All periods",
               icon: Search,
               color: "blue-600",
               delay: 0.2
@@ -352,7 +337,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
               title: "Warehouse",
               subtitle: "Audits",
               value: filteredMetrics.reduce((sum, m) => sum + (m.warehouse_safety_audits || 0), 0),
-              description: getFilteringContext().type === 'period' ? "Current period" : getFilteringContext().type === 'dateRange' ? "Date range" : "All periods", 
+              description: filteringContext.type === 'period' ? "Current period" : filteringContext.type === 'dateRange' ? "Date range" : "All periods", 
               icon: Package,
               color: "green-600",
               delay: 0.3
@@ -363,7 +348,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
               value: filteredMetrics.reduce((sum, m) => 
                 sum + (m.open_investigations_injuries || 0) + (m.open_investigations_auto || 0) + 
                 (m.open_investigations_property_damage || 0) + (m.open_investigations_near_miss || 0), 0),
-              description: getFilteringContext().type === 'period' ? "Current period" : getFilteringContext().type === 'dateRange' ? "Date range" : "All periods",
+              description: filteringContext.type === 'period' ? "Current period" : filteringContext.type === 'dateRange' ? "Date range" : "All periods",
               icon: AlertTriangle,
               color: "red-600",
               delay: 0.4
@@ -433,7 +418,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
           <CardHeader>
             <CardTitle className="text-brand-olive">🎯 Goal Progress</CardTitle>
             <CardDescription className="text-medium-contrast">
-              {getFilteringContext().type === 'period' ? "Current period goal achievement" : "Monthly safety goals achievement"}
+              {filteringContext.type === 'period' ? "Current period goal achievement" : "Monthly safety goals achievement"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -464,7 +449,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
           <CardHeader>
             <CardTitle className="text-brand-olive">🔍 Investigation Types</CardTitle>
             <CardDescription className="text-medium-contrast">
-              {getFilteringContext().type === 'period' ? "Current period investigations" : "Breakdown of open investigations"}
+              {filteringContext.type === 'period' ? "Current period investigations" : "Breakdown of open investigations"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -503,10 +488,10 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
           <CardHeader>
             <CardTitle className="text-brand-olive">📊 Performance Trends</CardTitle>
             <CardDescription className="text-medium-contrast">
-              {getFilteringContext().type === 'period' 
+              {filteringContext.type === 'period' 
                 ? "Comparison with previous periods" 
-                : getFilteringContext().type === 'dateRange'
-                ? `Safety metrics for periods within ${getFilteringContext().subtitle}`
+                : filteringContext.type === 'dateRange'
+                ? `Safety metrics for periods within ${filteringContext.subtitle}`
                 : "Safety metrics over the last 6 bi-weekly periods"
               }
             </CardDescription>
@@ -580,7 +565,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
           <CardHeader>
             <CardTitle className="text-brand-olive">👥 Coach Performance Comparison</CardTitle>
             <CardDescription className="text-medium-contrast">
-              {getFilteringContext().type === 'period' ? `Performance metrics for ${getFilteringContext().title} by coach` : "Total metrics across all periods by coach"}
+              {filteringContext.type === 'period' ? `Performance metrics for ${filteringContext.title} by coach` : "Total metrics across all periods by coach"}
             </CardDescription>
           </CardHeader>
           <CardContent>
