@@ -375,13 +375,191 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
       </Card>
       </motion.div>
 
-      {/* Main Overview Table */}
+      {/* Coach Summary Cards */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
           duration: 0.4,
           delay: 1.0,
+          y: { type: "spring", stiffness: 100, damping: 15 }
+        }}
+      >
+        <Card className="hover-lift border-brand-olive/20 hover:border-brand-olive/30">
+          <CardHeader>
+            <CardTitle className="text-lg text-high-contrast flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Coach Certification Summary
+            </CardTitle>
+            <p className="text-sm text-medium-contrast">
+              Overview of each coach's completed certifications
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {coaches.map((coach, coachIndex) => {
+                const coachCompletedCerts = coachCertifications.filter(
+                  cc => cc.coach_id === coach.id && cc.status === 'completed'
+                );
+                
+                const coachCertsWithDetails = coachCompletedCerts.map(cc => {
+                  const cert = certifications.find(c => c.id === cc.certification_id);
+                  return {
+                    ...cc,
+                    certification: cert
+                  };
+                }).filter(cc => cc.certification);
+
+                return (
+                  <motion.div
+                    key={coach.id}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{
+                      duration: 0.4,
+                      delay: 1.1 + (coachIndex * 0.1),
+                      scale: { type: "spring", visualDuration: 0.4, bounce: 0.3 }
+                    }}
+                    whileHover={{ 
+                      scale: 1.02,
+                      transition: { duration: 0.17, type: "spring", stiffness: 300, damping: 20 }
+                    }}
+                  >
+                    <Card className="h-full border-brand-olive/20 hover:border-brand-olive/40 transition-all duration-300">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <CardTitle className="text-base text-high-contrast">{coach.name}</CardTitle>
+                            <p className="text-xs text-medium-contrast">
+                              {coachCertsWithDetails.length} completed certification{coachCertsWithDetails.length !== 1 ? 's' : ''}
+                            </p>
+                          </div>
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{
+                              duration: 0.3,
+                              delay: 1.2 + (coachIndex * 0.1),
+                              scale: { type: "spring", visualDuration: 0.3, bounce: 0.4 }
+                            }}
+                          >
+                            <div className="text-right">
+                              <div className="text-lg font-bold text-brand-olive">
+                                {Math.round(getCoachProgress(coach.id))}%
+                              </div>
+                              <div className="text-xs text-medium-contrast">Complete</div>
+                            </div>
+                          </motion.div>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                          {coachCertsWithDetails.length > 0 ? (
+                            coachCertsWithDetails.map((coachCert, certIndex) => (
+                              <motion.div
+                                key={coachCert.id}
+                                className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg"
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{
+                                  duration: 0.3,
+                                  delay: 1.3 + (coachIndex * 0.1) + (certIndex * 0.05)
+                                }}
+                              >
+                                <div className="flex items-center gap-2 flex-1 min-w-0">
+                                  <motion.div
+                                    initial={{ opacity: 0, scale: 0 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{
+                                      duration: 0.2,
+                                      delay: 1.4 + (coachIndex * 0.1) + (certIndex * 0.05),
+                                      scale: { type: "spring", visualDuration: 0.2, bounce: 0.4 }
+                                    }}
+                                  >
+                                    <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                                  </motion.div>
+                                  <div className="min-w-0 flex-1">
+                                    <h4 className="font-medium text-sm text-high-contrast truncate">
+                                      {coachCert.certification?.name}
+                                    </h4>
+                                    <div className="text-xs text-medium-contrast space-y-1">
+                                      {coachCert.completion_date && (
+                                        <p>Completed: {new Date(coachCert.completion_date + 'T00:00:00').toLocaleDateString()}</p>
+                                      )}
+                                      {coachCert.expiration_date && (
+                                        <p>Expires: {new Date(coachCert.expiration_date + 'T00:00:00').toLocaleDateString()}</p>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                                {coachCert.certification?.is_required && (
+                                  <motion.div
+                                    initial={{ opacity: 0, scale: 0 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{
+                                      duration: 0.2,
+                                      delay: 1.5 + (coachIndex * 0.1) + (certIndex * 0.05),
+                                      scale: { type: "spring", visualDuration: 0.2, bounce: 0.4 }
+                                    }}
+                                  >
+                                    <Star className="h-3 w-3 text-amber-500 fill-amber-500 flex-shrink-0" />
+                                  </motion.div>
+                                )}
+                              </motion.div>
+                            ))
+                          ) : (
+                            <motion.div
+                              className="text-center py-4 text-sm text-medium-contrast"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{
+                                duration: 0.3,
+                                delay: 1.3 + (coachIndex * 0.1)
+                              }}
+                            >
+                              No completed certifications yet
+                            </motion.div>
+                          )}
+                        </div>
+                        <motion.div
+                          className="mt-3 pt-3 border-t"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            duration: 0.3,
+                            delay: 1.4 + (coachIndex * 0.1)
+                          }}
+                        >
+                          <Button 
+                            size="sm" 
+                            className="w-full gap-1 hover-lift"
+                            onClick={() => {
+                              // This would trigger opening the detailed IDP view
+                              // You can implement this navigation as needed
+                              console.log('Open detailed IDP for', coach.name);
+                            }}
+                          >
+                            <GraduationCap className="h-3 w-3" />
+                            View Full IDP
+                          </Button>
+                        </motion.div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Main Overview Table */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.4,
+          delay: 1.5,
           y: { type: "spring", stiffness: 100, damping: 15 }
         }}
       >
@@ -395,7 +573,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
                     duration: 0.3,
-                    delay: 1.1,
+                    delay: 1.6,
                     scale: { type: "spring", visualDuration: 0.3, bounce: 0.4 }
                   }}
                 >
@@ -416,7 +594,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{
                   duration: 0.4,
-                  delay: 1.2,
+                  delay: 1.7,
                   scale: { type: "spring", visualDuration: 0.4, bounce: 0.2 }
                 }}
               >
@@ -425,19 +603,19 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                     value: coachCertifications.filter(cc => cc.status === 'completed').length,
                     label: "Total Completed",
                     color: "green-600",
-                    delay: 1.3
+                    delay: 1.8
                   },
                   {
                     value: coachCertifications.filter(cc => cc.status === 'in_progress').length,
                     label: "In Progress",
                     color: "blue-600",
-                    delay: 1.4
+                    delay: 1.9
                   },
                   {
                     value: coachCertifications.filter(cc => cc.status === 'scheduled').length,
                     label: "Scheduled",
                     color: "amber-600",
-                    delay: 1.5
+                    delay: 2.0
                   }
                 ].map((stat) => (
                   <motion.div 
@@ -494,7 +672,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{
                         duration: 0.4,
-                        delay: 1.6 + (certIndex * 0.1)
+                        delay: 2.1 + (certIndex * 0.1)
                       }}
                       whileHover={{ 
                         scale: 1.01,
@@ -511,7 +689,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                                   animate={{ opacity: 1, scale: 1 }}
                                   transition={{
                                     duration: 0.3,
-                                    delay: 1.7 + (certIndex * 0.1),
+                                    delay: 2.2 + (certIndex * 0.1),
                                     scale: { type: "spring", visualDuration: 0.3, bounce: 0.4 }
                                   }}
                                 >
@@ -523,7 +701,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{
                                   duration: 0.3,
-                                  delay: 1.8 + (certIndex * 0.1)
+                                  delay: 2.3 + (certIndex * 0.1)
                                 }}
                               >
                             <h3 className="font-semibold text-high-contrast">{cert.name}</h3>
@@ -538,7 +716,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                               animate={{ opacity: 1, x: 0 }}
                               transition={{
                                 duration: 0.3,
-                                delay: 1.9 + (certIndex * 0.1)
+                                delay: 2.4 + (certIndex * 0.1)
                               }}
                             >
                               {[
@@ -553,7 +731,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                                   animate={{ opacity: 1, scale: 1 }}
                                   transition={{
                                     duration: 0.3,
-                                    delay: 2.0 + (certIndex * 0.1) + (statIndex * 0.05),
+                                    delay: 2.5 + (certIndex * 0.1) + (statIndex * 0.05),
                                     scale: { type: "spring", visualDuration: 0.3, bounce: 0.4 }
                                   }}
                                 >
@@ -573,7 +751,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                             animate={{ opacity: 1 }}
                             transition={{
                               duration: 0.4,
-                              delay: 2.1 + (certIndex * 0.1)
+                              delay: 2.6 + (certIndex * 0.1)
                             }}
                           >
                             {coachesWithCert.map(({ coach, status, completion_date, start_date }, coachIndex) => (
@@ -614,7 +792,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{
                                       duration: 0.2,
-                                      delay: 2.3 + (certIndex * 0.1) + (coachIndex * 0.02),
+                                      delay: 2.8 + (certIndex * 0.1) + (coachIndex * 0.02),
                                       scale: { type: "spring", visualDuration: 0.2, bounce: 0.4 }
                                     }}
                                   >
@@ -628,7 +806,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                                     animate={{ opacity: 1 }}
                                     transition={{
                                       duration: 0.3,
-                                      delay: 2.4 + (certIndex * 0.1) + (coachIndex * 0.02)
+                                      delay: 2.9 + (certIndex * 0.1) + (coachIndex * 0.02)
                                     }}
                                   >
                                 Completed: {new Date(completion_date).toLocaleDateString()}
@@ -641,7 +819,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                                     animate={{ opacity: 1 }}
                                     transition={{
                                       duration: 0.3,
-                                      delay: 2.4 + (certIndex * 0.1) + (coachIndex * 0.02)
+                                      delay: 2.9 + (certIndex * 0.1) + (coachIndex * 0.02)
                                     }}
                                   >
                                     Started: {new Date(start_date).toLocaleDateString()}
