@@ -410,6 +410,7 @@ export function BiWeeklyDashboard() {
             periods={periods}
             coaches={coaches}
             selectedPeriod={selectedPeriod}
+            customDateRange={customDateRange}
           />
         );
       case "idp":
