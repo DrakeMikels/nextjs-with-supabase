@@ -5,10 +5,10 @@ import { Shield, Users, BarChart3 } from "lucide-react";
 import * as motion from "motion/react-client";
 import { useAnimate } from "motion/react";
 import { useEffect, useState, useMemo } from "react";
-import Image from "next/image";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 import type { Container, ISourceOptions } from "@tsparticles/engine";
+import { SplitText } from "@/components/ui/split-text";
 
 export default function Page() {
   const [gradientRef, animateGradient] = useAnimate();
@@ -283,7 +283,7 @@ export default function Page() {
               x: { type: "spring", stiffness: 100, damping: 15 }
             }}
           >
-            {/* Header Section with Dark Background and Split Text Animation */}
+            {/* Header Section with Split Text Animation */}
             <motion.div 
               className="space-y-6 p-6 bg-black/40 backdrop-blur-md rounded-2xl border border-white/20 shadow-2xl"
               initial={{ opacity: 0, y: 20 }}
@@ -294,23 +294,25 @@ export default function Page() {
                 y: { type: "spring", stiffness: 100, damping: 15 }
               }}
             >
-              <div className="flex justify-center">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
+              <div className="text-center space-y-2">
+                <SplitText 
+                  text="RSC Platform" 
+                  className="mb-2"
+                  staggerDelay={0.08}
+                />
+                <motion.p
+                  className="text-lg font-medium"
+                  style={{ color: "#F6F6F6", fontFamily: "'Inter', 'Articulat CF', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{
-                    duration: 0.4,
-                    scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 }
+                    duration: 0.6,
+                    delay: 1.2,
+                    ease: "easeOut"
                   }}
                 >
-                  <Image 
-                    src="/rsc-logo.svg" 
-                    alt="RSC Logo" 
-                    width={120} 
-                    height={120}
-                    className="object-contain"
-                  />
-                </motion.div>
+                  Safety Management System
+                </motion.p>
               </div>
             </motion.div>
             
@@ -383,7 +385,7 @@ export default function Page() {
               x: { type: "spring", stiffness: 100, damping: 15 }
             }}
           >
-            {/* Mobile Header with Dark Background */}
+            {/* Mobile Header with Split Text */}
             <motion.div 
               className="text-center lg:hidden mb-8 p-6 bg-black/40 backdrop-blur-md rounded-2xl border border-white/20 shadow-2xl"
               initial={{ opacity: 0, y: -20 }}
@@ -394,23 +396,25 @@ export default function Page() {
                 y: { type: "spring", stiffness: 100, damping: 15 }
               }}
             >
-              <div className="flex justify-center">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
+              <div className="space-y-2">
+                <SplitText 
+                  text="RSC Platform" 
+                  className="mb-2"
+                  staggerDelay={0.08}
+                />
+                <motion.p
+                  className="text-base font-medium"
+                  style={{ color: "#F6F6F6", fontFamily: "'Inter', 'Articulat CF', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{
-                    duration: 0.4,
-                    scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 }
+                    duration: 0.6,
+                    delay: 1.2,
+                    ease: "easeOut"
                   }}
                 >
-                  <Image 
-                    src="/rsc-logo.svg" 
-                    alt="RSC Logo" 
-                    width={100} 
-                    height={100}
-                    className="object-contain"
-                  />
-                </motion.div>
+                  Safety Management System
+                </motion.p>
               </div>
             </motion.div>
             

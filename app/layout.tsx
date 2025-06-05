@@ -60,6 +60,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link 
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" 
+          rel="stylesheet" 
+        />
+        <style>{`
+          @font-face {
+            font-family: 'Articulat CF';
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+            src: url('data:font/woff2;base64,') format('woff2');
+          }
+        `}</style>
+      </head>
       <body className={`${geistSans.className} antialiased`}>
         <ThemeProvider
           attribute="class"

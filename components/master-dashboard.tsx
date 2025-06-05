@@ -180,7 +180,6 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-lg font-semibold text-high-contrast">{coach.name}</h3>
           <p className="text-sm text-medium-contrast">
             Vacation: {coach.vacation_days_remaining}/{coach.vacation_days_total} days
           </p>
