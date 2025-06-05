@@ -31,6 +31,17 @@ const ThemeSwitcher = () => {
     
     setIsTransitioning(true);
     
+    // Temporarily disable CSS transitions to prevent conflicts
+    const style = document.createElement('style');
+    style.textContent = `
+      html, body, 
+      .bg-background, .bg-card, .bg-popover, .bg-muted, .border-border,
+      .text-foreground, .text-card-foreground, .text-popover-foreground, .text-muted-foreground {
+        transition: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+    
     // Create a flowing gradient transition overlay
     if (transitionRef.current) {
       // Show the transition overlay
@@ -83,9 +94,11 @@ const ThemeSwitcher = () => {
       setTheme(newTheme);
     }, 600);
     
+    // Re-enable CSS transitions after Motion animation completes
     setTimeout(() => {
+      document.head.removeChild(style);
       setIsTransitioning(false);
-    }, 1200);
+    }, 1300);
   };
 
   if (!mounted) {
