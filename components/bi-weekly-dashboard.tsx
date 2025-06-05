@@ -37,10 +37,9 @@ import { SafetyMetricsForm } from "./safety-metrics-form";
 import { CoachManagement } from "./coach-management";
 import { MetricsDashboard } from "./metrics-dashboard";
 import { MasterDashboard } from "./master-dashboard";
-import { IdpDashboard } from "./idp-dashboard";
 import { IdpOverview } from "./idp-overview";
 import { ActionItems } from "./action-items";
-import { AnimatedContainer, AnimatedItem, LoadingSpinner } from "@/components/ui/animated-container";
+import { LoadingSpinner } from "@/components/ui/animated-container";
 import type { BiWeeklyPeriod, Coach } from "@/lib/types";
 import { BranchVisits } from "./branch-visits";
 import { CprFirstAid } from "./cpr-first-aid";
@@ -260,7 +259,6 @@ export function BiWeeklyDashboard() {
   const [periods, setPeriods] = useState<BiWeeklyPeriod[]>([]);
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<BiWeeklyPeriod | null>(null);
-  const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState("master"); // Default to Master View
   const [sidebarOpen, setSidebarOpen] = useState(true); // Always start expanded for welcoming experience
