@@ -15,7 +15,8 @@ import {
   Calendar,
   MapPin,
   Edit3,
-  Building2
+  Building2,
+  Clock
 } from "lucide-react";
 import { AnimatedContainer, AnimatedItem } from "@/components/ui/animated-container";
 import * as motion from "motion/react-client";
@@ -336,7 +337,7 @@ export function BranchVisits({ coaches, onDataChange }: BranchVisitsProps) {
 
       {/* Branch Assignments by Coach */}
       <AnimatedItem>
-        <div className="space-y-6">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {Object.entries(visitsByCoach).map(([coachId, visits], coachIndex) => {
             const coach = coaches.find(c => c.id === coachId);
             if (!coach) return null;
@@ -344,154 +345,154 @@ export function BranchVisits({ coaches, onDataChange }: BranchVisitsProps) {
             return (
               <motion.div
                 key={coachId}
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{
-                  duration: 0.51,
+                  duration: 0.8,
                   delay: 0.1 + (coachIndex * 0.1),
-                  scale: { type: "spring", visualDuration: 0.43, bounce: 0.2 }
+                  ease: [0, 0.71, 0.2, 1.01],
                 }}
                 whileHover={{ 
-                  scale: 1.01,
+                  scale: 1.02,
                   transition: { duration: 0.17, type: "spring", stiffness: 300, damping: 20 }
                 }}
               >
-                <Card className="hover-lift border-brand-olive/20 hover:border-brand-olive/40 hover:shadow-lg transition-all duration-300">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <motion.div
-                        initial={{ opacity: 0, rotate: -180 }}
-                        animate={{ opacity: 1, rotate: 0 }}
-                        transition={{
-                          duration: 0.43,
-                          delay: 0.2 + (coachIndex * 0.1),
-                          rotate: { type: "spring", stiffness: 200, damping: 15 }
-                        }}
-                      >
-                        <MapPin className="h-5 w-5 text-brand-olive" />
-                      </motion.div>
-                      <motion.span
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{
-                          duration: 0.34,
-                          delay: 0.3 + (coachIndex * 0.1)
-                        }}
-                      >
+                <Card className="h-full border-brand-olive/20 hover:border-brand-olive/40 hover:shadow-lg transition-all duration-300 hover-lift">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg text-high-contrast flex items-center gap-2">
+                        <motion.div
+                          initial={{ opacity: 0, rotate: -180 }}
+                          animate={{ opacity: 1, rotate: 0 }}
+                          transition={{
+                            duration: 0.43,
+                            delay: 0.2 + (coachIndex * 0.1),
+                            rotate: { type: "spring", stiffness: 200, damping: 15 }
+                          }}
+                        >
+                          <MapPin className="h-5 w-5 text-brand-olive" />
+                        </motion.div>
                         {coach.name}
-                      </motion.span>
+                      </CardTitle>
                       <motion.div
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{
                           duration: 0.34,
-                          delay: 0.4 + (coachIndex * 0.1),
+                          delay: 0.3 + (coachIndex * 0.1),
                           scale: { type: "spring", visualDuration: 0.34, bounce: 0.4 }
                         }}
-                        className="ml-auto"
                       >
-                        <Badge variant="outline">
+                        <Badge variant="outline" className="text-xs">
                           {visits.length} branches
                         </Badge>
                       </motion.div>
-                    </CardTitle>
+                    </div>
+                    <CardDescription className="text-xs">
+                      Assigned branches and visit tracking
+                    </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                      {visits.map((visit, visitIndex) => (
-                        <motion.div
-                          key={visit.id}
-                          className="flex items-center justify-between p-3 border rounded hover:bg-muted/30 transition-colors"
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
+                  
+                  <CardContent className="space-y-4">
+                    {visits.map((visit, visitIndex) => (
+                      <motion.div
+                        key={visit.id}
+                        className="space-y-2 p-3 border rounded-lg hover:bg-muted/30 transition-colors"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          duration: 0.6,
+                          delay: 0.4 + (coachIndex * 0.1) + (visitIndex * 0.05),
+                          ease: [0, 0.71, 0.2, 1.01],
+                        }}
+                      >
+                        {/* Branch Name */}
+                        <motion.div 
+                          className="flex items-center justify-between"
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
                           transition={{
-                            duration: 0.26,
+                            duration: 0.34,
                             delay: 0.5 + (coachIndex * 0.1) + (visitIndex * 0.05)
                           }}
-                          whileHover={{ 
-                            scale: 1.02,
-                            transition: { duration: 0.17, type: "spring", stiffness: 300, damping: 20 }
-                          }}
                         >
-                          <div className="flex-1 min-w-0">
-                            <motion.h4 
-                              className="font-medium text-high-contrast truncate"
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{
-                                duration: 0.34,
-                                delay: 0.6 + (coachIndex * 0.1) + (visitIndex * 0.05)
-                              }}
-                            >
-                              {visit.branch_name}
-                            </motion.h4>
-                            <motion.p 
-                              className="text-sm text-medium-contrast"
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              transition={{
-                                duration: 0.34,
-                                delay: 0.7 + (coachIndex * 0.1) + (visitIndex * 0.05)
-                              }}
-                            >
-                              Last visit: {formatDate(visit.last_visit_date)}
-                            </motion.p>
-                            {visit.last_visit_date && (
-                              <motion.p 
-                                className="text-xs text-medium-contrast"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{
-                                  duration: 0.34,
-                                  delay: 0.8 + (coachIndex * 0.1) + (visitIndex * 0.05)
-                                }}
-                              >
-                                {getDaysSinceVisit(visit.last_visit_date)} days ago
-                              </motion.p>
-                            )}
+                          <div className="flex items-center gap-2">
+                            <Building2 className="h-4 w-4 text-brand-olive" />
+                            <h4 className="font-medium text-high-contrast">{visit.branch_name}</h4>
                           </div>
-                          <motion.div 
-                            className="flex items-center gap-2 ml-3"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            animate={{ opacity: 1, scale: 1 }}
                             transition={{
                               duration: 0.26,
-                              delay: 0.9 + (coachIndex * 0.1) + (visitIndex * 0.05)
+                              delay: 0.6 + (coachIndex * 0.1) + (visitIndex * 0.05),
+                              scale: { type: "spring", visualDuration: 0.26, bounce: 0.4 }
                             }}
                           >
-                            <motion.div
-                              initial={{ opacity: 0, scale: 0.5 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{
-                                duration: 0.26,
-                                delay: 1.0 + (coachIndex * 0.1) + (visitIndex * 0.05),
-                                scale: { type: "spring", visualDuration: 0.26, bounce: 0.4 }
-                              }}
-                            >
-                              <Badge className={`text-xs ${getVisitStatusColor(visit.last_visit_date)}`}>
-                                {visit.last_visit_date ? 'Visited' : 'Pending'}
-                              </Badge>
-                            </motion.div>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setEditingVisit(visit)}
-                              className="h-8 w-8 p-0 hover-scale"
-                            >
-                              <Edit3 className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => deleteBranchVisit(visit.id)}
-                              className="h-8 w-8 p-0 text-destructive hover:text-destructive hover-scale"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                            <Badge className={`text-xs ${getVisitStatusColor(visit.last_visit_date)}`}>
+                              {visit.last_visit_date ? 'Visited' : 'Pending'}
+                            </Badge>
                           </motion.div>
                         </motion.div>
-                      ))}
-                    </div>
+
+                        {/* Visit Information */}
+                        <motion.div 
+                          className="space-y-1"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            duration: 0.6,
+                            delay: 0.6 + (coachIndex * 0.1) + (visitIndex * 0.05),
+                            ease: [0, 0.71, 0.2, 1.01],
+                          }}
+                        >
+                          <div className="flex items-center gap-2 text-sm">
+                            <Calendar className="h-3 w-3 text-brand-olive" />
+                            <span className="text-medium-contrast">Last visit:</span>
+                            <span className="font-medium">{formatDate(visit.last_visit_date)}</span>
+                          </div>
+                          
+                          {visit.last_visit_date && (
+                            <div className="flex items-center gap-2 text-xs">
+                              <Clock className="h-3 w-3 text-brand-olive" />
+                              <span className="text-medium-contrast">
+                                {getDaysSinceVisit(visit.last_visit_date)} days ago
+                              </span>
+                            </div>
+                          )}
+                        </motion.div>
+
+                        {/* Action Buttons */}
+                        <motion.div 
+                          className="flex items-center gap-2 pt-2"
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{
+                            duration: 0.26,
+                            delay: 0.7 + (coachIndex * 0.1) + (visitIndex * 0.05)
+                          }}
+                        >
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setEditingVisit(visit)}
+                            className="h-8 px-2 text-xs hover-scale"
+                          >
+                            <Edit3 className="h-3 w-3 mr-1" />
+                            Edit
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteBranchVisit(visit.id)}
+                            className="h-8 px-2 text-xs text-destructive hover:text-destructive hover-scale"
+                          >
+                            <Trash2 className="h-3 w-3 mr-1" />
+                            Remove
+                          </Button>
+                        </motion.div>
+                      </motion.div>
+                    ))}
                   </CardContent>
                 </Card>
               </motion.div>
@@ -503,6 +504,7 @@ export function BranchVisits({ coaches, onDataChange }: BranchVisitsProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.2 }}
+              className="col-span-full"
             >
               <Card className="hover-lift">
                 <CardHeader>
