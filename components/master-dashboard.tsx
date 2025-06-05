@@ -400,7 +400,7 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
       </AnimatedItem>
 
       {/* Summary Cards */}
-      <AnimatedItem>
+        <AnimatedItem>
         <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {[
             {
@@ -482,12 +482,12 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
                       <card.icon className={`h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-${card.color}/30`} />
                     </motion.div>
                   </div>
-                </CardContent>
-              </Card>
+            </CardContent>
+          </Card>
             </motion.div>
           ))}
         </div>
-      </AnimatedItem>
+        </AnimatedItem>
 
       {/* Coach Filter Tabs */}
       <AnimatedItem>
@@ -506,12 +506,12 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.2 }}
               >
-                <TabsTrigger 
-                  value="all" 
-                  className="data-[state=active]:bg-brand-olive data-[state=active]:text-white text-medium-contrast hover-scale"
-                >
-                  All Coaches ({metrics.length})
-                </TabsTrigger>
+              <TabsTrigger 
+                value="all" 
+                className="data-[state=active]:bg-brand-olive data-[state=active]:text-white text-medium-contrast hover-scale"
+              >
+                All Coaches ({metrics.length})
+              </TabsTrigger>
               </motion.div>
               {coaches.map((coach, index) => {
                 const coachMetrics = metrics.filter(m => m.coach_id === coach.id);
@@ -529,12 +529,12 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
                       scale: { duration: 0.2 }
                     }}
                   >
-                    <TabsTrigger 
-                      value={coach.id}
-                      className="data-[state=active]:bg-brand-olive data-[state=active]:text-white text-medium-contrast hover-scale whitespace-nowrap"
-                    >
-                      {coach.name} ({coachMetrics.length})
-                    </TabsTrigger>
+                  <TabsTrigger 
+                    value={coach.id}
+                    className="data-[state=active]:bg-brand-olive data-[state=active]:text-white text-medium-contrast hover-scale whitespace-nowrap"
+                  >
+                    {coach.name} ({coachMetrics.length})
+                  </TabsTrigger>
                   </motion.div>
                 );
               })}
@@ -565,22 +565,22 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
                     }}
                   >
                     <Card className="hover-lift">
-                      <CardHeader className="pb-4">
-                        <CardTitle className="text-base sm:text-lg text-high-contrast">{coach.name}</CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-3 sm:p-6">
-                        <CoachView coach={coach} />
-                      </CardContent>
-                    </Card>
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-base sm:text-lg text-high-contrast">{coach.name}</CardTitle>
+                </CardHeader>
+                <CardContent className="p-3 sm:p-6">
+                  <CoachView coach={coach} />
+                </CardContent>
+              </Card>
                   </motion.div>
-                ))}
+            ))}
               </motion.div>
-            </TabsContent>
+          </TabsContent>
           </AnimatePresence>
 
           <AnimatePresence mode="wait">
-            {coaches.map((coach) => (
-              <TabsContent key={coach.id} value={coach.id}>
+          {coaches.map((coach) => (
+            <TabsContent key={coach.id} value={coach.id}>
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -592,31 +592,31 @@ export function MasterDashboard({ periods, coaches, onDataChange }: DashboardPro
                   }}
                 >
                   <Card className="hover-lift">
-                    <CardHeader>
+                <CardHeader>
                       <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.4, delay: 0.2 }}
                       >
-                        <CardTitle className="text-base sm:text-lg text-high-contrast">{coach.name} - Detailed View</CardTitle>
-                        <CardDescription className="text-medium-contrast text-sm">
-                          Complete data view for {coach.name} across all periods
-                        </CardDescription>
+                  <CardTitle className="text-base sm:text-lg text-high-contrast">{coach.name} - Detailed View</CardTitle>
+                  <CardDescription className="text-medium-contrast text-sm">
+                    Complete data view for {coach.name} across all periods
+                  </CardDescription>
                       </motion.div>
-                    </CardHeader>
-                    <CardContent className="p-3 sm:p-6">
+                </CardHeader>
+                <CardContent className="p-3 sm:p-6">
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: 0.3 }}
                       >
-                        <CoachView coach={coach} />
+                  <CoachView coach={coach} />
                       </motion.div>
-                    </CardContent>
-                  </Card>
+                </CardContent>
+              </Card>
                 </motion.div>
-              </TabsContent>
-            ))}
+            </TabsContent>
+          ))}
           </AnimatePresence>
         </Tabs>
       </AnimatedItem>

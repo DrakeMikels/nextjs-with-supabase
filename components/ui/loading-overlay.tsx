@@ -46,9 +46,9 @@ export function LoadingOverlay({ isVisible, onComplete }: LoadingOverlayProps) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      {/* Background with off-black gradient */}
+      {/* Transparent background */}
       <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800"
+        className="absolute inset-0 bg-transparent"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -109,7 +109,7 @@ function StyleSheet() {
           width: 20px;
           height: 20px;
           border-radius: 50%;
-          background-color: #84cc16;
+          background-color: #CDEA80;
           will-change: transform;
       }
       `}

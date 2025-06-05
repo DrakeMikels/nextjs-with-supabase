@@ -258,9 +258,9 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
             }}
           >
             <Card className={`${card.borderColor ? `border-${card.borderColor} hover:border-${card.hoverBorderColor}` : `border-${card.color}/20 hover:border-${card.color}/40`} hover:shadow-lg transition-all duration-300 hover-lift`}>
-              <CardContent className="pt-4">
-                <div className="flex items-center justify-between">
-                  <div>
+          <CardContent className="pt-4">
+            <div className="flex items-center justify-between">
+              <div>
                     <p className="text-sm text-medium-contrast">{card.title}</p>
                     <motion.p 
                       className={`text-2xl font-bold text-${card.color}`}
@@ -274,7 +274,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                     >
                       {card.value}
                     </motion.p>
-                  </div>
+              </div>
                   <motion.div
                     initial={{ opacity: 0, rotate: -180, scale: 0 }}
                     animate={{ opacity: 1, rotate: 0, scale: 1 }}
@@ -287,9 +287,9 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                   >
                     <card.icon className={`h-8 w-8 text-${card.color}/30`} />
                   </motion.div>
-                </div>
-              </CardContent>
-            </Card>
+            </div>
+          </CardContent>
+        </Card>
           </motion.div>
         ))}
       </div>
@@ -305,9 +305,9 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
         }}
       >
         <Card className="hover-lift border-brand-olive/20 hover:border-brand-olive/30">
-          <CardContent className="pt-4">
-            <div className="flex flex-wrap items-center gap-4">
-              <div className="flex items-center gap-2">
+        <CardContent className="pt-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2">
                 <motion.div
                   initial={{ opacity: 0, rotate: -90 }}
                   animate={{ opacity: 1, rotate: 0 }}
@@ -317,17 +317,17 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                     rotate: { type: "spring", stiffness: 200, damping: 15 }
                   }}
                 >
-                  <Search className="h-4 w-4 text-medium-contrast" />
+              <Search className="h-4 w-4 text-medium-contrast" />
                 </motion.div>
-                <Input
-                  placeholder="Search certifications..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-64"
-                />
-              </div>
-              
-              <div className="flex items-center gap-2">
+              <Input
+                placeholder="Search certifications..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-64"
+              />
+            </div>
+            
+            <div className="flex items-center gap-2">
                 <motion.div
                   initial={{ opacity: 0, rotate: -90 }}
                   animate={{ opacity: 1, rotate: 0 }}
@@ -337,21 +337,21 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                     rotate: { type: "spring", stiffness: 200, damping: 15 }
                   }}
                 >
-                  <Filter className="h-4 w-4 text-medium-contrast" />
+              <Filter className="h-4 w-4 text-medium-contrast" />
                 </motion.div>
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-3 py-2 border rounded-md text-sm"
-                >
-                  <option value="all">All Categories</option>
-                  {categories.map(category => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="px-3 py-2 border rounded-md text-sm"
+              >
+                <option value="all">All Categories</option>
+                {categories.map(category => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
               <motion.label 
                 className="flex items-center gap-2 text-sm"
@@ -362,17 +362,17 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                   delay: 0.9
                 }}
               >
-                <input
-                  type="checkbox"
-                  checked={showRequiredOnly}
-                  onChange={(e) => setShowRequiredOnly(e.target.checked)}
-                  className="rounded"
-                />
-                Required Only
+              <input
+                type="checkbox"
+                checked={showRequiredOnly}
+                onChange={(e) => setShowRequiredOnly(e.target.checked)}
+                className="rounded"
+              />
+              Required Only
               </motion.label>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        </CardContent>
+      </Card>
       </motion.div>
 
       {/* Main Overview Table */}
@@ -386,10 +386,10 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
         }}
       >
         <Card className="hover-lift border-brand-olive/20 hover:border-brand-olive/30">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg text-high-contrast">Team Certification Status</CardTitle>
-              <div className="flex items-center gap-2">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg text-high-contrast">Team Certification Status</CardTitle>
+            <div className="flex items-center gap-2">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -400,16 +400,16 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                   }}
                 >
                   <Button variant="outline" size="sm" className="gap-1 hover-lift">
-                    <Download className="h-4 w-4" />
-                    Export
-                  </Button>
+                <Download className="h-4 w-4" />
+                Export
+              </Button>
                 </motion.div>
-              </div>
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {/* Quick Stats */}
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            {/* Quick Stats */}
               <motion.div 
                 className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-brand-olive/5 dark:bg-brand-olive/10 rounded-lg"
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -467,27 +467,27 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                 ))}
               </motion.div>
 
-              {/* Certification List */}
-              <div className="space-y-4">
+            {/* Certification List */}
+            <div className="space-y-4">
                 {filteredCertifications.map((cert, certIndex) => {
-                  const coachesWithCert = coaches.map(coach => {
-                    const coachCert = coachCertifications.find(
-                      cc => cc.coach_id === coach.id && cc.certification_id === cert.id
-                    );
-                    return {
-                      coach,
-                      status: coachCert?.status || 'not_started',
-                      completion_date: coachCert?.completion_date,
-                      start_date: coachCert?.start_date,
-                      notes: coachCert?.notes
-                    };
-                  });
+                const coachesWithCert = coaches.map(coach => {
+                  const coachCert = coachCertifications.find(
+                    cc => cc.coach_id === coach.id && cc.certification_id === cert.id
+                  );
+                  return {
+                    coach,
+                    status: coachCert?.status || 'not_started',
+                    completion_date: coachCert?.completion_date,
+                    start_date: coachCert?.start_date,
+                    notes: coachCert?.notes
+                  };
+                });
 
-                  const completedCount = coachesWithCert.filter(c => c.status === 'completed').length;
-                  const inProgressCount = coachesWithCert.filter(c => c.status === 'in_progress').length;
-                  const scheduledCount = coachesWithCert.filter(c => c.status === 'scheduled').length;
+                const completedCount = coachesWithCert.filter(c => c.status === 'completed').length;
+                const inProgressCount = coachesWithCert.filter(c => c.status === 'in_progress').length;
+                const scheduledCount = coachesWithCert.filter(c => c.status === 'scheduled').length;
 
-                  return (
+                return (
                     <motion.div
                       key={cert.id}
                       initial={{ opacity: 0, y: 20 }}
@@ -502,9 +502,9 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                       }}
                     >
                       <Card className="border-l-4 border-l-brand-olive/30 hover-lift hover:border-l-brand-olive/50 transition-all duration-300">
-                        <CardContent className="pt-4">
-                          <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center gap-3">
+                    <CardContent className="pt-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
                               {cert.is_required && (
                                 <motion.div
                                   initial={{ opacity: 0, scale: 0 }}
@@ -526,12 +526,12 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                                   delay: 1.8 + (certIndex * 0.1)
                                 }}
                               >
-                                <h3 className="font-semibold text-high-contrast">{cert.name}</h3>
-                                <p className="text-sm text-medium-contrast">
-                                  {cert.description || 'Professional certification requirement'}
-                                </p>
+                            <h3 className="font-semibold text-high-contrast">{cert.name}</h3>
+                            <p className="text-sm text-medium-contrast">
+                              {cert.description || 'Professional certification requirement'}
+                            </p>
                               </motion.div>
-                            </div>
+                          </div>
                             <motion.div 
                               className="flex items-center gap-4 text-sm"
                               initial={{ opacity: 0, x: 20 }}
@@ -559,12 +559,12 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                                 >
                                   <div className={`font-semibold text-${stat.color} dark:text-${stat.color.replace('600', '400')}`}>
                                     {stat.count}
-                                  </div>
+                        </div>
                                   <div className="text-xs text-medium-contrast">{stat.label}</div>
                                 </motion.div>
                               ))}
                             </motion.div>
-                          </div>
+                      </div>
 
                           {/* Coach Progress Grid */}
                           <motion.div 
@@ -578,16 +578,16 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                           >
                             {coachesWithCert.map(({ coach, status, completion_date, start_date }, coachIndex) => (
                               <motion.div 
-                                key={coach.id} 
+                            key={coach.id} 
                                 className={`p-3 rounded-lg border-2 transition-all cursor-pointer ${
-                                  status === 'completed' 
-                                    ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30' 
-                                    : status === 'in_progress'
-                                    ? 'border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30'
-                                    : status === 'scheduled'
-                                    ? 'border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30'
-                                    : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30 hover:border-brand-olive/30'
-                                }`}
+                              status === 'completed' 
+                                ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30' 
+                                : status === 'in_progress'
+                                ? 'border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30'
+                                : status === 'scheduled'
+                                ? 'border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30'
+                                : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30 hover:border-brand-olive/30'
+                            }`}
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{
@@ -600,8 +600,8 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                                   transition: { duration: 0.17, type: "spring", stiffness: 300, damping: 20 }
                                 }}
                                 onClick={() => openQuickUpdateDialog(coach, cert)}
-                              >
-                                <div className="flex items-center justify-between mb-2">
+                          >
+                            <div className="flex items-center justify-between mb-2">
                                   <span className="font-medium text-sm">{coach.name}</span>
                                   <motion.span 
                                     className={`text-xs px-2 py-1 rounded-full ${
@@ -620,7 +620,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                                   >
                                     {status.replace('_', ' ')}
                                   </motion.span>
-                                </div>
+                                  </div>
                                 {completion_date && (
                                   <motion.div 
                                     className="text-xs text-medium-contrast"
@@ -631,9 +631,9 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                                       delay: 2.4 + (certIndex * 0.1) + (coachIndex * 0.02)
                                     }}
                                   >
-                                    Completed: {new Date(completion_date).toLocaleDateString()}
+                                Completed: {new Date(completion_date).toLocaleDateString()}
                                   </motion.div>
-                                )}
+                            )}
                                 {start_date && !completion_date && (
                                   <motion.div 
                                     className="text-xs text-medium-contrast"
@@ -646,19 +646,19 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                                   >
                                     Started: {new Date(start_date).toLocaleDateString()}
                                   </motion.div>
-                                )}
+                            )}
                               </motion.div>
-                            ))}
+                        ))}
                           </motion.div>
-                        </CardContent>
-                      </Card>
+                    </CardContent>
+                  </Card>
                     </motion.div>
-                  );
-                })}
-              </div>
+                );
+              })}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </CardContent>
+      </Card>
       </motion.div>
 
       {/* Quick Update Dialog */}
@@ -672,12 +672,12 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
               scale: { type: "spring", visualDuration: 0.3, bounce: 0.2 }
             }}
           >
-            <DialogHeader>
-              <DialogTitle>Update Certification Status</DialogTitle>
-              <DialogDescription>
-                Update {selectedCertification?.name} for {selectedCoach?.name}
-              </DialogDescription>
-            </DialogHeader>
+          <DialogHeader>
+            <DialogTitle>Update Certification Status</DialogTitle>
+            <DialogDescription>
+              Update {selectedCertification?.name} for {selectedCoach?.name}
+            </DialogDescription>
+          </DialogHeader>
             
             <motion.div 
               className="space-y-4"
@@ -685,33 +685,33 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
             >
-              <div>
+            <div>
                 <Label>Status</Label>
-                <Select value={certificationUpdate.status} onValueChange={(value: 'not_started' | 'scheduled' | 'in_progress' | 'completed' | 'expired') => setCertificationUpdate(prev => ({ ...prev, status: value }))}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="not_started">Not Started</SelectItem>
-                    <SelectItem value="scheduled">Scheduled</SelectItem>
-                    <SelectItem value="in_progress">In Progress</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
+              <Select value={certificationUpdate.status} onValueChange={(value: 'not_started' | 'scheduled' | 'in_progress' | 'completed' | 'expired') => setCertificationUpdate(prev => ({ ...prev, status: value }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="not_started">Not Started</SelectItem>
+                  <SelectItem value="scheduled">Scheduled</SelectItem>
+                  <SelectItem value="in_progress">In Progress</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
               {(certificationUpdate.status === 'in_progress' || certificationUpdate.status === 'scheduled') && (
-                <div>
+              <div>
                   <Label>Start Date</Label>
-                  <Input
-                    type="date"
-                    value={certificationUpdate.start_date}
+                <Input
+                  type="date"
+                  value={certificationUpdate.start_date}
                     onChange={(e) => setCertificationUpdate(prev => ({ ...prev, start_date: e.target.value }))}
-                  />
-                </div>
-              )}
-
-              {certificationUpdate.status === 'completed' && (
+                />
+              </div>
+            )}
+            
+            {certificationUpdate.status === 'completed' && (
                 <div>
                   <Label>Completion Date</Label>
                   <Input
@@ -722,24 +722,24 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                 </div>
               )}
 
-              <div>
+                <div>
                 <Label>Certificate Number</Label>
-                <Input
-                  value={certificationUpdate.certificate_number}
+                  <Input
+                    value={certificationUpdate.certificate_number}
                   onChange={(e) => setCertificationUpdate(prev => ({ ...prev, certificate_number: e.target.value }))}
-                  placeholder="Certificate or ID number"
-                />
-              </div>
-
-              <div>
+                    placeholder="Certificate or ID number"
+                  />
+                </div>
+            
+            <div>
                 <Label>Notes (Optional)</Label>
-                <Textarea
-                  value={certificationUpdate.notes}
+              <Textarea
+                value={certificationUpdate.notes}
                   onChange={(e) => setCertificationUpdate(prev => ({ ...prev, notes: e.target.value }))}
                   placeholder="Add any notes about this certification..."
                   rows={3}
-                />
-              </div>
+              />
+            </div>
             </motion.div>
 
             <motion.div
@@ -747,14 +747,14 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.2 }}
             >
-              <DialogFooter>
+          <DialogFooter>
                 <Button variant="outline" onClick={() => setShowCertificationDialog(false)} className="hover-lift">
-                  Cancel
-                </Button>
+              Cancel
+            </Button>
                 <Button onClick={updateCertificationStatus} className="hover-lift">
-                  Update Status
-                </Button>
-              </DialogFooter>
+              Update Status
+            </Button>
+          </DialogFooter>
             </motion.div>
           </motion.div>
         </DialogContent>

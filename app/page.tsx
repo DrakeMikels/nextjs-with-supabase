@@ -1,5 +1,5 @@
 import { AuthButton } from "@/components/auth-button";
-import { ThemeSwitcher } from "@/components/theme-switcher";
+import { MotionThemeToggle } from "@/components/motion-theme-toggle";
 import { EnvVarWarning } from "@/components/env-var-warning";
 import { hasEnvVars } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
@@ -32,7 +32,7 @@ export default async function Home() {
               </Link>
             </div>
             <div className="flex items-center gap-4">
-              <ThemeSwitcher />
+              <MotionThemeToggle />
               {!hasEnvVars ? <EnvVarWarning /> : <AuthButton />}
             </div>
           </div>

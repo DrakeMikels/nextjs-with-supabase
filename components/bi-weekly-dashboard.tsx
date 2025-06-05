@@ -537,12 +537,12 @@ export function BiWeeklyDashboard() {
           className="fixed lg:static inset-y-0 left-0 z-40 bg-gradient-to-b from-brand-olive via-brand-olive-light to-brand-olive-medium dark:from-brand-olive-medium dark:via-brand-olive-soft dark:to-brand-olive-pale border-r border-white/20 overflow-hidden"
         >
           {/* Navigation content */}
-          <div className="flex flex-col h-full relative">
-            {/* Enhanced background pattern for better texture */}
-            <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-            {/* Subtle overlay for better text contrast */}
-            <div className="absolute inset-0 bg-black/10"></div>
-            
+        <div className="flex flex-col h-full relative">
+          {/* Enhanced background pattern for better texture */}
+          <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+          {/* Subtle overlay for better text contrast */}
+          <div className="absolute inset-0 bg-black/10"></div>
+          
             {/* Welcome pulse effect for first load */}
             {isFirstLoad && (
               <motion.div
@@ -576,8 +576,8 @@ export function BiWeeklyDashboard() {
                   <p className="text-xs text-white/90 drop-shadow-sm truncate">Regional Safety Coaches</p>
                 </motion.div>
               </div>
-            </div>
-            
+          </div>
+          
             <motion.div 
               className="flex-1 p-2 space-y-1 relative z-10"
               variants={navVariants}
@@ -616,26 +616,26 @@ export function BiWeeklyDashboard() {
                 </motion.div>
               )}
               
-              {navigationItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeView === item.id;
-                
-                return (
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeView === item.id;
+              
+              return (
                   <motion.button
-                    key={item.id}
+                  key={item.id}
                     variants={itemVariants}
                     whileHover={{ scale: 1.02, x: 2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setActiveView(item.id)}
-                    className={`
+                  className={`
                       w-full flex items-center gap-3 px-3 rounded-lg text-left transition-all duration-200 group relative py-2.5
-                      ${isActive 
+                    ${isActive 
                         ? 'bg-white/25 text-white shadow-lg border border-white/40 drop-shadow-sm' 
-                        : 'text-white/90 hover:bg-white/15 hover:text-white hover:drop-shadow-sm'
-                      }
+                      : 'text-white/90 hover:bg-white/15 hover:text-white hover:drop-shadow-sm'
+                    }
                       ${isFirstLoad ? 'animate-pulse-subtle' : ''}
-                    `}
-                  >
+                  `}
+                >
                     <motion.div
                       variants={iconVariants}
                       className="flex-shrink-0"
@@ -649,13 +649,13 @@ export function BiWeeklyDashboard() {
                       <div className={`font-medium text-sm truncate ${isActive ? 'drop-shadow-sm' : ''}`}>
                         {item.label}
                       </div>
-                      <div className={`text-xs truncate ${isActive ? 'text-white/95 drop-shadow-sm' : 'text-white/75'}`}>
-                        {item.description}
-                      </div>
+                    <div className={`text-xs truncate ${isActive ? 'text-white/95 drop-shadow-sm' : 'text-white/75'}`}>
+                      {item.description}
+                    </div>
                     </motion.div>
                   </motion.button>
-                );
-              })}
+              );
+            })}
             </motion.div>
             
             {/* Toggle Button */}
@@ -679,8 +679,8 @@ export function BiWeeklyDashboard() {
                   {sidebarOpen ? 'Collapse' : 'Expand'}
                 </motion.span>
               </motion.button>
-            </div>
-          </div>
+        </div>
+      </div>
         </motion.nav>
       )}
 
@@ -714,14 +714,14 @@ export function BiWeeklyDashboard() {
                 {statsCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
                 {statsCollapsed ? "Show Stats" : "Hide Stats"}
               </Button>
-              <Button 
-                onClick={createNewPeriod} 
+            <Button 
+              onClick={createNewPeriod} 
                 className="gap-2 bg-brand-olive hover:bg-brand-olive/90 text-white w-full sm:w-auto hover-lift hover-glow text-sm sm:text-base"
-              >
+            >
                 <PlusCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline">New Period</span>
                 <span className="sm:hidden">New</span>
-              </Button>
+            </Button>
             </div>
           </div>
         </div>
@@ -772,16 +772,16 @@ export function BiWeeklyDashboard() {
                       >
                         <card.icon className={`h-3 w-3 sm:h-4 sm:w-4 text-${card.color}`} />
                       </motion.div>
-                  </CardHeader>
+                </CardHeader>
                   <CardContent className="p-3 sm:p-4 lg:p-6 pt-0">
                       {card.isDropdown ? (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button 
-                          variant="ghost" 
-                          className="h-auto p-0 text-left justify-start hover:bg-transparent w-full hover-scale"
-                        >
-                          <div className="flex items-center gap-2 w-full">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        className="h-auto p-0 text-left justify-start hover:bg-transparent w-full hover-scale"
+                      >
+                        <div className="flex items-center gap-2 w-full">
                                 <motion.div 
                                   className={`text-lg sm:text-xl lg:text-2xl font-bold text-${card.color} truncate`}
                                   initial={{ opacity: 0, y: 10 }}
@@ -792,28 +792,28 @@ export function BiWeeklyDashboard() {
                                     ease: "easeOut",
                                   }}
                                 >
-                              {selectedPeriod?.period_name || "None"}
+                            {selectedPeriod?.period_name || "None"}
                                 </motion.div>
                                 <ChevronDown className={`h-3 w-3 sm:h-4 sm:w-4 text-${card.color} flex-shrink-0`} />
-                          </div>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start" className="w-56">
+                        </div>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="w-56">
                         <DropdownMenuLabel>Select Period</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => setSelectedPeriod(null)}>
                           All Periods
                         </DropdownMenuItem>
-                        {periods.map((period) => (
-                          <DropdownMenuItem
-                            key={period.id}
-                            onClick={() => setSelectedPeriod(period)}
+                      {periods.map((period) => (
+                        <DropdownMenuItem
+                          key={period.id}
+                          onClick={() => setSelectedPeriod(period)}
                           >
                             {period.period_name}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                       ) : (
                         <motion.div 
                           className={`text-lg sm:text-xl lg:text-2xl font-bold text-${card.color}`}
@@ -828,12 +828,12 @@ export function BiWeeklyDashboard() {
                           {card.value}
                         </motion.div>
                       )}
-                  </CardContent>
-                </Card>
+                </CardContent>
+              </Card>
                 </motion.div>
               ))}
             </div>
-          </div>
+        </div>
         </motion.div>
 
         {/* Content Area */}
