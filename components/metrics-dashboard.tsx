@@ -30,10 +30,9 @@ interface MetricsDashboardProps {
   periods: BiWeeklyPeriod[];
   coaches: Coach[];
   selectedPeriod: BiWeeklyPeriod | null;
-  customDateRange: {start: string, end: string};
 }
 
-export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateRange }: MetricsDashboardProps) {
+export function MetricsDashboard({ periods, coaches, selectedPeriod }: MetricsDashboardProps) {
   const [metrics, setMetrics] = useState<SafetyMetric[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
@@ -63,12 +62,11 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
     fetchMetrics();
   }, [fetchMetrics]);
 
-  // Enhanced filtering logic that handles both period selection and custom date range
+  // Filtering logic based on selected period
   const filteredMetrics = useMemo(() => {
     console.log('🔍 Filtering metrics:', {
       totalMetrics: metrics.length,
       selectedPeriod: selectedPeriod?.period_name,
-      customDateRange,
       periodsCount: periods.length
     });
 
@@ -79,48 +77,15 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
       filtered = filtered.filter(m => m.period_id === selectedPeriod.id);
       console.log('📅 Filtered by selected period:', filtered.length);
     }
-    // If custom date range is set, filter by date range instead
-    else if (customDateRange.start && customDateRange.end) {
-      const startDate = new Date(customDateRange.start);
-      const endDate = new Date(customDateRange.end);
-      
-      console.log('📊 Filtering by date range:', {
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString()
-      });
-      
-      // Find periods that overlap with the custom date range
-      const overlappingPeriods = periods.filter(period => {
-        const periodStart = new Date(period.start_date);
-        const periodEnd = new Date(period.end_date);
-        const overlaps = (periodStart <= endDate && periodEnd >= startDate);
-        
-        console.log(`Period ${period.period_name}:`, {
-          periodStart: periodStart.toISOString(),
-          periodEnd: periodEnd.toISOString(),
-          overlaps
-        });
-        
-        return overlaps;
-      });
-      
-      console.log('🎯 Overlapping periods:', overlappingPeriods.map(p => p.period_name));
-      
-      // Filter metrics by overlapping periods
-      const overlappingPeriodIds = overlappingPeriods.map(p => p.id);
-      filtered = filtered.filter(m => overlappingPeriodIds.includes(m.period_id));
-      console.log('📊 Filtered by date range:', filtered.length);
-    }
 
     console.log('✅ Final filtered metrics:', filtered.length);
     return filtered;
-  }, [metrics, selectedPeriod, customDateRange, periods]);
+  }, [metrics, selectedPeriod, periods]);
 
-  // Get filtered periods for trend analysis with enhanced logic
+  // Get filtered periods for trend analysis
   const filteredPeriods = useMemo(() => {
     console.log('📈 Filtering periods for trends:', {
       selectedPeriod: selectedPeriod?.period_name,
-      customDateRange,
       totalPeriods: periods.length
     });
 
@@ -130,34 +95,13 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
       const contextPeriods = periods.slice(Math.max(0, currentIndex - 2), currentIndex + 4).reverse();
       console.log('📅 Selected period - showing context periods:', contextPeriods.map(p => p.period_name));
       return contextPeriods;
-    } else if (customDateRange.start && customDateRange.end) {
-      // When custom date range is set, filter periods that overlap with the range
-      const startDate = new Date(customDateRange.start);
-      const endDate = new Date(customDateRange.end);
-      
-      const filtered = periods.filter(period => {
-        const periodStart = new Date(period.start_date);
-        const periodEnd = new Date(period.end_date);
-        const overlaps = (periodStart <= endDate && periodEnd >= startDate);
-        
-        console.log(`Trend period ${period.period_name}:`, {
-          periodStart: periodStart.toISOString(),
-          periodEnd: periodEnd.toISOString(),
-          overlaps
-        });
-        
-        return overlaps;
-      }).reverse(); // Show in chronological order for trends
-      
-      console.log('📊 Date range - filtered periods for trends:', filtered.map(p => p.period_name));
-      return filtered;
     } else {
       // Show all periods (last 6 for better trend visibility)
       const result = periods.slice(0, 6).reverse();
       console.log('🌐 All periods - showing last 6:', result.map(p => p.period_name));
       return result;
     }
-  }, [selectedPeriod, customDateRange, periods]);
+  }, [selectedPeriod, periods]);
 
   // Calculate time span context for adaptive chart configurations
   const timeSpanContext = useMemo(() => {
@@ -179,12 +123,6 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
         subtitle: `${new Date(selectedPeriod.start_date).toLocaleDateString()} - ${new Date(selectedPeriod.end_date).toLocaleDateString()}`,
         type: 'period' as const
       };
-    } else if (customDateRange.start && customDateRange.end) {
-      return {
-        title: 'Custom Date Range',
-        subtitle: `${new Date(customDateRange.start).toLocaleDateString()} - ${new Date(customDateRange.end).toLocaleDateString()}`,
-        type: 'dateRange' as const
-      };
     } else {
       return {
         title: 'Recent Periods',
@@ -192,7 +130,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
         type: 'all' as const
       };
     }
-  }, [selectedPeriod, customDateRange]);
+  }, [selectedPeriod]);
 
   // Brand colors for charts - Consistent Olive Variations
   const brandColors = useMemo(() => ({
@@ -267,12 +205,6 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
       evaluationGoal = 6;
       auditGoal = 6;
       warehouseGoal = 1;
-    } else if (filteringContext.type === 'dateRange') {
-      // Calculate goals based on the number of periods in the date range
-      const periodCount = filteredPeriods.length;
-      evaluationGoal = periodCount * 6; // 6 per bi-weekly period
-      auditGoal = periodCount * 6; // 6 per bi-weekly period
-      warehouseGoal = periodCount * 1; // 1 per bi-weekly period
     } else {
       // All periods - use monthly goals as baseline
       evaluationGoal = 12;
@@ -300,7 +232,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
         fill: brandColors.oliveMedium
       }
     ];
-  }, [overallStats, filteringContext.type, filteredPeriods.length, brandColors]);
+  }, [overallStats, filteringContext.type, brandColors]);
 
   const getIndividualCoachTrend = useCallback((coach: Coach) => {
     return filteredPeriods.map(period => {
@@ -356,14 +288,10 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
           <div className={`px-3 py-1 rounded-full text-xs font-medium ${
             filteringContext.type === 'period' 
               ? 'bg-brand-olive/10 text-brand-olive border border-brand-olive/20'
-              : filteringContext.type === 'dateRange'
-              ? 'bg-blue-500/10 text-blue-600 border border-blue-500/20'
               : 'bg-gray-500/10 text-gray-600 border border-gray-500/20'
           }`}>
             {filteringContext.type === 'period' 
               ? '📅 Single Period'
-              : filteringContext.type === 'dateRange'
-              ? '📊 Date Range'
               : '🌐 All Periods'
             }
           </div>
@@ -380,7 +308,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
               title: "Total",
               subtitle: "Evaluations",
               value: filteredMetrics.reduce((sum, m) => sum + (m.site_safety_evaluations || 0), 0),
-              description: filteringContext.type === 'period' ? "Current period" : filteringContext.type === 'dateRange' ? "Date range" : "All periods",
+              description: filteringContext.type === 'period' ? "Current period" : "All periods",
               icon: BarChart3,
               color: "brand-olive",
               delay: 0.1
@@ -389,7 +317,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
               title: "Total",
               subtitle: "Audits", 
               value: filteredMetrics.reduce((sum, m) => sum + (m.forensic_survey_audits || 0), 0),
-              description: filteringContext.type === 'period' ? "Current period" : filteringContext.type === 'dateRange' ? "Date range" : "All periods",
+              description: filteringContext.type === 'period' ? "Current period" : "All periods",
               icon: Search,
               color: "blue-600",
               delay: 0.2
@@ -398,7 +326,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
               title: "Warehouse",
               subtitle: "Audits",
               value: filteredMetrics.reduce((sum, m) => sum + (m.warehouse_safety_audits || 0), 0),
-              description: filteringContext.type === 'period' ? "Current period" : filteringContext.type === 'dateRange' ? "Date range" : "All periods", 
+              description: filteringContext.type === 'period' ? "Current period" : "All periods", 
               icon: Package,
               color: "green-600",
               delay: 0.3
@@ -409,7 +337,7 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
               value: filteredMetrics.reduce((sum, m) => 
                 sum + (m.open_investigations_injuries || 0) + (m.open_investigations_auto || 0) + 
                 (m.open_investigations_property_damage || 0) + (m.open_investigations_near_miss || 0), 0),
-              description: filteringContext.type === 'period' ? "Current period" : filteringContext.type === 'dateRange' ? "Date range" : "All periods",
+              description: filteringContext.type === 'period' ? "Current period" : "All periods",
               icon: AlertTriangle,
               color: "red-600",
               delay: 0.4
@@ -551,8 +479,6 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod, customDateR
             <CardDescription className="text-medium-contrast">
               {filteringContext.type === 'period' 
                 ? "Performance trends and comparison with recent periods" 
-                : filteringContext.type === 'dateRange'
-                ? "Safety metrics for your selected date range"
                 : "Safety metrics trends over recent periods"
               }
             </CardDescription>

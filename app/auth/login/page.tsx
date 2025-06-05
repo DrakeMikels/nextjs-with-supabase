@@ -211,29 +211,10 @@ export default function Page() {
                 </motion.div>
                 <div ref={headerTextRef} style={{ visibility: "hidden" }}>
                   <h1 className="text-3xl font-bold text-white drop-shadow-lg">
-                    Regional Safety Coaches
+                    RSC Platform
                   </h1>
-                  <p className="text-white/90 font-medium">Professional Safety Management Platform</p>
+                  <p className="text-white/90 font-medium">Safety Management Dashboard</p>
                 </div>
-              </div>
-              
-              <div className="space-y-4">
-                <motion.h2 
-                  className="text-xl font-semibold text-white"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.34, delay: 1.0 }}
-                >
-                  Streamline Your Safety Operations
-                </motion.h2>
-                <motion.p 
-                  className="text-white/90 leading-relaxed"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.34, delay: 1.2 }}
-                >
-                  Comprehensive bi-weekly tracking, coach management, and safety metrics in one powerful platform.
-                </motion.p>
               </div>
             </motion.div>
             
@@ -339,7 +320,7 @@ export default function Page() {
                 <h1 className="text-2xl font-bold text-white drop-shadow-lg">RSC Platform</h1>
               </div>
               <p className="text-white/90 font-medium">
-                Regional Safety Coaches Dashboard
+                Safety Management Dashboard
               </p>
             </motion.div>
             

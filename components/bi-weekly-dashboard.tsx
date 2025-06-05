@@ -12,10 +12,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+
 import { 
   PlusCircle, 
-  Calendar, 
+   
   Users, 
   BarChart3, 
   ChevronDown, 
@@ -264,10 +264,7 @@ export function BiWeeklyDashboard() {
   const [activeView, setActiveView] = useState("master"); // Default to Master View
   const [sidebarOpen, setSidebarOpen] = useState(true); // Always start expanded for welcoming experience
   const [isFirstLoad, setIsFirstLoad] = useState(true); // Track first load for welcome animation
-  const [customDateRange, setCustomDateRange] = useState<{start: string, end: string}>({
-    start: "",
-    end: ""
-  });
+
   const [isMobile, setIsMobile] = useState(false);
   const [statsCollapsed, setStatsCollapsed] = useState(false);
   const supabase = createClient();
@@ -410,7 +407,6 @@ export function BiWeeklyDashboard() {
             periods={periods}
             coaches={coaches}
             selectedPeriod={selectedPeriod}
-            customDateRange={customDateRange}
           />
         );
       case "idp":
@@ -748,10 +744,9 @@ export function BiWeeklyDashboard() {
           }}
         >
           <div className="p-2 sm:p-3 lg:p-5">
-            <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+            <div className="grid gap-2 sm:gap-4 grid-cols-1">
               {[
-                { title: "Current Period", value: selectedPeriod?.period_name || "None", icon: BarChart3, color: "brand-olive-medium", isDropdown: true },
-                { title: "Custom Date Range", value: "", icon: Calendar, color: "brand-olive-soft", isCustomRange: true }
+                { title: "Period Selector", value: selectedPeriod?.period_name || "None", icon: BarChart3, color: "brand-olive-medium", isDropdown: true }
               ].map((card, index) => (
                 <motion.div
                   key={card.title}
@@ -819,39 +814,6 @@ export function BiWeeklyDashboard() {
                         ))}
                       </DropdownMenuContent>
                     </DropdownMenu>
-                      ) : card.isCustomRange ? (
-                        <div className="space-y-1 sm:space-y-2">
-                          <div className="flex gap-1 sm:gap-2">
-                            <Input
-                              type="date"
-                              value={customDateRange.start}
-                              onChange={(e) => setCustomDateRange(prev => ({...prev, start: e.target.value}))}
-                              className="text-xs h-6 sm:h-8"
-                              placeholder="Start date"
-                            />
-                            <Input
-                              type="date"
-                              value={customDateRange.end}
-                              onChange={(e) => setCustomDateRange(prev => ({...prev, end: e.target.value}))}
-                              className="text-xs h-6 sm:h-8"
-                              placeholder="End date"
-                            />
-                          </div>
-                          {customDateRange.start && customDateRange.end && (
-                            <motion.div 
-                              className={`text-xs text-${card.color} font-medium`}
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{
-                                duration: 0.3,
-                                delay: 0.3 + (index * 0.05),
-                                ease: "easeOut",
-                              }}
-                            >
-                              {new Date(customDateRange.start).toLocaleDateString()} - {new Date(customDateRange.end).toLocaleDateString()}
-                            </motion.div>
-                          )}
-                            </div>
                       ) : (
                         <motion.div 
                           className={`text-lg sm:text-xl lg:text-2xl font-bold text-${card.color}`}
