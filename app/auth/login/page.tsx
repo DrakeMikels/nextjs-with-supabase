@@ -6,6 +6,7 @@ import * as motion from "motion/react-client";
 import { useAnimate, animate, stagger } from "motion/react";
 import { splitText } from "motion-plus";
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 
 export default function Page() {
   const [gradientRef, animateGradient] = useAnimate();
@@ -189,9 +190,9 @@ export default function Page() {
                 y: { type: "spring", stiffness: 100, damping: 15 }
               }}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 <motion.div 
-                  className="p-3 bg-white/20 rounded-xl border border-white/30 shadow-lg"
+                  className="p-2 bg-white/20 rounded-xl border border-white/30 shadow-lg"
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
@@ -200,7 +201,13 @@ export default function Page() {
                     scale: { type: "spring", visualDuration: 0.29, bounce: 0.4 }
                   }}
                 >
-                  <Shield className="h-8 w-8 text-white" />
+                  <Image 
+                    src="/rsc-logo.svg" 
+                    alt="RSC Logo" 
+                    width={80} 
+                    height={80}
+                    className="object-contain"
+                  />
                 </motion.div>
                 <div ref={headerTextRef} style={{ visibility: "hidden" }}>
                   <h1 className="text-3xl font-bold text-white drop-shadow-lg">
@@ -312,7 +319,7 @@ export default function Page() {
             >
               <div className="flex items-center justify-center gap-3 mb-4">
                 <motion.div 
-                  className="p-3 bg-white/20 rounded-xl border border-white/30 shadow-lg"
+                  className="p-2 bg-white/20 rounded-xl border border-white/30 shadow-lg"
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
@@ -321,7 +328,13 @@ export default function Page() {
                     scale: { type: "spring", visualDuration: 0.29, bounce: 0.4 }
                   }}
                 >
-                  <Shield className="h-6 w-6 text-white" />
+                  <Image 
+                    src="/rsc-logo.svg" 
+                    alt="RSC Logo" 
+                    width={50} 
+                    height={50}
+                    className="object-contain"
+                  />
                 </motion.div>
                 <h1 className="text-2xl font-bold text-white drop-shadow-lg">RSC Platform</h1>
               </div>

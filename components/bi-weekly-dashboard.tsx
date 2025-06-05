@@ -748,10 +748,8 @@ export function BiWeeklyDashboard() {
           }}
         >
           <div className="p-2 sm:p-3 lg:p-5">
-            <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               {[
-                { title: "Total Periods", value: periods.length, icon: Calendar, color: "brand-olive" },
-                { title: "Active Coaches", value: coaches.length, icon: Users, color: "brand-olive-light" },
                 { title: "Current Period", value: selectedPeriod?.period_name || "None", icon: BarChart3, color: "brand-olive-medium", isDropdown: true },
                 { title: "Custom Date Range", value: "", icon: Calendar, color: "brand-olive-soft", isCustomRange: true }
               ].map((card, index) => (
