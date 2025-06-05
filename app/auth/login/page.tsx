@@ -4,11 +4,24 @@ import { LoginForm } from "@/components/login-form";
 import { Shield, Users, BarChart3 } from "lucide-react";
 import * as motion from "motion/react-client";
 import { useAnimate } from "motion/react";
-import { useEffect } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
+import Particles, { initParticlesEngine } from "@tsparticles/react";
+import { loadSlim } from "@tsparticles/slim";
+import type { Container, ISourceOptions } from "@tsparticles/engine";
 
 export default function Page() {
   const [gradientRef, animateGradient] = useAnimate();
+  const [init, setInit] = useState(false);
+
+  // Initialize tsParticles
+  useEffect(() => {
+    initParticlesEngine(async (engine) => {
+      await loadSlim(engine);
+    }).then(() => {
+      setInit(true);
+    });
+  }, []);
 
   useEffect(() => {
     const gradientAnimation = animateGradient(
@@ -49,7 +62,115 @@ export default function Page() {
     };
   }, [animateGradient, gradientRef]);
 
+  const particlesLoaded = async (container?: Container): Promise<void> => {
+    console.log(container);
+  };
 
+  // Particles configuration adapted from your JSON with olive theme
+  const options: ISourceOptions = useMemo(
+    () => ({
+      autoPlay: true,
+      background: {
+        color: {
+          value: "transparent" // Let our gradient show through
+        }
+      },
+      fullScreen: {
+        enable: false, // Don't take full screen, let it be part of our layout
+        zIndex: 0
+      },
+      detectRetina: true,
+      fpsLimit: 120,
+      interactivity: {
+        detectsOn: "window",
+        events: {
+          onClick: {
+            enable: true,
+            mode: "push"
+          },
+          onHover: {
+            enable: true,
+            mode: "repulse"
+          },
+          resize: {
+            delay: 0.5,
+            enable: true
+          }
+        },
+        modes: {
+          push: {
+            quantity: 4
+          },
+          repulse: {
+            distance: 200,
+            duration: 0.4,
+            factor: 100,
+            speed: 1,
+            maxSpeed: 50,
+            easing: "ease-out-quad"
+          }
+        }
+      },
+      particles: {
+        color: {
+          value: "#4E855A", // Our olive color
+          animation: {
+            h: {
+              count: 0,
+              enable: true,
+              speed: 10,
+              decay: 0,
+              delay: 0,
+              sync: true,
+              offset: 0
+            }
+          }
+        },
+        links: {
+          color: {
+            value: "#ffffff"
+          },
+          distance: 150,
+          enable: true,
+          opacity: 0.4,
+          width: 1
+        },
+        move: {
+          direction: "none",
+          enable: true,
+          outModes: {
+            default: "out"
+          },
+          random: false,
+          speed: 3,
+          straight: false
+        },
+        number: {
+          density: {
+            enable: true,
+            width: 1920,
+            height: 1080
+          },
+          value: 80
+        },
+        opacity: {
+          value: 0.5
+        },
+        shape: {
+          type: "circle"
+        },
+        size: {
+          value: {
+            min: 1,
+            max: 3
+          }
+        }
+      },
+      pauseOnBlur: true,
+      pauseOnOutsideViewport: true
+    }),
+    []
+  );
 
   return (
     <motion.div 
@@ -71,6 +192,16 @@ export default function Page() {
       
       {/* Enhanced Background Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+      
+      {/* tsParticles Background */}
+      {init && (
+        <Particles
+          id="tsparticles"
+          particlesLoaded={particlesLoaded}
+          options={options}
+          className="absolute inset-0"
+        />
+      )}
       
       {/* Enhanced Floating Elements with Motion - Consistent for both themes */}
       <motion.div 
