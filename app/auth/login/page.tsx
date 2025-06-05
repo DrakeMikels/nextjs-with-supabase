@@ -3,14 +3,12 @@
 import { LoginForm } from "@/components/login-form";
 import { Shield, Users, BarChart3 } from "lucide-react";
 import * as motion from "motion/react-client";
-import { useAnimate, animate, stagger } from "motion/react";
-import { splitText } from "motion-plus";
-import { useEffect, useRef } from "react";
+import { useAnimate } from "motion/react";
+import { useEffect } from "react";
 import Image from "next/image";
 
 export default function Page() {
   const [gradientRef, animateGradient] = useAnimate();
-  const headerTextRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const gradientAnimation = animateGradient(
@@ -51,32 +49,7 @@ export default function Page() {
     };
   }, [animateGradient, gradientRef]);
 
-  // Split text animation effect
-  useEffect(() => {
-    document.fonts.ready.then(() => {
-      if (!headerTextRef.current) return;
 
-      // Hide the container until the fonts are loaded
-      headerTextRef.current.style.visibility = "visible";
-
-      const h1Element = headerTextRef.current.querySelector("h1");
-      if (!h1Element) return;
-
-      const { words } = splitText(h1Element);
-
-      // Animate the words in the h1
-      animate(
-        words,
-        { opacity: [0, 1], y: [10, 0] },
-        {
-          type: "spring",
-          duration: 1.7, // 15% faster than 2s
-          bounce: 0,
-          delay: stagger(0.043), // 15% faster than 0.05s
-        }
-      );
-    });
-  }, []);
 
   return (
     <motion.div 
@@ -190,15 +163,14 @@ export default function Page() {
                 y: { type: "spring", stiffness: 100, damping: 15 }
               }}
             >
-              <div className="flex items-center gap-4">
+              <div className="flex justify-center">
                 <motion.div 
                   className="p-2 bg-white/20 rounded-xl border border-white/30 shadow-lg"
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
-                    duration: 0.29,
-                    delay: 0.6,
-                    scale: { type: "spring", visualDuration: 0.29, bounce: 0.4 }
+                    duration: 0.4,
+                    scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 }
                   }}
                 >
                   <Image 
@@ -209,12 +181,6 @@ export default function Page() {
                     className="object-contain"
                   />
                 </motion.div>
-                <div ref={headerTextRef} style={{ visibility: "hidden" }}>
-                  <h1 className="text-3xl font-bold text-white drop-shadow-lg">
-                    RSC Platform
-                  </h1>
-                  <p className="text-white/90 font-medium">Safety Management Dashboard</p>
-                </div>
               </div>
             </motion.div>
             
@@ -298,30 +264,25 @@ export default function Page() {
                 y: { type: "spring", stiffness: 100, damping: 15 }
               }}
             >
-              <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="flex justify-center">
                 <motion.div 
                   className="p-2 bg-white/20 rounded-xl border border-white/30 shadow-lg"
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
-                    duration: 0.29,
-                    delay: 0.6,
-                    scale: { type: "spring", visualDuration: 0.29, bounce: 0.4 }
+                    duration: 0.4,
+                    scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 }
                   }}
                 >
                   <Image 
                     src="/rsc-logo.svg" 
                     alt="RSC Logo" 
-                    width={50} 
-                    height={50}
+                    width={60} 
+                    height={60}
                     className="object-contain"
                   />
                 </motion.div>
-                <h1 className="text-2xl font-bold text-white drop-shadow-lg">RSC Platform</h1>
               </div>
-              <p className="text-white/90 font-medium">
-                Safety Management Dashboard
-              </p>
             </motion.div>
             
             {/* Login Form Container with Dark Background */}
@@ -358,12 +319,7 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Split Text Animation Styles */}
-      <style jsx>{`
-        .split-word {
-          will-change: transform, opacity;
-        }
-      `}</style>
+
     </motion.div>
   );
 }
