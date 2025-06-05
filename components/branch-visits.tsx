@@ -337,7 +337,7 @@ export function BranchVisits({ coaches, onDataChange }: BranchVisitsProps) {
 
       {/* Branch Assignments by Coach */}
       <AnimatedItem>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {Object.entries(visitsByCoach).map(([coachId, visits], coachIndex) => {
             const coach = coaches.find(c => c.id === coachId);
             if (!coach) return null;
@@ -358,9 +358,9 @@ export function BranchVisits({ coaches, onDataChange }: BranchVisitsProps) {
                 }}
               >
                 <Card className="h-full border-brand-olive/20 hover:border-brand-olive/40 hover:shadow-lg transition-all duration-300 hover-lift">
-                  <CardHeader className="pb-3">
+                  <CardHeader className="pb-2 p-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg text-high-contrast flex items-center gap-2">
+                      <CardTitle className="text-base text-high-contrast flex items-center gap-2">
                         <motion.div
                           initial={{ opacity: 0, rotate: -180 }}
                           animate={{ opacity: 1, rotate: 0 }}
@@ -370,7 +370,7 @@ export function BranchVisits({ coaches, onDataChange }: BranchVisitsProps) {
                             rotate: { type: "spring", stiffness: 200, damping: 15 }
                           }}
                         >
-                          <MapPin className="h-5 w-5 text-brand-olive" />
+                          <MapPin className="h-4 w-4 text-brand-olive" />
                         </motion.div>
                         {coach.name}
                       </CardTitle>
@@ -383,21 +383,21 @@ export function BranchVisits({ coaches, onDataChange }: BranchVisitsProps) {
                           scale: { type: "spring", visualDuration: 0.34, bounce: 0.4 }
                         }}
                       >
-                        <Badge variant="outline" className="text-xs">
-                          {visits.length} branches
+                        <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+                          {visits.length}
                         </Badge>
                       </motion.div>
                     </div>
-                    <CardDescription className="text-xs">
-                      Assigned branches and visit tracking
+                    <CardDescription className="text-xs text-medium-contrast">
+                      {visits.length} branch{visits.length !== 1 ? 'es' : ''} assigned
                     </CardDescription>
                   </CardHeader>
                   
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-2 p-3 pt-0">
                     {visits.map((visit, visitIndex) => (
                       <motion.div
                         key={visit.id}
-                        className="space-y-2 p-3 border rounded-lg hover:bg-muted/30 transition-colors"
+                        className="space-y-1.5 p-2 border rounded hover:bg-muted/30 transition-colors"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{
@@ -416,9 +416,9 @@ export function BranchVisits({ coaches, onDataChange }: BranchVisitsProps) {
                             delay: 0.5 + (coachIndex * 0.1) + (visitIndex * 0.05)
                           }}
                         >
-                          <div className="flex items-center gap-2">
-                            <Building2 className="h-4 w-4 text-brand-olive" />
-                            <h4 className="font-medium text-high-contrast">{visit.branch_name}</h4>
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <Building2 className="h-3 w-3 text-brand-olive flex-shrink-0" />
+                            <h4 className="font-medium text-sm text-high-contrast truncate">{visit.branch_name}</h4>
                           </div>
                           <motion.div
                             initial={{ opacity: 0, scale: 0.5 }}
@@ -429,7 +429,7 @@ export function BranchVisits({ coaches, onDataChange }: BranchVisitsProps) {
                               scale: { type: "spring", visualDuration: 0.26, bounce: 0.4 }
                             }}
                           >
-                            <Badge className={`text-xs ${getVisitStatusColor(visit.last_visit_date)}`}>
+                            <Badge className={`text-xs px-1.5 py-0.5 ${getVisitStatusColor(visit.last_visit_date)}`}>
                               {visit.last_visit_date ? 'Visited' : 'Pending'}
                             </Badge>
                           </motion.div>
@@ -446,15 +446,15 @@ export function BranchVisits({ coaches, onDataChange }: BranchVisitsProps) {
                             ease: [0, 0.71, 0.2, 1.01],
                           }}
                         >
-                          <div className="flex items-center gap-2 text-sm">
-                            <Calendar className="h-3 w-3 text-brand-olive" />
-                            <span className="text-medium-contrast">Last visit:</span>
-                            <span className="font-medium">{formatDate(visit.last_visit_date)}</span>
+                          <div className="flex items-center gap-1.5 text-xs">
+                            <Calendar className="h-3 w-3 text-brand-olive flex-shrink-0" />
+                            <span className="text-medium-contrast">Last:</span>
+                            <span className="font-medium truncate">{formatDate(visit.last_visit_date)}</span>
                           </div>
                           
                           {visit.last_visit_date && (
-                            <div className="flex items-center gap-2 text-xs">
-                              <Clock className="h-3 w-3 text-brand-olive" />
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <Clock className="h-3 w-3 text-brand-olive flex-shrink-0" />
                               <span className="text-medium-contrast">
                                 {getDaysSinceVisit(visit.last_visit_date)} days ago
                               </span>
@@ -464,7 +464,7 @@ export function BranchVisits({ coaches, onDataChange }: BranchVisitsProps) {
 
                         {/* Action Buttons */}
                         <motion.div 
-                          className="flex items-center gap-2 pt-2"
+                          className="flex items-center gap-1 pt-1"
                           initial={{ opacity: 0, x: 20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{
@@ -476,7 +476,7 @@ export function BranchVisits({ coaches, onDataChange }: BranchVisitsProps) {
                             variant="ghost"
                             size="sm"
                             onClick={() => setEditingVisit(visit)}
-                            className="h-8 px-2 text-xs hover-scale"
+                            className="h-6 px-2 text-xs hover-scale"
                           >
                             <Edit3 className="h-3 w-3 mr-1" />
                             Edit
@@ -485,7 +485,7 @@ export function BranchVisits({ coaches, onDataChange }: BranchVisitsProps) {
                             variant="ghost"
                             size="sm"
                             onClick={() => deleteBranchVisit(visit.id)}
-                            className="h-8 px-2 text-xs text-destructive hover:text-destructive hover-scale"
+                            className="h-6 px-2 text-xs text-destructive hover:text-destructive hover-scale"
                           >
                             <Trash2 className="h-3 w-3 mr-1" />
                             Remove
