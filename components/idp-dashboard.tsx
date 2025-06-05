@@ -26,6 +26,7 @@ import {
   ChevronRight,
   Star
 } from "lucide-react";
+import * as motion from "motion/react-client";
 import type { 
   Certification, 
   CertificationCategory, 
@@ -326,7 +327,7 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
         </TabsList>
 
         <TabsContent value="certifications" className="space-y-3">
-          {categories.map((category) => {
+          {categories.map((category, categoryIndex) => {
             const categoryCerts = certifications.filter(cert => cert.category_id === category.id);
             if (categoryCerts.length === 0) return null;
 
@@ -336,77 +337,245 @@ export function IdpDashboard({ coach, onDataChange }: IdpDashboardProps) {
             const isExpanded = expandedCategory === category.id;
 
             return (
-              <Card key={category.id} className="border-l-4 border-l-brand-olive/30">
-                <CardHeader 
-                  className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors"
-                  onClick={() => setExpandedCategory(isExpanded ? null : category.id)}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <ChevronRight className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
-                      <Award className="h-4 w-4 text-brand-olive" />
-                      <CardTitle className="text-base text-high-contrast">{category.name}</CardTitle>
-                      {category.is_required && (
-                        <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="text-xs">
-                        {categoryCompleted}/{categoryCerts.length}
-                      </Badge>
-                      <div className="w-16">
-                        <Progress value={(categoryCompleted / categoryCerts.length) * 100} className="h-1" />
-                      </div>
-                    </div>
-                  </div>
-                </CardHeader>
-                
-                {isExpanded && (
-                  <CardContent className="pt-0">
-                    <div className="grid gap-2">
-                      {categoryCerts.map((certification) => {
-                        const coachCert = coachCertifications.find(cc => cc.certification_id === certification.id);
-                        const status = coachCert?.status || 'not_started';
-                        
-                        return (
-                          <div
-                            key={certification.id}
-                            className="flex items-center justify-between p-2 border rounded hover:bg-muted/30 cursor-pointer transition-colors"
-                            onClick={() => openCertificationDialog(certification)}
+              <motion.div
+                key={category.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.4,
+                  delay: categoryIndex * 0.1,
+                  ease: [0, 0.71, 0.2, 1.01]
+                }}
+              >
+                <Card className="border-l-4 border-l-brand-olive/30 hover-lift">
+                  <motion.div
+                    className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors"
+                    onClick={() => setExpandedCategory(isExpanded ? null : category.id)}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    transition={{ duration: 0.17, type: "spring", stiffness: 300, damping: 20 }}
+                  >
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <motion.div
+                            animate={{ rotate: isExpanded ? 90 : 0 }}
+                            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                           >
-                            <div className="flex items-center gap-2 flex-1 min-w-0">
-                              <div className={`p-1 rounded-full ${getStatusColor(status)} text-white flex-shrink-0`}>
-                                {getStatusIcon(status)}
+                            <ChevronRight className="h-4 w-4 text-brand-olive" />
+                          </motion.div>
+                          <motion.div
+                            initial={{ opacity: 0, rotate: -180 }}
+                            animate={{ opacity: 1, rotate: 0 }}
+                            transition={{
+                              duration: 0.43,
+                              delay: 0.2 + (categoryIndex * 0.1),
+                              rotate: { type: "spring", stiffness: 200, damping: 15 }
+                            }}
+                          >
+                            <Award className="h-4 w-4 text-brand-olive" />
+                          </motion.div>
+                          <CardTitle className="text-base text-high-contrast">{category.name}</CardTitle>
+                          {category.is_required && (
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{
+                                duration: 0.3,
+                                delay: 0.3 + (categoryIndex * 0.1),
+                                scale: { type: "spring", visualDuration: 0.3, bounce: 0.4 }
+                              }}
+                            >
+                              <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                            </motion.div>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{
+                              duration: 0.34,
+                              delay: 0.4 + (categoryIndex * 0.1),
+                              scale: { type: "spring", visualDuration: 0.34, bounce: 0.4 }
+                            }}
+                          >
+                            <Badge variant="outline" className="text-xs">
+                              {categoryCompleted}/{categoryCerts.length}
+                            </Badge>
+                          </motion.div>
+                          <motion.div 
+                            className="w-16"
+                            initial={{ opacity: 0, scaleX: 0 }}
+                            animate={{ opacity: 1, scaleX: 1 }}
+                            transition={{
+                              duration: 0.5,
+                              delay: 0.5 + (categoryIndex * 0.1),
+                              scaleX: { type: "spring", stiffness: 100, damping: 15 }
+                            }}
+                          >
+                            <Progress value={(categoryCompleted / categoryCerts.length) * 100} className="h-1" />
+                          </motion.div>
+                        </div>
+                      </div>
+                    </CardHeader>
+                  </motion.div>
+                  
+                  <motion.div
+                    initial={false}
+                    animate={{
+                      height: isExpanded ? "auto" : 0,
+                      opacity: isExpanded ? 1 : 0
+                    }}
+                    transition={{
+                      duration: 0.4,
+                      ease: [0.4, 0, 0.2, 1],
+                      opacity: { duration: isExpanded ? 0.4 : 0.2, delay: isExpanded ? 0.1 : 0 }
+                    }}
+                    style={{ overflow: "hidden" }}
+                  >
+                    <CardContent className="pt-0">
+                      <motion.div 
+                        className="grid gap-2"
+                        initial={false}
+                        animate={isExpanded ? "expanded" : "collapsed"}
+                        variants={{
+                          expanded: {
+                            transition: {
+                              staggerChildren: 0.05,
+                              delayChildren: 0.1
+                            }
+                          },
+                          collapsed: {
+                            transition: {
+                              staggerChildren: 0.02,
+                              staggerDirection: -1
+                            }
+                          }
+                        }}
+                      >
+                        {categoryCerts.map((certification, certIndex) => {
+                          const coachCert = coachCertifications.find(cc => cc.certification_id === certification.id);
+                          const status = coachCert?.status || 'not_started';
+                          
+                          return (
+                            <motion.div
+                              key={certification.id}
+                              className="flex items-center justify-between p-2 border rounded hover:bg-muted/30 cursor-pointer transition-colors hover-lift"
+                              onClick={() => openCertificationDialog(certification)}
+                              variants={{
+                                expanded: {
+                                  opacity: 1,
+                                  y: 0,
+                                  scale: 1
+                                },
+                                collapsed: {
+                                  opacity: 0,
+                                  y: -10,
+                                  scale: 0.95
+                                }
+                              }}
+                              transition={{
+                                duration: 0.3,
+                                ease: [0, 0.71, 0.2, 1.01]
+                              }}
+                              whileHover={{ 
+                                scale: 1.02,
+                                transition: { duration: 0.17, type: "spring", stiffness: 300, damping: 20 }
+                              }}
+                              whileTap={{ scale: 0.98 }}
+                            >
+                              <div className="flex items-center gap-2 flex-1 min-w-0">
+                                <motion.div 
+                                  className={`p-1 rounded-full ${getStatusColor(status)} text-white flex-shrink-0`}
+                                  initial={{ scale: 0 }}
+                                  animate={{ scale: 1 }}
+                                  transition={{
+                                    duration: 0.3,
+                                    delay: 0.1 + (certIndex * 0.05),
+                                    type: "spring",
+                                    stiffness: 300,
+                                    damping: 20
+                                  }}
+                                >
+                                  {getStatusIcon(status)}
+                                </motion.div>
+                                <div className="min-w-0 flex-1">
+                                  <motion.h4 
+                                    className="font-medium text-sm text-high-contrast truncate"
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{
+                                      duration: 0.3,
+                                      delay: 0.15 + (certIndex * 0.05)
+                                    }}
+                                  >
+                                    {certification.name}
+                                  </motion.h4>
+                                  {coachCert?.completion_date && (
+                                    <motion.p 
+                                      className="text-xs text-medium-contrast"
+                                      initial={{ opacity: 0 }}
+                                      animate={{ opacity: 1 }}
+                                      transition={{
+                                        duration: 0.3,
+                                        delay: 0.2 + (certIndex * 0.05)
+                                      }}
+                                    >
+                                      Completed: {new Date(coachCert.completion_date + 'T00:00:00').toLocaleDateString()}
+                                    </motion.p>
+                                  )}
+                                  {coachCert?.expiration_date && (
+                                    <motion.p 
+                                      className="text-xs text-medium-contrast"
+                                      initial={{ opacity: 0 }}
+                                      animate={{ opacity: 1 }}
+                                      transition={{
+                                        duration: 0.3,
+                                        delay: 0.25 + (certIndex * 0.05)
+                                      }}
+                                    >
+                                      Expires: {new Date(coachCert.expiration_date + 'T00:00:00').toLocaleDateString()}
+                                    </motion.p>
+                                  )}
+                                </div>
                               </div>
-                              <div className="min-w-0 flex-1">
-                                <h4 className="font-medium text-sm text-high-contrast truncate">{certification.name}</h4>
-                                {coachCert?.completion_date && (
-                                  <p className="text-xs text-medium-contrast">
-                                    Completed: {new Date(coachCert.completion_date + 'T00:00:00').toLocaleDateString()}
-                                  </p>
+                              <div className="flex items-center gap-1 flex-shrink-0">
+                                {certification.is_required && (
+                                  <motion.div
+                                    initial={{ opacity: 0, scale: 0 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{
+                                      duration: 0.3,
+                                      delay: 0.3 + (certIndex * 0.05),
+                                      scale: { type: "spring", visualDuration: 0.3, bounce: 0.4 }
+                                    }}
+                                  >
+                                    <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                                  </motion.div>
                                 )}
-                                {coachCert?.expiration_date && (
-                                  <p className="text-xs text-medium-contrast">
-                                    Expires: {new Date(coachCert.expiration_date + 'T00:00:00').toLocaleDateString()}
-                                  </p>
-                                )}
+                                <motion.div
+                                  initial={{ opacity: 0, scale: 0.5 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  transition={{
+                                    duration: 0.26,
+                                    delay: 0.35 + (certIndex * 0.05),
+                                    scale: { type: "spring", visualDuration: 0.26, bounce: 0.4 }
+                                  }}
+                                >
+                                  <Badge variant="outline" className={`text-xs ${getStatusColor(status)} text-white border-0`}>
+                                    {status === 'not_started' ? 'New' : status.replace('_', ' ')}
+                                  </Badge>
+                                </motion.div>
                               </div>
-                            </div>
-                            <div className="flex items-center gap-1 flex-shrink-0">
-                              {certification.is_required && (
-                                <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
-                              )}
-                              <Badge variant="outline" className={`text-xs ${getStatusColor(status)} text-white border-0`}>
-                                {status === 'not_started' ? 'New' : status.replace('_', ' ')}
-                              </Badge>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </CardContent>
-                )}
-              </Card>
+                            </motion.div>
+                          );
+                        })}
+                      </motion.div>
+                    </CardContent>
+                  </motion.div>
+                </Card>
+              </motion.div>
             );
           })}
         </TabsContent>
