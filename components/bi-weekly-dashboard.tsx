@@ -410,7 +410,7 @@ export function BiWeeklyDashboard() {
         );
       case "idp":
         return (
-          <IdpOverview coaches={coaches} />
+          <IdpOverview coaches={coaches} onDataChange={fetchData} />
         );
       case "action-items":
         return (

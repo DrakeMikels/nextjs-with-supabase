@@ -26,12 +26,14 @@ import type {
   CoachCertification
 } from "@/lib/types";
 import * as motion from "motion/react-client";
+import { IdpDashboard } from "./idp-dashboard";
 
 interface IdpOverviewProps {
   coaches: Coach[];
+  onDataChange?: () => void;
 }
 
-export function IdpOverview({ coaches }: IdpOverviewProps) {
+export function IdpOverview({ coaches, onDataChange }: IdpOverviewProps) {
   const [certifications, setCertifications] = useState<Certification[]>([]);
   const [categories, setCategories] = useState<CertificationCategory[]>([]);
   const [coachCertifications, setCoachCertifications] = useState<CoachCertification[]>([]);
@@ -42,6 +44,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
   const [showCertificationDialog, setShowCertificationDialog] = useState(false);
   const [selectedCertification, setSelectedCertification] = useState<Certification | null>(null);
   const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
+  const [selectedCoachForIDP, setSelectedCoachForIDP] = useState<Coach | null>(null);
   const [certificationUpdate, setCertificationUpdate] = useState<{
     status: 'not_started' | 'scheduled' | 'in_progress' | 'completed' | 'expired';
     start_date: string;
@@ -533,11 +536,7 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
                           <Button 
                             size="sm" 
                             className="w-full gap-1 hover-lift"
-                            onClick={() => {
-                              // This would trigger opening the detailed IDP view
-                              // You can implement this navigation as needed
-                              console.log('Open detailed IDP for', coach.name);
-                            }}
+                            onClick={() => setSelectedCoachForIDP(coach)}
                           >
                             <GraduationCap className="h-3 w-3" />
                             View Full IDP
@@ -937,6 +936,37 @@ export function IdpOverview({ coaches }: IdpOverviewProps) {
           </motion.div>
         </DialogContent>
       </Dialog>
+
+      {/* Detailed IDP View */}
+      {selectedCoachForIDP && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.4 }}
+          className="mt-6"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <Button 
+              variant="outline"
+              onClick={() => setSelectedCoachForIDP(null)}
+              className="gap-2 hover-lift"
+            >
+              ← Back to Overview
+            </Button>
+            <div className="text-sm text-medium-contrast">
+              Viewing detailed IDP for {selectedCoachForIDP.name}
+            </div>
+          </div>
+          <IdpDashboard 
+            coach={selectedCoachForIDP}
+            onDataChange={() => {
+              fetchData();
+              onDataChange?.();
+            }}
+          />
+        </motion.div>
+      )}
     </div>
   );
 } 
