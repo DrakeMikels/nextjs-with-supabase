@@ -96,9 +96,9 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod }: MetricsDa
       console.log('📅 Selected period - showing context periods:', contextPeriods.map(p => p.period_name));
       return contextPeriods;
     } else {
-      // Show all periods (last 6 for better trend visibility)
-      const result = periods.slice(0, 6).reverse();
-      console.log('🌐 All periods - showing last 6:', result.map(p => p.period_name));
+      // Show ALL periods when "All Periods" is selected
+      const result = [...periods].reverse();
+      console.log('🌐 All periods - showing all periods:', result.map(p => p.period_name));
       return result;
     }
   }, [selectedPeriod, periods]);
@@ -125,8 +125,8 @@ export function MetricsDashboard({ periods, coaches, selectedPeriod }: MetricsDa
       };
     } else {
       return {
-        title: 'Recent Periods',
-        subtitle: 'Safety metrics overview for the most recent bi-weekly periods',
+        title: 'All Periods',
+        subtitle: 'Safety metrics overview across all bi-weekly periods',
         type: 'all' as const
       };
     }
