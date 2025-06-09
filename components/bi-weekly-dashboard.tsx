@@ -129,11 +129,21 @@ const sidebarVariants = {
   },
   welcome: {
     width: "16rem",
+    opacity: 1,
+    scale: 1,
     transition: {
-      type: "spring",
-      stiffness: 200,
-      damping: 25,
-      delay: 0.5, // Slight delay for dramatic effect
+      duration: 0.4,
+      scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
+      delay: 0.2, // Slight delay for dramatic effect
+    },
+  },
+  entrance: {
+    width: "16rem",
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.4,
+      scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
     },
   },
   // Mobile-specific variants
@@ -166,6 +176,9 @@ const navVariants = {
   welcome: {
     transition: { staggerChildren: 0.08, delayChildren: 0.8 }, // Slower, more dramatic stagger
   },
+  entrance: {
+    transition: { staggerChildren: 0.06, delayChildren: 0.5 }, // Entrance animation stagger
+  },
   mobileOpen: {
     transition: { staggerChildren: 0.03, delayChildren: 0.1 },
   },
@@ -178,6 +191,7 @@ const itemVariants = {
   open: {
     opacity: 1,
     x: 0,
+    scale: 1,
     transition: {
       duration: 0.3,
       x: { type: "spring", stiffness: 300, damping: 25 },
@@ -186,6 +200,7 @@ const itemVariants = {
   closed: {
     opacity: 0,
     x: -20,
+    scale: 0.9,
     transition: {
       duration: 0.2,
       x: { type: "spring", stiffness: 300, damping: 25 },
@@ -194,14 +209,26 @@ const itemVariants = {
   welcome: {
     opacity: 1,
     x: 0,
+    scale: 1,
     transition: {
       duration: 0.4,
+      x: { type: "spring", stiffness: 250, damping: 20 },
+    },
+  },
+  entrance: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      duration: 0.4,
+      scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
       x: { type: "spring", stiffness: 250, damping: 20 },
     },
   },
   mobileOpen: {
     opacity: 1,
     x: 0,
+    scale: 1,
     transition: {
       duration: 0.2,
       x: { type: "spring", stiffness: 400, damping: 25 },
@@ -210,6 +237,7 @@ const itemVariants = {
   mobileClosed: {
     opacity: 0,
     x: -10,
+    scale: 0.9,
     transition: {
       duration: 0.15,
       x: { type: "spring", stiffness: 400, damping: 25 },
@@ -239,6 +267,13 @@ const iconVariants = {
       scale: { type: "spring", stiffness: 300, damping: 20 },
     },
   },
+  entrance: {
+    scale: [0, 1.1, 1], // Entrance bounce effect
+    transition: {
+      duration: 0.4,
+      scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
+    },
+  },
   mobileOpen: {
     scale: 1,
     transition: {
@@ -263,12 +298,13 @@ export function BiWeeklyDashboard() {
   const [activeView, setActiveView] = useState("master"); // Default to Master View
   const [sidebarOpen, setSidebarOpen] = useState(true); // Always start expanded for welcoming experience
   const [isFirstLoad, setIsFirstLoad] = useState(true); // Track first load for welcome animation
+  const [isInitialLogin, setIsInitialLogin] = useState(true); // Track initial login for entrance animation
 
   const [isMobile, setIsMobile] = useState(false);
   const [statsCollapsed, setStatsCollapsed] = useState(false);
   const supabase = createClient();
 
-  // Check if we're on mobile
+  // Check if we're on mobile and handle initial login detection
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 1024);
@@ -277,6 +313,15 @@ export function BiWeeklyDashboard() {
         setSidebarOpen(false);
       }
     };
+    
+    // Check if this is an initial login (not a page refresh or navigation)
+    const hasSeenDashboard = sessionStorage.getItem('hasSeenDashboard');
+    if (hasSeenDashboard) {
+      setIsInitialLogin(false);
+    } else {
+      // Mark that user has seen the dashboard
+      sessionStorage.setItem('hasSeenDashboard', 'true');
+    }
     
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -311,9 +356,18 @@ export function BiWeeklyDashboard() {
     } finally {
       setLoading(false);
       // After data loads, mark first load as complete
-      setTimeout(() => setIsFirstLoad(false), 2000);
+      if (isInitialLogin) {
+        // For initial login, show entrance animation then transition to static
+        setTimeout(() => {
+          setIsFirstLoad(false);
+          setIsInitialLogin(false);
+        }, 3000); // Give more time for entrance animation
+      } else {
+        // For subsequent loads, just mark first load as complete
+        setTimeout(() => setIsFirstLoad(false), 1000);
+      }
     }
-  }, [supabase, selectedPeriod]);
+  }, [supabase, selectedPeriod, isInitialLogin]);
 
   useEffect(() => {
     fetchData();
@@ -352,6 +406,14 @@ export function BiWeeklyDashboard() {
   const handleOpenPeriod = (period: BiWeeklyPeriod) => {
     setSelectedPeriod(period);
     setActiveView("metrics");
+  };
+
+  const handleViewChange = (view: string) => {
+    setActiveView(view);
+    // After first navigation, disable entrance animation permanently
+    if (isInitialLogin) {
+      setIsInitialLogin(false);
+    }
   };
 
   const currentNavItem = navigationItems.find(item => item.id === activeView);
@@ -469,20 +531,22 @@ export function BiWeeklyDashboard() {
       {isMobile && (
         <MobileNavigation 
           activeView={activeView}
-          onViewChange={setActiveView}
+          onViewChange={handleViewChange}
         />
       )}
 
       {/* Desktop Sidebar - Only show on desktop */}
       {!isMobile && (
         <motion.nav
-          initial={false}
+          initial={{ opacity: 0, scale: 0 }}
           animate={
-            isFirstLoad && sidebarOpen 
-              ? "welcome" 
-              : sidebarOpen 
-                ? "open" 
-                : "closed"
+            isInitialLogin && sidebarOpen 
+              ? "entrance"
+              : isFirstLoad && sidebarOpen 
+                ? "welcome" 
+                : sidebarOpen 
+                  ? "open" 
+                  : "closed"
           }
           variants={sidebarVariants}
           className="fixed lg:static inset-y-0 left-0 z-40 bg-gradient-to-b from-brand-olive via-brand-olive-light to-brand-olive-medium dark:from-brand-olive-medium dark:via-brand-olive-soft dark:to-brand-olive-pale border-r border-white/20 overflow-hidden"
@@ -494,19 +558,7 @@ export function BiWeeklyDashboard() {
           {/* Subtle overlay for better text contrast */}
           <div className="absolute inset-0 bg-black/10"></div>
           
-            {/* Welcome pulse effect for first load */}
-            {isFirstLoad && (
-              <motion.div
-                className="absolute inset-0 bg-white/5 rounded-r-lg"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 0.3, 0] }}
-                transition={{ 
-                  duration: 2,
-                  delay: 1.2,
-                  ease: "easeInOut"
-                }}
-              />
-            )}
+
             
             <div className="p-4 border-b border-white/30 relative z-10">
               <div className="flex items-center gap-3">
@@ -514,8 +566,6 @@ export function BiWeeklyDashboard() {
                   className="p-2 bg-white/20 rounded-lg border border-white/30 flex-shrink-0"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  animate={isFirstLoad ? { scale: [1, 1.1, 1] } : {}}
-                  transition={isFirstLoad ? { duration: 1, delay: 1.5 } : {}}
                 >
                   <Shield className="h-6 w-6 text-white" />
                 </motion.div>
@@ -533,39 +583,16 @@ export function BiWeeklyDashboard() {
               className="flex-1 p-2 space-y-1 relative z-10"
               variants={navVariants}
               animate={
-                isFirstLoad && sidebarOpen 
-                  ? "welcome" 
-                  : sidebarOpen 
-                    ? "open" 
-                    : "closed"
+                isInitialLogin && sidebarOpen 
+                  ? "entrance"
+                  : isFirstLoad && sidebarOpen 
+                    ? "welcome" 
+                    : sidebarOpen 
+                      ? "open" 
+                      : "closed"
               }
             >
-              {/* Welcome tooltip for first-time users */}
-              {isFirstLoad && (
-                <motion.div
-                  className="absolute -right-4 top-4 bg-white text-brand-olive px-3 py-2 rounded-lg shadow-lg text-sm font-medium z-50"
-                  initial={{ opacity: 0, x: -20, scale: 0.8 }}
-                  animate={{ opacity: 1, x: 0, scale: 1 }}
-                  exit={{ opacity: 0, x: -20, scale: 0.8 }}
-                  transition={{ 
-                    duration: 0.4,
-                    delay: 2.5,
-                  }}
-                  style={{ 
-                    clipPath: "polygon(0 50%, 12px 0, 100% 0, 100% 100%, 12px 100%)"
-                  }}
-                >
-                  <div className="ml-3">
-                    Welcome! Explore your dashboard
-                  </div>
-                  <motion.div
-                    initial={{ opacity: 1 }}
-                    animate={{ opacity: 0 }}
-                    transition={{ delay: 4, duration: 0.5 }}
-                    className="absolute inset-0 bg-white rounded-lg"
-                  />
-                </motion.div>
-              )}
+
               
             {navigationItems.map((item) => {
               const Icon = item.icon;
@@ -577,7 +604,7 @@ export function BiWeeklyDashboard() {
                     variants={itemVariants}
                     whileHover={{ scale: 1.02, x: 2 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => setActiveView(item.id)}
+                    onClick={() => handleViewChange(item.id)}
                   className={`
                       w-full flex items-center gap-3 px-3 rounded-lg text-left transition-all duration-200 group relative py-2.5
                     ${isActive 
