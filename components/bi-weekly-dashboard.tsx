@@ -113,6 +113,8 @@ const navigationItems = [
 const sidebarVariants = {
   open: {
     width: "16rem", // 64 * 0.25rem = 16rem
+    x: 0,
+    opacity: 1,
     transition: {
       type: "spring",
       stiffness: 300,
@@ -121,6 +123,8 @@ const sidebarVariants = {
   },
   closed: {
     width: "4rem", // 16 * 0.25rem = 4rem
+    x: 0,
+    opacity: 1,
     transition: {
       type: "spring",
       stiffness: 300,
@@ -129,27 +133,28 @@ const sidebarVariants = {
   },
   welcome: {
     width: "16rem",
+    x: 0,
     opacity: 1,
-    scale: 1,
     transition: {
       duration: 0.4,
-      scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
       delay: 0.2, // Slight delay for dramatic effect
     },
   },
   entrance: {
     width: "16rem",
+    x: 0,
     opacity: 1,
-    scale: 1,
     transition: {
-      duration: 0.4,
-      scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
+      duration: 0.5,
+      ease: "easeOut",
     },
   },
   // Mobile-specific variants
   mobileOpen: {
     width: "85vw", // Take up most of the screen on mobile
     maxWidth: "320px", // But not too wide on larger phones
+    x: 0,
+    opacity: 1,
     transition: {
       type: "spring",
       stiffness: 300,
@@ -158,6 +163,8 @@ const sidebarVariants = {
   },
   mobileClosed: {
     width: "0px",
+    x: 0,
+    opacity: 1,
     transition: {
       type: "spring",
       stiffness: 300,
@@ -191,7 +198,6 @@ const itemVariants = {
   open: {
     opacity: 1,
     x: 0,
-    scale: 1,
     transition: {
       duration: 0.3,
       x: { type: "spring", stiffness: 300, damping: 25 },
@@ -200,7 +206,6 @@ const itemVariants = {
   closed: {
     opacity: 0,
     x: -20,
-    scale: 0.9,
     transition: {
       duration: 0.2,
       x: { type: "spring", stiffness: 300, damping: 25 },
@@ -209,7 +214,6 @@ const itemVariants = {
   welcome: {
     opacity: 1,
     x: 0,
-    scale: 1,
     transition: {
       duration: 0.4,
       x: { type: "spring", stiffness: 250, damping: 20 },
@@ -218,17 +222,14 @@ const itemVariants = {
   entrance: {
     opacity: 1,
     x: 0,
-    scale: 1,
     transition: {
-      duration: 0.4,
-      scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
-      x: { type: "spring", stiffness: 250, damping: 20 },
+      duration: 0.3,
+      ease: "easeOut",
     },
   },
   mobileOpen: {
     opacity: 1,
     x: 0,
-    scale: 1,
     transition: {
       duration: 0.2,
       x: { type: "spring", stiffness: 400, damping: 25 },
@@ -237,7 +238,6 @@ const itemVariants = {
   mobileClosed: {
     opacity: 0,
     x: -10,
-    scale: 0.9,
     transition: {
       duration: 0.15,
       x: { type: "spring", stiffness: 400, damping: 25 },
@@ -268,10 +268,10 @@ const iconVariants = {
     },
   },
   entrance: {
-    scale: [0, 1.1, 1], // Entrance bounce effect
+    scale: 1, // No scale animation for entrance
     transition: {
-      duration: 0.4,
-      scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
+      duration: 0.3,
+      ease: "easeOut",
     },
   },
   mobileOpen: {
@@ -538,7 +538,7 @@ export function BiWeeklyDashboard() {
       {/* Desktop Sidebar - Only show on desktop */}
       {!isMobile && (
         <motion.nav
-          initial={{ opacity: 0, scale: 0 }}
+          initial={{ x: -256, opacity: 0 }}
           animate={
             isInitialLogin && sidebarOpen 
               ? "entrance"
