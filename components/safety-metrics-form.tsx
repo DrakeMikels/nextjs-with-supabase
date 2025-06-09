@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Save, User } from "lucide-react";
 import { AnimatedContainer, AnimatedItem } from "@/components/ui/animated-container";
+import * as motion from "motion/react-client";
 
 interface BiWeeklyPeriod {
   id: string;
@@ -197,57 +198,126 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
 
       {/* Coach Selection */}
       <AnimatedItem>
-        <Card className="border-2 border-primary/20 hover-lift">
-          <CardHeader>
-            <CardTitle className="text-lg sm:text-xl text-high-contrast">👤 Step 1: Select Your Coach Profile</CardTitle>
-            <CardDescription className="text-medium-contrast">Choose your name to enter or edit your safety metrics for this period</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {coaches.map((coach) => (
-                <Button
-                  key={coach.id}
-                  variant={selectedCoach?.id === coach.id ? "default" : "outline"}
-                  className="justify-start gap-2 h-auto p-4 mobile-touch-target"
-                  onClick={() => setSelectedCoach(coach)}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            duration: 0.4,
+            scale: { type: "spring", visualDuration: 0.4, bounce: 0.2 }
+          }}
+        >
+          <Card className="border-2 border-primary/20 hover-lift">
+            <CardHeader>
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+              >
+                <CardTitle className="text-lg sm:text-xl text-high-contrast">👤 Step 1: Select Your Coach Profile</CardTitle>
+                <CardDescription className="text-medium-contrast">Choose your name to enter or edit your safety metrics for this period</CardDescription>
+              </motion.div>
+            </CardHeader>
+            <CardContent>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+                className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+              >
+                {coaches.map((coach, index) => (
+                  <motion.div
+                    key={coach.id}
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{
+                      duration: 0.4,
+                      delay: 0.3 + (index * 0.05),
+                      scale: { type: "spring", visualDuration: 0.4, bounce: 0.3 }
+                    }}
+                    whileHover={{ 
+                      scale: 1.02,
+                      transition: { duration: 0.17, type: "spring", stiffness: 300, damping: 20 }
+                    }}
+                  >
+                    <Button
+                      variant={selectedCoach?.id === coach.id ? "default" : "outline"}
+                      className="justify-start gap-2 h-auto p-4 mobile-touch-target w-full"
+                      onClick={() => setSelectedCoach(coach)}
+                    >
+                      <motion.div
+                        initial={{ opacity: 0, rotate: -180, scale: 0 }}
+                        animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                        transition={{
+                          duration: 0.43,
+                          delay: 0.4 + (index * 0.05),
+                          rotate: { type: "spring", stiffness: 200, damping: 15 },
+                          scale: { type: "spring", visualDuration: 0.43, bounce: 0.4 }
+                        }}
+                      >
+                        <User className="h-4 w-4 flex-shrink-0" />
+                      </motion.div>
+                      <div className="text-left min-w-0 flex-1">
+                        <div className="font-medium text-high-contrast truncate">{coach.name}</div>
+                        <div className="text-xs opacity-70 flex items-center gap-2 text-medium-contrast flex-wrap">
+                          <span>{coach.vacation_days_remaining}/{coach.vacation_days_total} vacation days</span>
+                          {hasMetrics(coach.id) && <Badge variant="secondary" className="text-xs">✓ Has Data</Badge>}
+                        </div>
+                      </div>
+                    </Button>
+                  </motion.div>
+                ))}
+              </motion.div>
+              {!selectedCoach && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.5 }}
+                  className="mt-4 p-4 bg-muted/50 rounded-lg text-center"
                 >
-                  <User className="h-4 w-4 flex-shrink-0" />
-                  <div className="text-left min-w-0 flex-1">
-                    <div className="font-medium text-high-contrast truncate">{coach.name}</div>
-                    <div className="text-xs opacity-70 flex items-center gap-2 text-medium-contrast flex-wrap">
-                      <span>{coach.vacation_days_remaining}/{coach.vacation_days_total} vacation days</span>
-                      {hasMetrics(coach.id) && <Badge variant="secondary" className="text-xs">✓ Has Data</Badge>}
-                    </div>
-                  </div>
-                </Button>
-              ))}
-            </div>
-            {!selectedCoach && (
-              <div className="mt-4 p-4 bg-muted/50 rounded-lg text-center">
-                <p className="text-sm text-medium-contrast">
-                  👆 Please select your name above to begin entering safety metrics
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                  <p className="text-sm text-medium-contrast">
+                    👆 Please select your name above to begin entering safety metrics
+                  </p>
+                </motion.div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
       </AnimatedItem>
 
       {/* Metrics Form */}
       {selectedCoach ? (
         <AnimatedItem>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-high-contrast text-base sm:text-lg">
-                📊 Step 2: Enter Safety Metrics for {selectedCoach.name}
-              </CardTitle>
-              <CardDescription className="text-medium-contrast text-sm">
-                Fill in your safety metrics for the period: {period.period_name}
-              </CardDescription>
-            </CardHeader>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.4,
+              scale: { type: "spring", visualDuration: 0.4, bounce: 0.2 }
+            }}
+          >
+            <Card>
+              <CardHeader>
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                >
+                  <CardTitle className="flex items-center gap-2 text-high-contrast text-base sm:text-lg">
+                    📊 Step 2: Enter Safety Metrics for {selectedCoach.name}
+                  </CardTitle>
+                  <CardDescription className="text-medium-contrast text-sm">
+                    Fill in your safety metrics for the period: {period.period_name}
+                  </CardDescription>
+                </motion.div>
+              </CardHeader>
             <CardContent className="space-y-4 sm:space-y-6">
               {/* Travel and Training */}
-              <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+                className="grid gap-4 grid-cols-1 md:grid-cols-2"
+              >
                 <div className="space-y-2">
                   <Label htmlFor="travel_plans" className="text-high-contrast text-sm">Travel Plans - Branch Location</Label>
                   <Input
@@ -268,10 +338,15 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
                     className="mobile-touch-target"
                   />
                 </div>
-              </div>
+              </motion.div>
 
               {/* Safety Metrics */}
-              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.3 }}
+                className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+              >
                 <div className="space-y-2">
                   <Label htmlFor="site_safety" className="text-high-contrast text-sm">Site Safety Evaluations (Goal: 12-15/month)</Label>
                   <Input
@@ -302,7 +377,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
                     className="mobile-touch-target"
                   />
                 </div>
-              </div>
+              </motion.div>
 
               {/* Open Investigations */}
               <div className="space-y-4">
@@ -417,6 +492,7 @@ export function SafetyMetricsForm({ period, coaches, onDataChange }: SafetyMetri
               </Button>
             </CardContent>
           </Card>
+          </motion.div>
         </AnimatedItem>
       ) : (
         <AnimatedItem>
