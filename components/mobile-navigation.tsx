@@ -95,8 +95,44 @@ export default function MobileNavigation({ activeView, onViewChange }: MobileNav
     setIsOpen(false);
   };
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isOpen && containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   return (
-    <div style={container}>
+    <div style={{...container, pointerEvents: isOpen ? 'auto' : 'none'}}>
+      {/* Backdrop overlay when menu is open */}
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 999,
+          }}
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+      
       <motion.nav
         initial={false}
         animate={isOpen ? "open" : "closed"}
@@ -317,6 +353,7 @@ const toggleContainer: React.CSSProperties = {
   zIndex: 1001,
   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
   border: "2px solid rgba(255, 255, 255, 0.2)",
+  pointerEvents: "auto", // Always allow interaction with toggle button
 };
 
 const list: React.CSSProperties = {
