@@ -142,7 +142,9 @@ export default function MobileNavigation({ activeView, onViewChange }: MobileNav
       >
         <motion.div style={background} variants={sidebarVariants} />
         <Navigation activeView={activeView} onItemClick={handleItemClick} />
-        <MenuToggle toggle={() => setIsOpen(!isOpen)} />
+        <motion.div animate={isOpen ? "open" : "closed"}>
+          <MenuToggle toggle={() => setIsOpen(!isOpen)} />
+        </motion.div>
       </motion.nav>
     </div>
   );
@@ -272,7 +274,7 @@ const Path = (props: PathProps) => (
   <motion.path
     fill="transparent"
     strokeWidth="3"
-    stroke="#2C5134"
+    stroke="white"
     strokeLinecap="round"
     {...props}
   />
@@ -350,10 +352,11 @@ const toggleContainer: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  zIndex: 1001,
+  zIndex: 1002, // Higher than backdrop to ensure it's always clickable
   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
   border: "2px solid rgba(255, 255, 255, 0.2)",
   pointerEvents: "auto", // Always allow interaction with toggle button
+  opacity: 1, // Ensure it's never transparent
 };
 
 const list: React.CSSProperties = {
